@@ -4,6 +4,7 @@ import { Player } from "./Player";
 
 export class LavalinkNode {
 
+    public id: string;
     public host: string;
     public port: number | string;
     public reconnectInterval: number;
@@ -16,6 +17,8 @@ export class LavalinkNode {
     private _queue: QueueData[] = [];
 
     public constructor(public manager: Manager, options: LavalinkNodeOptions) {
+        this.id = options.id;
+
         this.host = options.host;
         this.port = options.port || 2333;
         this.reconnectInterval = options.reconnectInterval || 5000;
@@ -41,23 +44,50 @@ export class LavalinkNode {
         };
     }
 
-    private connect(): void {
-        if (this.connected) this.ws!.close();
+    public connect(): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            if (this.connected) this.ws!.close();
 
-        const headers = {
-            Authorization: this.password,
-            "Num-Shards": String(this.manager.shards || 1),
-            "User-Id": this.manager.user
-        };
+            const headers = {
+                Authorization: this.password,
+                "Num-Shards": String(this.manager.shards || 1),
+                "User-Id": this.manager.user
+            };
 
-        if (this.resumeKey) (headers as any)["Resume-Key"] = this.resumeKey;
+            if (this.resumeKey) (headers as any)["Resume-Key"] = this.resumeKey;
 
-        this.ws = new WebSocket(`ws://${this.host}:${this.port}/`, { headers });
+            this.ws = new WebSocket(`ws://${this.host}:${this.port}/`, { headers });
 
-        this.ws.on("open", this.onOpen.bind(this));
-        this.ws.on("message", this.onMessage.bind(this));
-        this.ws.on("error", this.onError.bind(this));
-        this.ws.on("close", this.onClose.bind(this));
+            const onOpen = (): void => {
+                this.ws!.off("open", onOpen);
+                this.ws!.off("error", onError);
+                this.ws!.off("close", onClose);
+                resolve(true);
+            };
+
+            const onClose = (event: unknown): void => {
+                this.ws!.off("open", onOpen);
+                this.ws!.off("error", onError);
+                this.ws!.off("close", onClose);
+                reject(event);
+            };
+
+            const onError = (event: unknown): void => {
+                this.ws!.off("open", onOpen);
+                this.ws!.off("error", onError);
+                this.ws!.off("close", onClose);
+                reject(event);
+            };
+
+            this.ws.once("open", onOpen);
+            this.ws.once("error", onError);
+            this.ws.once("close", onClose);
+
+            this.ws.on("open", this.onOpen.bind(this));
+            this.ws.on("message", this.onMessage.bind(this));
+            this.ws.on("error", this.onError.bind(this));
+            this.ws.on("close", this.onClose.bind(this));
+        });
     }
 
     private onOpen(): void {
@@ -151,7 +181,7 @@ export class LavalinkNode {
 export interface LavalinkNodeOptions {
     id: string;
     host: string;
-    port: number | string;
+    port?: number | string;
     password?: string;
     reconnectInterval?: number;
 }

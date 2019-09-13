@@ -24,10 +24,14 @@ export class Manager extends EventEmitter {
         for (const node of nodes) this.createNode(node);
     }
 
+    public connect(): Promise<boolean[]> {
+        return Promise.all([...this.nodes.values()].map(node => node.connect()));
+    }
+
     public createNode(options: LavalinkNodeOptions): LavalinkNode {
         const node = new LavalinkNode(this, options);
 
-        this.nodes.set(options.id || options.host, node);
+        this.nodes.set(options.id, node);
 
         return node;
     }
@@ -108,12 +112,12 @@ export class Manager extends EventEmitter {
         const server = this.voiceServers.get(guildId);
         const state = this.voiceStates.get(guildId);
 
-        if (!server || !state) return false;
+        if (!server) return false;
 
         const player = this.players.get(guildId);
         if (!player) return false;
 
-        await player.connect({ sessionId: state.session_id, event: server });
+        await player.connect({ sessionId: state ? state.session_id : player.voiceUpdateState!.sessionId, event: server });
         this.voiceServers.delete(guildId);
         this.voiceStates.delete(guildId);
         return true;
@@ -122,8 +126,8 @@ export class Manager extends EventEmitter {
     private spawnPlayer(data: JoinData): Player {
         const exists = this.players.get(data.guild);
         if (exists) return exists;
-        const node = this.nodes.get(data.host);
-        if (!node) throw new Error(`INVALID_HOST: No available node with ${data.host}`);
+        const node = this.nodes.get(data.node);
+        if (!node) throw new Error(`INVALID_HOST: No available node with ${data.node}`);
         const player: Player = new (this.Player as any)(node, {
             id: data.guild,
             channel: data.channel
@@ -170,7 +174,7 @@ export interface ManagerOptions {
 export interface JoinData {
     guild: string;
     channel: string;
-    host: string;
+    node: string;
 }
 
 export interface JoinOptions {
