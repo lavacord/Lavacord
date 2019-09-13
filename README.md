@@ -1,19 +1,19 @@
 [![Discord](https://discordapp.com/api/guilds/323779330033319941/embed.png)](https://discord.gg/J8AqH4A)
-[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/discord.js-lavalink)
-[![npm downloads](https://img.shields.io/npm/dt/discord.js-lavalink.svg?maxAge=3600)](https://www.npmjs.com/package/discord.js-lavalink)
-[![NPM version](https://badge.fury.io/js/discord.js-lavalink.svg)](http://badge.fury.io/js/discord.js-lavalink)
-[![Build Status](https://travis-ci.org/MrJacz/discord.js-lavalink.svg?branch=master)](https://travis-ci.org/MrJacz/discord.js-lavalink)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/MrJacz/discord.js-lavalink?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MrJacz/discord.js-lavalink&amp;utm_campaign=Badge_Grade)
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/lavacord)
+[![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?maxAge=3600)](https://www.npmjs.com/package/lavacord)
+[![NPM version](https://badge.fury.io/js/lavacord.svg)](http://badge.fury.io/js/lavacord)
+[![Build Status](https://travis-ci.org/MrJacz/lavacord.svg?branch=master)](https://travis-ci.org/MrJacz/lavacord)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/MrJacz/lavacord?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MrJacz/lavacord&amp;utm_campaign=Badge_Grade)
 [![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
-[![dependencies Status](https://david-dm.org/mrjacz/discord.js-lavalink/status.svg)](https://david-dm.org/mrjacz/discord.js-lavalink)
-[![devDependencies Status](https://david-dm.org/mrjacz/discord.js-lavalink/dev-status.svg)](https://david-dm.org/mrjacz/discord.js-lavalink?type=dev)
-[![NPM](https://nodei.co/npm/discord.js-lavalink.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/discord.js-lavalink/)
+[![dependencies Status](https://david-dm.org/mrjacz/lavacord/status.svg)](https://david-dm.org/mrjacz/lavacord)
+[![devDependencies Status](https://david-dm.org/mrjacz/lavacord/dev-status.svg)](https://david-dm.org/mrjacz/lavacord?type=dev)
+[![NPM](https://nodei.co/npm/lavacord.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/lavacord/)
 
 # LavaCord
 A simple and easy to use lavalink wrapper.
 
 ## Documentation
-[**mrjacz.github.io/discord.js-lavalink**](https://mrjacz.github.io/discord.js-lavalink/)
+[**mrjacz.github.io/lavacord**](https://mrjacz.github.io/lavacord/)
 
 ## Installation
 
@@ -46,23 +46,23 @@ Run with `java -jar Lavalink.jar`
 If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/J8AqH4A)
 
 # Implementation
-Start by creating a new `PlayerManager` passing an array of nodes and an object with `user` the client's user id and `shards` The total number of shards your bot is operating on.
+Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id and `shards` The total number of shards your bot is operating on.
 
 ```javascript
-const { PlayerManager } = require("discord.js-lavalink");
+const { Manager } = require("lavacord");
 
 const nodes = [
     { host: "localhost", port: 2333, password: "youshallnotpass" }
 ];
 
-const manager = new PlayerManager(client, nodes, {
+const manager = new Manager(client, nodes, {
     user: client.user.id, // Client id
     shards: shardCount // Total number of shards your bot is operating on
 });
 
-manager.on("error", (node, error) => {
+manager.on("error", (error, node) => {
+    error // is the error
     node // is the node which the error is from
-    error // is the error;
 });
 ```
 
@@ -73,7 +73,7 @@ const fetch = require("node-fetch");
 const { URLSearchParams } = require("url");
 
 async function getSongs(search) {
-    const node = client.player.nodes.first();
+    const node = manager.nodes.first();
 
     const params = new URLSearchParams();
     params.append("identifier", search);
@@ -113,5 +113,3 @@ player.once("end", data => {
 // Leave voice channel and destory Player
 await manager.leave(guildId); // Player ID aka guild id
 ```
-
-For a proper example look at [**example/app.js**](https://github.com/MrJacz/discord.js-lavalink/blob/master/example/app.js)
