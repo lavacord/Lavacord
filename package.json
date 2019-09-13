@@ -1,0 +1,49 @@
+{
+  "name": "lavacord",
+  "version": "1.0.0-dev",
+  "description": "A simple by design lavalink wrapper made for any discord library.",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "lint": "eslint --fix --ext ts src",
+    "test": "eslint --ext ts src",
+    "build": "tsc -p .",
+    "watch": "tsc -p . -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrJacz/lavacord.git"
+  },
+  "keywords": [
+    "bot",
+    "music",
+    "discord",
+    "api",
+    "lava",
+    "link",
+    "lavalink",
+    "discord.js",
+    "eris",
+    "lavalink"
+  ],
+  "author": "Jacz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrJacz/lavacord/issues"
+  },
+  "homepage": "https://github.com/MrJacz/lavacord#readme",
+  "dependencies": {
+    "ws": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.5",
+    "@types/ws": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.2.0",
+    "@typescript-eslint/parser": "^2.2.0",
+    "eslint": "^6.3.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "typescript": "^3.6.3"
+  }
+}
