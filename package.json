@@ -1,6 +1,6 @@
 {
   "name": "lavacord",
-  "version": "1.0.0-dev",
+  "version": "0.0.1-dev",
   "description": "A simple by design lavalink wrapper made for any discord library.",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -45,8 +45,5 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "typescript": "^3.6.3"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@MrJacz"
   }
 }

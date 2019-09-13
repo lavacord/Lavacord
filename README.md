@@ -2,7 +2,6 @@
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/lavacord)
 [![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?maxAge=3600)](https://www.npmjs.com/package/lavacord)
 [![NPM version](https://badge.fury.io/js/lavacord.svg)](http://badge.fury.io/js/lavacord)
-[![Build Status](https://travis-ci.org/MrJacz/lavacord.svg?branch=master)](https://travis-ci.org/MrJacz/lavacord)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/MrJacz/lavacord?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MrJacz/lavacord&amp;utm_campaign=Badge_Grade)
 [![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 [![dependencies Status](https://david-dm.org/mrjacz/lavacord/status.svg)](https://david-dm.org/mrjacz/lavacord)
