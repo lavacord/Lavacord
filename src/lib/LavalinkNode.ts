@@ -1,6 +1,7 @@
-import * as WebSocket from "ws";
+import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
+import { LavalinkNodeOptions, LavalinkStats, QueueData, WebsocketCloseEvent } from "./Types";
 
 export class LavalinkNode {
 
@@ -176,47 +177,4 @@ export class LavalinkNode {
         return this.ws!.readyState === WebSocket.OPEN;
     }
 
-}
-
-export interface LavalinkNodeOptions {
-    id: string;
-    host: string;
-    port?: number | string;
-    password?: string;
-    reconnectInterval?: number;
-}
-
-export interface LavalinkStats {
-    players: number;
-    playingPlayers: number;
-    uptime: number;
-    memory: {
-        free: number;
-        used: number;
-        allocated: number;
-        reservable: number;
-    };
-    cpu: {
-        cores: number;
-        systemLoad: number;
-        lavalinkLoad: number;
-    };
-    frameStats?: {
-        sent?: number;
-        nulled?: number;
-        deficit?: number;
-    };
-}
-
-export interface QueueData {
-    data: string;
-    resolve: (value?: boolean | PromiseLike<boolean> | undefined) => void;
-    reject: (reason?: any) => void;
-}
-
-export interface WebsocketCloseEvent {
-    wasClean: boolean;
-    code: number;
-    reason: string;
-    target: WebSocket;
 }

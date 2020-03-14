@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
-import { Manager } from "./Manager";
 import { LavalinkNode } from "./LavalinkNode";
+import { Manager } from "./Manager";
+import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerOptions, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState } from "./Types";
 
 export class Player extends EventEmitter {
 
@@ -139,46 +140,4 @@ export interface Player {
     emit(event: "error", error: LavalinkEvent): boolean;
     emit(event: "warn", warning: string): boolean;
     emit(event: "playerUpdate", data: { state: LavalinkPlayerState; }): boolean;
-}
-
-export interface LavalinkEvent {
-    type: "TrackEndEvent" | "TrackExceptionEvent" | "TrackStuckEvent" | "WebSocketClosedEvent";
-    reason?: "FINISHED" | "LOAD_FAILED" | "STOPPED" | "REPLACED" | "CLEANUP";
-}
-
-export interface LavalinkPlayerState {
-    time?: number;
-    position?: number;
-}
-
-export interface PlayerOptions {
-    id: string;
-    channel: string;
-}
-
-export interface PlayerState extends LavalinkPlayerState {
-    volume: number;
-    equalizer: PlayerEqualizerBand[];
-}
-
-export interface PlayerPlayOptions {
-    startTime?: number;
-    endTime?: number;
-    noReplace?: boolean;
-    pause?: boolean;
-    volume?: number;
-}
-
-export interface PlayerEqualizerBand {
-    band: number;
-    gain: number;
-}
-
-export interface PlayerUpdateVoiceState {
-    sessionId: string;
-    event: {
-        token: string;
-        guild_id: string;
-        endpoint: string;
-    };
 }

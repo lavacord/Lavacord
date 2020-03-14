@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
-import { LavalinkNode, LavalinkNodeOptions, WebsocketCloseEvent } from "./LavalinkNode";
-import { Player, PlayerUpdateVoiceState } from "./Player";
+import { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions, PlayerUpdateVoiceState, WebsocketCloseEvent } from "./Types";
+import { LavalinkNode } from "./LavalinkNode";
+import { Player } from "./Player";
 
 export class Manager extends EventEmitter {
 
@@ -162,47 +163,4 @@ export interface Manager {
     emit(event: "error", error: unknown, node: LavalinkNode): boolean;
     emit(event: "disconnect", eventData: WebsocketCloseEvent, node: LavalinkNode): boolean;
     emit(event: "reconnecting", node: LavalinkNode): boolean;
-}
-
-export interface ManagerOptions {
-    user: string;
-    shards?: number;
-    Player?: Player;
-    send: (packet: DiscordPacket) => unknown;
-}
-
-export interface JoinData {
-    guild: string;
-    channel: string;
-    node: string;
-}
-
-export interface JoinOptions {
-    selfmute?: boolean;
-    selfdeaf?: boolean;
-}
-
-export interface VoiceServerUpdate {
-    token: string;
-    guild_id: string;
-    endpoint: string;
-}
-
-export interface VoiceStateUpdate {
-    guild_id: string;
-    channel_id?: string;
-    user_id: string;
-    session_id: string;
-    deaf?: boolean;
-    mute?: boolean;
-    self_deaf?: boolean;
-    self_mute?: boolean;
-    suppress?: boolean;
-}
-
-export interface DiscordPacket {
-    op: number;
-    d: any;
-    s?: number;
-    t?: string;
 }
