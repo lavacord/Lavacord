@@ -120,8 +120,6 @@ export class Manager extends EventEmitter {
         if (!player) return false;
 
         await player.connect({ sessionId: state ? state.session_id : player.voiceUpdateState!.sessionId, event: server });
-        this.voiceServers.delete(guildId);
-        this.voiceStates.delete(guildId);
         return true;
     }
 

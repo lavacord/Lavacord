@@ -65,8 +65,8 @@ export class LavalinkNode {
             };
 
             const onOpen = (): void => {
-                ws.removeAllListeners();
                 this.onOpen();
+                ws.removeAllListeners();
                 resolve(ws);
             };
 
