@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions, PlayerUpdateVoiceState, WebsocketCloseEvent } from "./Types";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
+import WebSocket from "ws";
 
 export class Manager extends EventEmitter {
 
@@ -25,7 +26,7 @@ export class Manager extends EventEmitter {
         for (const node of nodes) this.createNode(node);
     }
 
-    public connect(): Promise<boolean[]> {
+    public connect(): Promise<Array<WebSocket | boolean>> {
         return Promise.all([...this.nodes.values()].map(node => node.connect()));
     }
 
@@ -119,8 +120,6 @@ export class Manager extends EventEmitter {
         if (!player) return false;
 
         await player.connect({ sessionId: state ? state.session_id : player.voiceUpdateState!.sessionId, event: server });
-        this.voiceServers.delete(guildId);
-        this.voiceStates.delete(guildId);
         return true;
     }
 
