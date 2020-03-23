@@ -2,21 +2,65 @@ import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
 import { LavalinkNodeOptions, LavalinkStats, QueueData, WebsocketCloseEvent } from "./Types";
+import { enumerable } from "./Util";
 
+/**
+ * The class for handling everything to do with connecting to Lavalink
+ */
 export class LavalinkNode {
 
+    /**
+     * The id of the LavalinkNode so Nodes are better organized
+     */
     public id: string;
+    /**
+     * The host of the LavalinkNode, this could be a ip or domain.
+     */
+    @enumerable(false)
     public host: string;
+    /**
+     * The port of the LavalinkNode
+     */
+    @enumerable(false)
     public port: number | string;
+    /**
+     * The interval that the node will try to reconnect to lavalink at in milliseconds
+     */
     public reconnectInterval: number;
+    /**
+     * The password of the lavalink node
+     */
+    @enumerable(false)
     public password: string;
+    /**
+     * The WebSocket instance for this LavalinkNode
+     */
     public ws: WebSocket | null;
+    /**
+     * The statistics of the LavalinkNode
+     */
     public stats: LavalinkStats;
+    /**
+     * The resuming key
+     */
     public resumeKey?: string;
 
+    /**
+     * The reconnect timeout
+     * @private
+     */
     private _reconnect?: NodeJS.Timeout;
+    /**
+     * The queue for send
+     * @private
+     */
     private _queue: QueueData[] = [];
 
+    /**
+     * The base of the connection to lavalink
+     * @param manager The manager that created the LavalinkNode
+     * @param options The options of the LavalinkNode {@link LavalinkNodeOptions}
+     */
     public constructor(public manager: Manager, options: LavalinkNodeOptions) {
         this.id = options.id;
 
@@ -45,6 +89,9 @@ export class LavalinkNode {
         };
     }
 
+    /**
+     * Connects the node to Lavalink
+     */
     public async connect(): Promise<WebSocket | boolean> {
         this.ws = await new Promise((resolve, reject) => {
             if (this.connected) this.ws!.close();
@@ -83,6 +130,52 @@ export class LavalinkNode {
         return this.ws!;
     }
 
+    /**
+     * Sends data to lavalink or puts it in a queue if not connected yet
+     * @param msg Data you want to send to lavalink
+     */
+    public send(msg: object): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            const parsed = JSON.stringify(msg);
+            const queueData = { data: parsed, resolve, reject };
+
+            if (this.connected) return this._send(queueData);
+            else this._queue.push(queueData);
+        });
+    }
+
+    /**
+     * Configures the resuming key for the LavalinkNode
+     * @param key the actual key to send to lavalink to resume with
+     * @param timeout how long before the key invalidates and lavalinknode will stop expecting you to resume
+     */
+    public configureResuming(key: string = Date.now().toString(16), timeout = 120): Promise<boolean> {
+        this.resumeKey = key;
+
+        return this.send({ op: "configureResuming", key, timeout });
+    }
+
+    /**
+     * Destorys the connection to the Lavalink Websocket
+     */
+    public destroy(): boolean {
+        if (!this.connected) return false;
+        this.ws!.close(1000, "destroy");
+        this.ws = null;
+        return true;
+    }
+
+    /**
+     * Whether or not the node is connected
+     */
+    public get connected(): boolean {
+        if (!this.ws) return false;
+        return this.ws!.readyState === WebSocket.OPEN;
+    }
+
+    /**
+     * A private function for handling the open event from WebSocket
+     */
     private onOpen(): void {
         if (this._reconnect) clearTimeout(this._reconnect);
         this._queueFlush()
@@ -91,6 +184,10 @@ export class LavalinkNode {
         this.manager.emit("ready", this);
     }
 
+    /**
+     * Private function for handling the message event from WebSocket
+     * @param data The data that came from lavalink
+     */
     private onMessage(data: WebSocket.Data): void {
         if (Array.isArray(data)) data = Buffer.concat(data);
         else if (data instanceof ArrayBuffer) data = Buffer.from(data);
@@ -105,6 +202,10 @@ export class LavalinkNode {
         this.manager.emit("raw", msg, this);
     }
 
+    /**
+     * Private function for handling the error event from WebSocket
+     * @param event WebSocket event data
+     */
     private onError(event: { error: any; message: string; type: string; target: WebSocket; }): void {
         const error = event && event.error ? event.error : event;
         if (!error) return;
@@ -113,34 +214,18 @@ export class LavalinkNode {
         this.reconnect();
     }
 
+    /**
+     * Private function for handling the close event from WebSocket
+     * @param event WebSocket event data
+     */
     private onClose(event: WebsocketCloseEvent): void {
         this.manager.emit("disconnect", event, this);
         if (event.code !== 1000 || event.reason !== "destroy") return this.reconnect();
     }
 
-    public send(msg: object): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            const parsed = JSON.stringify(msg);
-            const queueData = { data: parsed, resolve, reject };
-
-            if (this.connected) return this._send(queueData);
-            else this._queue.push(queueData);
-        });
-    }
-
-    public configureResuming(key: string = Date.now().toString(16), timeout = 120): Promise<boolean> {
-        this.resumeKey = key;
-
-        return this.send({ op: "configureResuming", key, timeout });
-    }
-
-    public destroy(): boolean {
-        if (!this.connected) return false;
-        this.ws!.close(1000, "destroy");
-        this.ws = null;
-        return true;
-    }
-
+    /**
+     * Handles reconnecting if something happens and the node discounnects
+     */
     private reconnect(): void {
         this._reconnect = setTimeout(() => {
             this.ws!.removeAllListeners();
@@ -151,6 +236,10 @@ export class LavalinkNode {
         }, this.reconnectInterval);
     }
 
+    /**
+     * Sends data to the Lavalink Websocket
+     * @param param0 data to send
+     */
     private _send({ data, resolve, reject }: QueueData): void {
         this.ws!.send(data, (error: Error | undefined) => {
             if (error) reject(error);
@@ -158,14 +247,12 @@ export class LavalinkNode {
         });
     }
 
+    /**
+     * Flushs the send queue
+     */
     private async _queueFlush(): Promise<void> {
         await Promise.all(this._queue.map(this._send));
         this._queue = [];
-    }
-
-    public get connected(): boolean {
-        if (!this.ws) return false;
-        return this.ws!.readyState === WebSocket.OPEN;
     }
 
 }

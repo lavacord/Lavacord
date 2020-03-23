@@ -23,5 +23,16 @@
 			"types": ["node", "ws"]
 	},
 	"exclude": ["node_modules"],
-	"include": ["src"]
+	"include": ["src"],
+	"typedocOptions": {
+		"out": "./docs/",
+		"readme": "./README.md",
+		"name": "LavaCord",
+		"exclude": ["**/node_modules/**"],
+		"mode": "file",
+		"excludeExternals": true,
+		"excludePrivate": true,
+		"excludeProtected": true,
+		"excludeNotExported": true
+}
 }

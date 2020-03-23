@@ -9,7 +9,8 @@
     "lint": "eslint --fix --ext ts src",
     "test": "eslint --ext ts src",
     "compile": "tsc -p .",
-    "watch": "tsc -p . -w"
+    "watch": "tsc -p . -w",
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
+    "typedoc": "^0.17.1",
     "typescript": "^3.8.3"
   },
   "files": [
@@ -51,7 +53,7 @@
     "LICENCE"
   ],
   "engines": {
-      "node": ">=10",
-      "npm": ">=5"
+    "node": ">=10",
+    "npm": ">=5"
   }
 }
