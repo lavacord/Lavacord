@@ -35,17 +35,19 @@
   },
   "homepage": "https://github.com/MrJacz/lavacord#readme",
   "dependencies": {
+    "node-fetch": "^2.6.0",
     "ws": "^7.2.3"
   },
   "devDependencies": {
-    "@types/node": "^13.9.1",
-    "@types/ws": "^7.2.2",
-    "@typescript-eslint/eslint-plugin": "^2.23.0",
-    "@typescript-eslint/parser": "^2.23.0",
+    "@types/node": "^13.9.3",
+    "@types/node-fetch": "^2.5.5",
+    "@types/ws": "^7.2.3",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
     "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "typedoc": "^0.17.1",
+    "typedoc": "^0.17.3",
     "typescript": "^3.8.3"
   },
   "files": [

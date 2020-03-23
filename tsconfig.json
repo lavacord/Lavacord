@@ -20,14 +20,14 @@
 			"strictFunctionTypes": true,
 			"strictBindCallApply": true,
 			"target": "esnext",
-			"types": ["node", "ws"]
+			"types": ["node", "node-fetch", "ws"]
 	},
 	"exclude": ["node_modules"],
 	"include": ["src"],
 	"typedocOptions": {
 		"out": "./docs/",
 		"readme": "./README.md",
-		"name": "LavaCord",
+		"name": "Lavacord",
 		"exclude": ["**/node_modules/**"],
 		"mode": "file",
 		"excludeExternals": true,
