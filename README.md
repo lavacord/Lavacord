@@ -42,7 +42,7 @@ Put an `application.yml` file in your working directory. [Example](https://githu
 Run with `java -jar Lavalink.jar`
 
 ## The issue tracker is for issues only
-If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/J8AqH4A)
+If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/wXrjZmV)
 
 # Implementation
 Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id and `shards` The total number of shards your bot is operating on.
