@@ -295,6 +295,7 @@
         "error",
         "as-needed"
       ],
-      "require-atomic-updates":"off"
+      "require-atomic-updates":"off",
+      "no-dupe-class-members": "off"
     }
   }

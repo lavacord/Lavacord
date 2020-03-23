@@ -397,3 +397,202 @@ export interface WebsocketCloseEvent {
      */
     target: WebSocket;
 }
+
+/**
+ * Track Response
+ */
+export interface TrackResponse {
+    /**
+     * Load Type
+     */
+    loadType: LoadType;
+    /**
+     * Playlist Info
+     */
+    playlistInfo: PlaylistInfo;
+    /**
+     * All the Tracks in an array
+     */
+    tracks: TrackData[];
+}
+
+/**
+ * LoadType ENUM
+ */
+export enum LoadType {
+    TRACK_LOADED = "TRACK_LOADED",
+    PLAYLIST_LOADED = "PLAYLIST_LOADED",
+    SEARCH_RESULT = "SEARCH_RESULT",
+    NO_MATCHES = "NO_MATCHES",
+    LOAD_FAILED = "LOAD_FAILED"
+}
+
+/**
+ * Playlist Info
+ */
+export interface PlaylistInfo {
+    /**
+     * Playlist Name
+     */
+    name?: string;
+    /**
+     * Selected track from playlist
+     */
+    selectedTrack?: number;
+}
+
+/**
+ * Lavalink Track
+ */
+export interface TrackData {
+    /**
+     * The track base64 string
+     */
+    track: string;
+    /**
+     * All the meta data on the track
+     */
+    info: {
+        /**
+         * The id of the track, depends on the source
+         */
+        identifier: string;
+        /**
+         * Whether you can use seek with this track
+         */
+        isSeekable: boolean;
+        /**
+         * The author of the track
+         */
+        author: string;
+        /**
+         * The length of the track
+         */
+        length: number;
+        /**
+         * Whether or not the track is a stream
+         */
+        isStream: boolean;
+        /**
+         * The position of the song
+         */
+        position: number;
+        /**
+         * The title of the track
+         */
+        title: string;
+        /**
+         * The URI of the track
+         */
+        uri: string;
+    };
+}
+
+/**
+ * The 3 types of Route Planner Statuses
+ */
+export type RoutePlannerStatus = RotatingIpRoutePlanner | NanoIpRoutePlanner | RotatingIpRoutePlanner;
+
+/**
+ * Base Route Planner Status Data
+ */
+export interface BaseRoutePlannerStatusData {
+    /**
+     * The IP Block
+     */
+    ipBlock: {
+        /**
+         * The IP block type
+         */
+        type: string;
+        /**
+         * IP Block size
+         */
+        size: string;
+    };
+    /**
+     * Failing Addresses
+     */
+    failingAddresses: {
+        /**
+         * The address
+         */
+        address: string;
+        /**
+         * Failing Timestamp
+         */
+        failingTimestamp: number;
+        /**
+         * Failing Time
+         */
+        failingTime: string;
+    }[];
+}
+
+/**
+ * Rotating Ip Route Planner
+ */
+export interface RotatingIpRoutePlanner {
+    /**
+     * Class name
+     */
+    class: "RotatingIpRoutePlanner";
+    /**
+     * Details
+     */
+    details: BaseRoutePlannerStatusData & {
+        /**
+         * Rotate index
+         */
+        rotateIndex: string;
+        /**
+         * Ip index
+         */
+        ipIndex: string;
+        /**
+         * The current address
+         */
+        currentAddress: string;
+    };
+}
+
+/**
+ * Nano IP Route Planner
+ */
+export interface NanoIpRoutePlanner {
+    /**
+     * Class name
+     */
+    class: "NanoIpRoutePlanner";
+    /**
+     * Details
+     */
+    details: BaseRoutePlannerStatusData & {
+        /**
+         * Current Address Index
+         */
+        currentAddressIndex: number;
+    };
+}
+
+/**
+ * Rotating Nano IP Route Planner
+ */
+export interface RotatingNanoIpRoutePlanner {
+    /**
+     * Class name
+     */
+    class: "RotatingNanoIpRoutePlanner";
+    /** Details */
+    details: BaseRoutePlannerStatusData & {
+        /**
+         * Block Index
+         */
+        blockIndex: string;
+        /**
+         * Current Address Index
+         */
+        currentAddressIndex: number;
+    };
+}
+
