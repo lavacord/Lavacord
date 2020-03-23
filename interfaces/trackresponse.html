@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PlayerEqualizerBand | Lavacord</title>
+	<title>TrackResponse | Lavacord</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="playerequalizerband.html">PlayerEqualizerBand</a>
+					<a href="trackresponse.html">TrackResponse</a>
 				</li>
 			</ul>
-			<h1>Interface PlayerEqualizerBand</h1>
+			<h1>Interface TrackResponse</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Player Equalizer Band</p>
+						<p>Track Response</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PlayerEqualizerBand</span>
+						<span class="target">TrackResponse</span>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +84,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="trackresponse.html#loadtype" class="tsd-kind-icon">load<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="trackresponse.html#playlistinfo" class="tsd-kind-icon">playlist<wbr>Info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="trackresponse.html#tracks" class="tsd-kind-icon">tracks</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,32 +95,47 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="band" class="tsd-anchor"></a>
-					<h3>band</h3>
-					<div class="tsd-signature tsd-kind-icon">band<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="loadtype" class="tsd-anchor"></a>
+					<h3>load<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">load<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/loadtype.html" class="tsd-signature-type">LoadType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L93">src/lib/Types.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L408">src/lib/Types.ts:408</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>There are 15 bands (0-14) that can be changed</p>
+							<p>Load Type</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="gain" class="tsd-anchor"></a>
-					<h3>gain</h3>
-					<div class="tsd-signature tsd-kind-icon">gain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="playlistinfo" class="tsd-anchor"></a>
+					<h3>playlist<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">playlist<wbr>Info<span class="tsd-signature-symbol">:</span> <a href="playlistinfo.html" class="tsd-signature-type">PlaylistInfo</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L97">src/lib/Types.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L412">src/lib/Types.ts:412</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gain is the multiplier for the given band. The default value is 0. Valid values range from -0.25 to 1.0, where -0.25 means the given band is completely muted, and 0.25 means it is doubled. Modifying the gain could also change the volume of the output</p>
+							<p>Playlist Info</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tracks" class="tsd-anchor"></a>
+					<h3>tracks</h3>
+					<div class="tsd-signature tsd-kind-icon">tracks<span class="tsd-signature-symbol">:</span> <a href="trackdata.html" class="tsd-signature-type">TrackData</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L416">src/lib/Types.ts:416</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>All the Tracks in an array</p>
 						</div>
 					</div>
 				</section>
@@ -180,21 +196,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="nanoiprouteplanner.html" class="tsd-kind-icon">Nano<wbr>IpRoute<wbr>Planner</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="playerequalizerband.html" class="tsd-kind-icon">Player<wbr>Equalizer<wbr>Band</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="playeroptions.html" class="tsd-kind-icon">Player<wbr>Options</a>
 					</li>
@@ -222,9 +226,24 @@
 					<li class=" tsd-kind-interface">
 						<a href="trackdata.html" class="tsd-kind-icon">Track<wbr>Data</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="trackresponse.html" class="tsd-kind-icon">Track<wbr>Response</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="trackresponse.html#loadtype" class="tsd-kind-icon">load<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="trackresponse.html#playlistinfo" class="tsd-kind-icon">playlist<wbr>Info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="trackresponse.html#tracks" class="tsd-kind-icon">tracks</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="voiceserverupdate.html" class="tsd-kind-icon">Voice<wbr>Server<wbr>Update</a>
 					</li>

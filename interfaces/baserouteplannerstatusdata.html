@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PlayerEqualizerBand | Lavacord</title>
+	<title>BaseRoutePlannerStatusData | Lavacord</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="playerequalizerband.html">PlayerEqualizerBand</a>
+					<a href="baserouteplannerstatusdata.html">BaseRoutePlannerStatusData</a>
 				</li>
 			</ul>
-			<h1>Interface PlayerEqualizerBand</h1>
+			<h1>Interface BaseRoutePlannerStatusData</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Player Equalizer Band</p>
+						<p>Base Route Planner Status Data</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PlayerEqualizerBand</span>
+						<span class="target">BaseRoutePlannerStatusData</span>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="baserouteplannerstatusdata.html#failingaddresses" class="tsd-kind-icon">failing<wbr>Addresses</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="baserouteplannerstatusdata.html#ipblock" class="tsd-kind-icon">ip<wbr>Block</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,33 +94,54 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="band" class="tsd-anchor"></a>
-					<h3>band</h3>
-					<div class="tsd-signature tsd-kind-icon">band<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="failingaddresses" class="tsd-anchor"></a>
+					<h3>failing<wbr>Addresses</h3>
+					<div class="tsd-signature tsd-kind-icon">failing<wbr>Addresses<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>failingTime<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>failingTimestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L93">src/lib/Types.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L516">src/lib/Types.ts:516</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>There are 15 bands (0-14) that can be changed</p>
+							<p>Failing Addresses</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="gain" class="tsd-anchor"></a>
-					<h3>gain</h3>
-					<div class="tsd-signature tsd-kind-icon">gain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="ipblock" class="tsd-anchor"></a>
+					<h3>ip<wbr>Block</h3>
+					<div class="tsd-signature tsd-kind-icon">ip<wbr>Block<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L97">src/lib/Types.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L503">src/lib/Types.ts:503</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gain is the multiplier for the given band. The default value is 0. Valid values range from -0.25 to 1.0, where -0.25 means the given band is completely muted, and 0.25 means it is doubled. Modifying the gain could also change the volume of the output</p>
+							<p>The IP Block</p>
 						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>IP Block size</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The IP block type</p>
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</section>
 			</section>
@@ -150,9 +171,21 @@
 					<li class=" tsd-kind-class">
 						<a href="../classes/rest.html" class="tsd-kind-icon">Rest</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="baserouteplannerstatusdata.html" class="tsd-kind-icon">Base<wbr>Route<wbr>Planner<wbr>Status<wbr>Data</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="baserouteplannerstatusdata.html#failingaddresses" class="tsd-kind-icon">failing<wbr>Addresses</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="baserouteplannerstatusdata.html#ipblock" class="tsd-kind-icon">ip<wbr>Block</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="discordpacket.html" class="tsd-kind-icon">Discord<wbr>Packet</a>
 					</li>
@@ -180,21 +213,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="nanoiprouteplanner.html" class="tsd-kind-icon">Nano<wbr>IpRoute<wbr>Planner</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="playerequalizerband.html" class="tsd-kind-icon">Player<wbr>Equalizer<wbr>Band</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="playeroptions.html" class="tsd-kind-icon">Player<wbr>Options</a>
 					</li>

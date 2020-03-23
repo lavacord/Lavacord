@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PlayerEqualizerBand | Lavacord</title>
+	<title>TrackData | Lavacord</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="playerequalizerband.html">PlayerEqualizerBand</a>
+					<a href="trackdata.html">TrackData</a>
 				</li>
 			</ul>
-			<h1>Interface PlayerEqualizerBand</h1>
+			<h1>Interface TrackData</h1>
 		</div>
 	</div>
 </header>
@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Player Equalizer Band</p>
+						<p>Lavalink Track</p>
 					</div>
 				</div>
 			</section>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PlayerEqualizerBand</span>
+						<span class="target">TrackData</span>
 					</li>
 				</ul>
 			</section>
@@ -84,8 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="trackdata.html#info" class="tsd-kind-icon">info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="trackdata.html#track" class="tsd-kind-icon">track</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,32 +94,101 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="band" class="tsd-anchor"></a>
-					<h3>band</h3>
-					<div class="tsd-signature tsd-kind-icon">band<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="info" class="tsd-anchor"></a>
+					<h3>info</h3>
+					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>author<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>isSeekable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>isStream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L93">src/lib/Types.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L455">src/lib/Types.ts:455</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>There are 15 bands (0-14) that can be changed</p>
+							<p>All the meta data on the track</p>
 						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>author<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The author of the track</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The id of the track, depends on the source</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>is<wbr>Seekable<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Whether you can use seek with this track</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>is<wbr>Stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Whether or not the track is a stream</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The length of the track</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The position of the song</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The title of the track</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The URI of the track</p>
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="gain" class="tsd-anchor"></a>
-					<h3>gain</h3>
-					<div class="tsd-signature tsd-kind-icon">gain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="track" class="tsd-anchor"></a>
+					<h3>track</h3>
+					<div class="tsd-signature tsd-kind-icon">track<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L97">src/lib/Types.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/dbca3ac/src/lib/Types.ts#L451">src/lib/Types.ts:451</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Gain is the multiplier for the given band. The default value is 0. Valid values range from -0.25 to 1.0, where -0.25 means the given band is completely muted, and 0.25 means it is doubled. Modifying the gain could also change the volume of the output</p>
+							<p>The track base64 string</p>
 						</div>
 					</div>
 				</section>
@@ -180,21 +249,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="nanoiprouteplanner.html" class="tsd-kind-icon">Nano<wbr>IpRoute<wbr>Planner</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="playerequalizerband.html" class="tsd-kind-icon">Player<wbr>Equalizer<wbr>Band</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#band" class="tsd-kind-icon">band</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerequalizerband.html#gain" class="tsd-kind-icon">gain</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="playeroptions.html" class="tsd-kind-icon">Player<wbr>Options</a>
 					</li>
@@ -219,9 +276,21 @@
 					<li class=" tsd-kind-interface">
 						<a href="rotatingnanoiprouteplanner.html" class="tsd-kind-icon">Rotating<wbr>Nano<wbr>IpRoute<wbr>Planner</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="trackdata.html" class="tsd-kind-icon">Track<wbr>Data</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="trackdata.html#info" class="tsd-kind-icon">info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="trackdata.html#track" class="tsd-kind-icon">track</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="trackresponse.html" class="tsd-kind-icon">Track<wbr>Response</a>
 					</li>
