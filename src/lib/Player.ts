@@ -3,17 +3,49 @@ import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
 import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerOptions, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState } from "./Types";
 
+/**
+ * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
+ */
 export class Player extends EventEmitter {
 
+    /**
+     * The manager that created the player
+     */
     public manager: Manager;
+    /**
+     * the id of the player, aka the guild id
+     */
     public id: string;
+    /**
+     * The PlayerState of this Player
+     */
     public state: PlayerState;
+    /**
+     * Whether or not the player is actually playing anything
+     */
     public playing: boolean;
+    /**
+     * When the track started playing
+     */
     public timestamp: number | null;
+    /**
+     * Whether or not the song that is playing is paused or not
+     */
     public paused: boolean;
+    /**
+     * The current track in Lavalink's base64 string form
+     */
     public track: string | null;
+    /**
+     * The voiceUpdateState of the player, used for swtiching nodes
+     */
     public voiceUpdateState: PlayerUpdateVoiceState | null;
 
+    /**
+     * The constructor of the player
+     * @param node The Lavalink of the player
+     * @param options The PlayerOptions for the Player
+     */
     public constructor(public node: LavalinkNode, options: PlayerOptions) {
         super();
 
@@ -55,6 +87,12 @@ export class Player extends EventEmitter {
             });
     }
 
+
+    /**
+     * Plays the specified song using the base64 string from lavalink
+     * @param track The base64 string of the song that you want to play
+     * @param options Play options
+     */
     public async play(track: string, options: PlayerPlayOptions = {}): Promise<boolean> {
         const d = await this.send("play", { ...options, track });
         this.track = track;
@@ -63,6 +101,9 @@ export class Player extends EventEmitter {
         return d;
     }
 
+    /**
+     * Stops the music, depending on how the end event is handled this will either stop
+     */
     public async stop(): Promise<boolean> {
         const d = await this.send("stop");
         this.playing = false;
@@ -70,48 +111,75 @@ export class Player extends EventEmitter {
         return d;
     }
 
+    /**
+     * Pauses/Resumes the song depending on what is specified
+     * @param pause Whether or not to pause whats currently playing
+     */
     public async pause(pause: boolean): Promise<boolean> {
         const d = await this.send("pause", { pause });
         this.paused = pause;
         return d;
     }
 
+    /**
+     * Resumes the current song
+     */
     public resume(): Promise<boolean> {
         return this.pause(false);
     }
 
+    /**
+     * Changes the volume, only for the current song
+     * @param volume The volume from 0 to 150
+     */
     public async volume(volume: number): Promise<boolean> {
         const d = await this.send("volume", { volume });
         this.state.volume = volume;
         return d;
     }
 
+    /**
+     * Seeks the current song to a certain position
+     * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
+     */
     public seek(position: number): Promise<boolean> {
         return this.send("seek", { position });
     }
 
+    /**
+     * Sets the equalizer of the current song, if you wanted to do something like bassboost
+     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/Frederikam/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
+     */
     public async equalizer(bands: PlayerEqualizerBand[]): Promise<boolean> {
         const d = await this.send("equalizer", { bands });
         this.state.equalizer = bands;
         return d;
     }
 
+    /**
+     * Sends a destroy signal to lavalink, basically just a cleanup op for lavalink to clean its shit up
+     */
     public destroy(): Promise<boolean> {
         return this.send("destroy");
     }
 
+    /**
+     * Sends voiceUpdate information to lavalink so it can connect to discords voice servers properly
+     * @param data The data lavalink needs to connect and recieve data from discord
+     */
     public connect(data: PlayerUpdateVoiceState): Promise<boolean> {
         this.voiceUpdateState = data;
         return this.send("voiceUpdate", data);
     }
 
+    /**
+     * Used internally to make sure the Player's node is connected and to easily send data to lavalink
+     * @param op the op code
+     * @param data the data to send
+     */
     private send(op: string, data?: object): Promise<boolean> {
         if (!this.node.connected) return Promise.reject(new Error("No available websocket connection for selected node."));
-        return this.node.send({
-            ...data,
-            op,
-            guildId: this.id
-        });
+        return this.node.send({ ...data, op, guildId: this.id });
     }
 
 }

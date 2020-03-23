@@ -64,23 +64,6 @@
       ],
       "no-extra-parens":"off",
       "@typescript-eslint/no-extra-parens":"off",
-      "valid-jsdoc":[
-        "warn",
-        {
-          "requireReturn":false,
-          "requireReturnDescription":false,
-          "preferType":{
-            "String":"string",
-            "Number":"number",
-            "Boolean":"boolean",
-            "Symbol":"symbol",
-            "function":"Function",
-            "object":"Object",
-            "Date":"date",
-            "error":"Error"
-          }
-        }
-      ],
       "accessor-pairs":"warn",
       "array-callback-return":"error",
       "complexity":"warn",
