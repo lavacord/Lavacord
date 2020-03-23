@@ -2,17 +2,17 @@
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/lavacord)
 [![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?maxAge=3600)](https://www.npmjs.com/package/lavacord)
 [![NPM version](https://badge.fury.io/js/lavacord.svg)](http://badge.fury.io/js/lavacord)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/MrJacz/lavacord?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MrJacz/lavacord&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/lavacord/lavacord?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lavacord/lavacord&amp;utm_campaign=Badge_Grade)
 [![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
-[![dependencies Status](https://david-dm.org/mrjacz/lavacord/status.svg)](https://david-dm.org/mrjacz/lavacord)
-[![devDependencies Status](https://david-dm.org/mrjacz/lavacord/dev-status.svg)](https://david-dm.org/mrjacz/lavacord?type=dev)
+[![dependencies Status](https://david-dm.org/lavacord/lavacord/status.svg)](https://david-dm.org/lavacord/lavacord)
+[![devDependencies Status](https://david-dm.org/lavacord/lavacord/dev-status.svg)](https://david-dm.org/lavacord/lavacord?type=dev)
 [![NPM](https://nodei.co/npm/lavacord.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/lavacord/)
 
 # LavaCord
 A simple and easy to use lavalink wrapper.
 
 ## Documentation
-[**mrjacz.github.io/lavacord**](https://mrjacz.github.io/lavacord/)
+[**lavacord.github.io/lavacord**](https://lavacord.github.io/Lavacord/)
 
 ## Installation
 
@@ -54,7 +54,7 @@ const nodes = [
     { host: "localhost", port: 2333, password: "youshallnotpass" }
 ];
 
-const manager = new Manager(client, nodes, {
+const manager = new Manager(nodes, {
     user: client.user.id, // Client id
     shards: shardCount // Total number of shards your bot is operating on
 });
@@ -98,7 +98,7 @@ Joining and Leaving channels
 const player = await manager.join({
     guild: guildId, // Guild id
     channel: channelId, // Channel id
-    host: "localhost" // lavalink host, based on array of nodes
+    node: "node id" // lavalink node id, based on array of nodes
 });
 
 await player.play(track); // Track is a base64 string we get from Lavalink REST API

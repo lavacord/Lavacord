@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MrJacz/lavacord.git"
+    "url": "git+https://github.com/lavacord/lavacord.git"
   },
   "keywords": [
     "bot",
@@ -31,7 +31,7 @@
   "author": "Jacz",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/MrJacz/lavacord/issues"
+    "url": "https://github.com/lavacord/lavacord/issues"
   },
   "homepage": "https://github.com/MrJacz/lavacord#readme",
   "dependencies": {
