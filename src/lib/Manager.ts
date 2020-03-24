@@ -174,6 +174,19 @@ export class Manager extends EventEmitter {
     }
 
     /**
+     * Gets all connected nodes, sorts them by cou load of the node
+     */
+    public get idealNodes(): LavalinkNode[] {
+        return [...this.nodes.values()]
+            .filter(node => node.connected)
+            .sort((a, b) => {
+                const aload = a.stats.cpu ? a.stats.cpu.systemLoad / a.stats.cpu.cores * 100 : 0;
+                const bload = b.stats.cpu ? b.stats.cpu.systemLoad / b.stats.cpu.cores * 100 : 0;
+                return aload - bload;
+            });
+    }
+
+    /**
      * Handles the data of voiceServerUpdate & voiceStateUpdate to see if a connection is possible with the data we have and if it is then make the connection to lavalink
      * @param guildId The guild id that we're trying to attempt to connect to
      */
