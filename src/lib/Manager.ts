@@ -34,13 +34,13 @@ export class Manager extends EventEmitter {
      */
     public shards: number;
     /**
+     * The send function needs for the library to function
+     */
+    public send: (packet: DiscordPacket) => unknown;
+    /**
      * The Player the manager will use when creating new Players
      */
     private Player: Player;
-    /**
-     * The send function needs for the library to function
-     */
-    private send: (packet: DiscordPacket) => unknown;
 
     /**
      * The constructor of the Manager
