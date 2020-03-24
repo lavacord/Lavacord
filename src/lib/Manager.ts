@@ -212,10 +212,7 @@ export class Manager extends EventEmitter {
         if (exists) return exists;
         const node = this.nodes.get(data.node);
         if (!node) throw new Error(`INVALID_HOST: No available node with ${data.node}`);
-        const player: Player = new (this.Player as any)(node, {
-            id: data.guild,
-            channel: data.channel
-        });
+        const player: Player = new (this.Player as any)(node, data.guild);
         this.players.set(data.guild, player);
         return player;
     }
