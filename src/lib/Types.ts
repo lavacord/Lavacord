@@ -8,7 +8,7 @@ export interface LavalinkEvent {
     /**
      * The type of event from lavalink
      */
-    type: "TrackEndEvent" | "TrackExceptionEvent" | "TrackStuckEvent" | "WebSocketClosedEvent";
+    type: "TrackStartEvent" | "TrackEndEvent" | "TrackExceptionEvent" | "TrackStuckEvent" | "WebSocketClosedEvent";
     /**
      * Why the event was sent, only used for TrackEndEvent
      */
@@ -27,20 +27,6 @@ export interface LavalinkPlayerState {
      * The position of where the song is at in milliseconds
      */
     position?: number;
-}
-
-/**
- * Player Options
- */
-export interface PlayerOptions {
-    /**
-     * The id of the player, aka the guild id
-     */
-    id: string;
-    /**
-     * The channel of the Player
-     */
-    channel: string;
 }
 
 /**

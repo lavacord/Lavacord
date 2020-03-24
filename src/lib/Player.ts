@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerOptions, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState } from "./Types";
+import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState } from "./Types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -12,10 +12,6 @@ export class Player extends EventEmitter {
      * The manager that created the player
      */
     public manager: Manager;
-    /**
-     * the id of the player, aka the guild id
-     */
-    public id: string;
     /**
      * The PlayerState of this Player
      */
@@ -44,13 +40,11 @@ export class Player extends EventEmitter {
     /**
      * The constructor of the player
      * @param node The Lavalink of the player
-     * @param options The PlayerOptions for the Player
+     * @param id the id of the player, aka the guild id
      */
-    public constructor(public node: LavalinkNode, options: PlayerOptions) {
+    public constructor(public node: LavalinkNode, public id: string) {
         super();
-
         this.manager = this.node.manager;
-        this.id = options.id;
 
         this.state = { volume: 100, equalizer: [] };
         this.playing = false;
@@ -61,6 +55,9 @@ export class Player extends EventEmitter {
 
         this.on("event", data => {
             switch (data.type) {
+                case "TrackStartEvent":
+                    if (this.listenerCount("start")) this.emit("start", data);
+                    break;
                 case "TrackEndEvent":
                     if (data.reason !== "REPLACED") this.playing = false;
                     this.track = null;
@@ -186,24 +183,28 @@ export class Player extends EventEmitter {
 
 export interface Player {
     on(event: "event", listener: (data: LavalinkEvent) => void): this;
+    on(event: "start", listener: (data: LavalinkEvent) => void): this;
     on(event: "end", listener: (data: LavalinkEvent) => void): this;
     on(event: "error", listener: (error: LavalinkEvent) => void): this;
     on(event: "warn", listener: (warning: string) => void): this;
     on(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     once(event: "event", listener: (data: LavalinkEvent) => void): this;
+    once(event: "start", listener: (data: LavalinkEvent) => void): this;
     once(event: "end", listener: (data: LavalinkEvent) => void): this;
     once(event: "error", listener: (error: LavalinkEvent) => void): this;
     once(event: "warn", listener: (warning: string) => void): this;
     once(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     off(event: "event", listener: (data: LavalinkEvent) => void): this;
+    off(event: "start", listener: (data: LavalinkEvent) => void): this;
     off(event: "end", listener: (data: LavalinkEvent) => void): this;
     off(event: "error", listener: (error: LavalinkEvent) => void): this;
     off(event: "warn", listener: (warning: string) => void): this;
     off(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     emit(event: "event", data: LavalinkEvent): boolean;
+    emit(event: "start", data: LavalinkEvent): boolean;
     emit(event: "end", data: LavalinkEvent): boolean;
     emit(event: "error", error: LavalinkEvent): boolean;
     emit(event: "warn", warning: string): boolean;
