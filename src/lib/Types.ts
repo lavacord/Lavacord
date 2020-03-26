@@ -129,7 +129,7 @@ export interface ManagerOptions {
     /**
      * The send function for end users to implement for their specific library
      */
-    send: (packet: DiscordPacket) => unknown;
+    send?: (packet: DiscordPacket) => unknown;
 }
 /**
  * Manager Join Data

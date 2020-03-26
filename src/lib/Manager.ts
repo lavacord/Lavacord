@@ -36,7 +36,7 @@ export class Manager extends EventEmitter {
     /**
      * The send function needs for the library to function
      */
-    public send: (packet: DiscordPacket) => unknown;
+    public send?: (packet: DiscordPacket) => unknown;
     /**
      * The Player the manager will use when creating new Players
      */
@@ -53,7 +53,7 @@ export class Manager extends EventEmitter {
         this.user = options.user;
         this.shards = options.shards || 1;
         this.Player = options.Player as any || Player;
-        this.send = options.send;
+        if (typeof options.send !== "undefined") this.send = options.send;
 
         for (const node of nodes) this.createNode(node);
     }
@@ -93,7 +93,7 @@ export class Manager extends EventEmitter {
     public async join(data: JoinData, { selfmute = false, selfdeaf = false }: JoinOptions = {}): Promise<Player> {
         const player = this.players.get(data.guild);
         if (player) return player;
-        await this.send({
+        await this.send!({
             op: 4,
             d: {
                 guild_id: data.guild,
@@ -110,7 +110,7 @@ export class Manager extends EventEmitter {
      * @param guild The guild you want the bot to leave the voice channel of
      */
     public async leave(guild: string): Promise<boolean> {
-        await this.send({
+        await this.send!({
             op: 4,
             d: {
                 guild_id: guild,
