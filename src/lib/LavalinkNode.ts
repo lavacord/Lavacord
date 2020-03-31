@@ -87,6 +87,8 @@ export class LavalinkNode {
                 lavalinkLoad: 0
             }
         };
+
+        this.connect();
     }
 
     /**
