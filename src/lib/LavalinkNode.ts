@@ -2,7 +2,6 @@ import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
 import { LavalinkNodeOptions, LavalinkStats, QueueData, WebsocketCloseEvent } from "./Types";
-import { enumerable } from "./Util";
 
 /**
  * The class for handling everything to do with connecting to Lavalink
@@ -16,26 +15,23 @@ export class LavalinkNode {
     /**
      * The host of the LavalinkNode, this could be a ip or domain.
      */
-    @enumerable(false)
-    public host: string;
+    public host = "localhost";
     /**
      * The port of the LavalinkNode
      */
-    @enumerable(false)
-    public port: number | string;
+    public port: number | string = 2333;
     /**
      * The interval that the node will try to reconnect to lavalink at in milliseconds
      */
-    public reconnectInterval: number;
+    public reconnectInterval = 5000;
     /**
      * The password of the lavalink node
      */
-    @enumerable(false)
-    public password: string;
+    public password = "youshallnotpass";
     /**
      * The WebSocket instance for this LavalinkNode
      */
-    public ws: WebSocket | null;
+    public ws: WebSocket | null = null;
     /**
      * The statistics of the LavalinkNode
      */
@@ -64,13 +60,10 @@ export class LavalinkNode {
     public constructor(public manager: Manager, options: LavalinkNodeOptions) {
         this.id = options.id;
 
-        this.host = options.host;
-        this.port = options.port || 2333;
-        this.reconnectInterval = options.reconnectInterval || 5000;
+        if (options.host) Object.defineProperty(this, "host", { value: options.host });
+        if (options.port) Object.defineProperty(this, "port", { value: options.port });
+        if (options.password) Object.defineProperty(this, "password", { value: options.password });
 
-        this.password = options.password || "youshallnotpass";
-
-        this.ws = null;
         this.stats = {
             players: 0,
             playingPlayers: 0,
