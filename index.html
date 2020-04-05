@@ -88,10 +88,10 @@ yarn add lavacord
 npm install lavacord</code></pre>
 				<p><strong>For Development</strong></p>
 				<pre><code class="language-bash"><span class="hljs-comment"># Using yarn</span>
-yarn add MrJacz/LavaCord
+yarn add lavacord/lavacord
 
 <span class="hljs-comment"># Using npm</span>
-npm install MrJacz/LavaCord</code></pre>
+npm install lavacord/lavacord</code></pre>
 				<a href="#lavalink-configuration" id="lavalink-configuration" style="color: inherit; text-decoration: none;">
 					<h2>LavaLink configuration</h2>
 				</a>
@@ -106,17 +106,27 @@ npm install MrJacz/LavaCord</code></pre>
 					<h1>Implementation</h1>
 				</a>
 				<p>Start by creating a new <code>Manager</code> passing an array of nodes and an object with <code>user</code> the client&#39;s user id and <code>shards</code> The total number of shards your bot is operating on.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { Manager } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"lavacord"</span>);
+				<pre><code class="language-javascript"><span class="hljs-comment">// import the Manager class from lavacord</span>
+<span class="hljs-keyword">const</span> { Manager } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"lavacord"</span>);
 
+<span class="hljs-comment">// Define the nodes array as an example</span>
 <span class="hljs-keyword">const</span> nodes = [
-    { <span class="hljs-attr">host</span>: <span class="hljs-string">"localhost"</span>, <span class="hljs-attr">port</span>: <span class="hljs-number">2333</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">"youshallnotpass"</span> }
+    { <span class="hljs-attr">id</span>: <span class="hljs-string">"1"</span>, <span class="hljs-attr">host</span>: <span class="hljs-string">"localhost"</span>, <span class="hljs-attr">port</span>: <span class="hljs-number">2333</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">"youshallnotpass"</span> }
 ];
 
+<span class="hljs-comment">// Initilize the Manager with all the data it needs</span>
 <span class="hljs-keyword">const</span> manager = <span class="hljs-keyword">new</span> Manager(nodes, {
     <span class="hljs-attr">user</span>: client.user.id, <span class="hljs-comment">// Client id</span>
     <span class="hljs-attr">shards</span>: shardCount <span class="hljs-comment">// Total number of shards your bot is operating on</span>
+    <span class="hljs-attr">send</span>: <span class="hljs-function">(<span class="hljs-params">packet</span>) =&gt;</span> {
+        <span class="hljs-comment">// this needs to send the provided packet to discord using the method from your library. use the @lavacord package for the discord library you use if you don't understand this</span>
+    }
 });
 
+<span class="hljs-comment">// Connects all the LavalinkNode WebSockets</span>
+<span class="hljs-keyword">await</span> manager.connect();
+
+<span class="hljs-comment">// The error event, which you should handle otherwise your application will crash when an error is emitted</span>
 manager.on(<span class="hljs-string">"error"</span>, (error, node) =&gt; {
     error <span class="hljs-comment">// is the error</span>
     node <span class="hljs-comment">// is the node which the error is from</span>
@@ -126,7 +136,8 @@ manager.on(<span class="hljs-string">"error"</span>, (error, node) =&gt; {
 <span class="hljs-keyword">const</span> { URLSearchParams } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"url"</span>);
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSongs</span>(<span class="hljs-params">search</span>) </span>{
-    <span class="hljs-keyword">const</span> node = manager.nodes.first();
+    <span class="hljs-comment">// This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.</span>
+    <span class="hljs-keyword">const</span> node = manager.idealNodes[<span class="hljs-number">0</span>];
 
     <span class="hljs-keyword">const</span> params = <span class="hljs-keyword">new</span> URLSearchParams();
     params.append(<span class="hljs-string">"identifier"</span>, search);
@@ -148,7 +159,7 @@ getSongs(<span class="hljs-string">"ytsearch:30 second song"</span>).then(<span 
 <span class="hljs-keyword">const</span> player = <span class="hljs-keyword">await</span> manager.join({
     <span class="hljs-attr">guild</span>: guildId, <span class="hljs-comment">// Guild id</span>
     <span class="hljs-attr">channel</span>: channelId, <span class="hljs-comment">// Channel id</span>
-    <span class="hljs-attr">node</span>: <span class="hljs-string">"node id"</span> <span class="hljs-comment">// lavalink node id, based on array of nodes</span>
+    <span class="hljs-attr">node</span>: <span class="hljs-string">"1"</span> <span class="hljs-comment">// lavalink node id, based on array of nodes</span>
 });
 
 <span class="hljs-keyword">await</span> player.play(track); <span class="hljs-comment">// Track is a base64 string we get from Lavalink REST API</span>
@@ -259,12 +270,6 @@ player.once(<span class="hljs-string">"end"</span>, data =&gt; {
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#routeplannerstatus" class="tsd-kind-icon">Route<wbr>Planner<wbr>Status</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#createmethoddecorator" class="tsd-kind-icon">create<wbr>Method<wbr>Decorator</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#enumerable" class="tsd-kind-icon">enumerable</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#json" class="tsd-kind-icon">json</a>
