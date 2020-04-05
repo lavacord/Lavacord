@@ -92,7 +92,7 @@ export class LavalinkNode {
             const headers: Record<string, string> = {
                 Authorization: this.password,
                 "Num-Shards": String(this.manager.shards || 1),
-                "User-Id": this.manager.user
+                "User-Id": this.manager.user!
             };
 
             if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;

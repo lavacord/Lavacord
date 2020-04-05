@@ -117,7 +117,7 @@ export interface ManagerOptions {
     /**
      * User id of the bot
      */
-    user: string;
+    user?: string;
     /**
      * The amount of shards the bot is currently operating on, by default this is `1`
      */
