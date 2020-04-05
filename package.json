@@ -1,6 +1,6 @@
 {
   "name": "lavacord",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A simple by design lavalink wrapper made for any discord library.",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -39,13 +39,13 @@
     "ws": "^7.2.3"
   },
   "devDependencies": {
-    "@types/node": "^13.9.3",
+    "@types/node": "^13.11.0",
     "@types/node-fetch": "^2.5.5",
     "@types/ws": "^7.2.3",
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "@typescript-eslint/parser": "^2.24.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "typedoc": "^0.17.3",
     "typescript": "^3.8.3"
