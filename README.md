@@ -28,10 +28,10 @@ npm install lavacord
 **For Development**
 ```bash
 # Using yarn
-yarn add MrJacz/LavaCord
+yarn add lavacord/lavacord
 
 # Using npm
-npm install MrJacz/LavaCord
+npm install lavacord/lavacord
 ```
 
 ## LavaLink configuration
@@ -48,17 +48,27 @@ If you're having a problem with the module contact us in the [**Discord Server**
 Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id and `shards` The total number of shards your bot is operating on.
 
 ```javascript
+// import the Manager class from lavacord
 const { Manager } = require("lavacord");
 
+// Define the nodes array as an example
 const nodes = [
-    { host: "localhost", port: 2333, password: "youshallnotpass" }
+    { id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }
 ];
 
+// Initilize the Manager with all the data it needs
 const manager = new Manager(nodes, {
     user: client.user.id, // Client id
     shards: shardCount // Total number of shards your bot is operating on
+    send: (packet) => {
+        // this needs to send the provided packet to discord using the method from your library. use the @lavacord package for the discord library you use if you don't understand this
+    }
 });
 
+// Connects all the LavalinkNode WebSockets
+await manager.connect();
+
+// The error event, which you should handle otherwise your application will crash when an error is emitted
 manager.on("error", (error, node) => {
     error // is the error
     node // is the node which the error is from
@@ -72,7 +82,8 @@ const fetch = require("node-fetch");
 const { URLSearchParams } = require("url");
 
 async function getSongs(search) {
-    const node = manager.nodes.first();
+    // This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.
+    const node = manager.idealNodes[0];
 
     const params = new URLSearchParams();
     params.append("identifier", search);
@@ -98,7 +109,7 @@ Joining and Leaving channels
 const player = await manager.join({
     guild: guildId, // Guild id
     channel: channelId, // Channel id
-    node: "node id" // lavalink node id, based on array of nodes
+    node: "1" // lavalink node id, based on array of nodes
 });
 
 await player.play(track); // Track is a base64 string we get from Lavalink REST API
