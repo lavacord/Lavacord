@@ -7,35 +7,30 @@ import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOpti
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
  */
 export class Player extends EventEmitter {
-
-    /**
-     * The manager that created the player
-     */
-    public manager: Manager;
     /**
      * The PlayerState of this Player
      */
-    public state: PlayerState;
+    public state: PlayerState = { volume: 100, equalizer: [] };
     /**
      * Whether or not the player is actually playing anything
      */
-    public playing: boolean;
+    public playing = false;
     /**
      * When the track started playing
      */
-    public timestamp: number | null;
+    public timestamp: number | null = null;
     /**
      * Whether or not the song that is playing is paused or not
      */
-    public paused: boolean;
+    public paused = false;
     /**
      * The current track in Lavalink's base64 string form
      */
-    public track: string | null;
+    public track: string | null = null;
     /**
      * The voiceUpdateState of the player, used for swtiching nodes
      */
-    public voiceUpdateState: PlayerUpdateVoiceState | null;
+    public voiceUpdateState: PlayerUpdateVoiceState | null = null;
 
     /**
      * The constructor of the player
@@ -44,14 +39,6 @@ export class Player extends EventEmitter {
      */
     public constructor(public node: LavalinkNode, public id: string) {
         super();
-        this.manager = this.node.manager;
-
-        this.state = { volume: 100, equalizer: [] };
-        this.playing = false;
-        this.timestamp = null;
-        this.paused = false;
-        this.track = null;
-        this.voiceUpdateState = null;
 
         this.on("event", data => {
             switch (data.type) {
@@ -177,6 +164,13 @@ export class Player extends EventEmitter {
     private send(op: string, data?: object): Promise<boolean> {
         if (!this.node.connected) return Promise.reject(new Error("No available websocket connection for selected node."));
         return this.node.send({ ...data, op, guildId: this.id });
+    }
+
+    /**
+     * The manager that created the player
+     */
+    public get manager(): Manager {
+        return this.node.manager;
     }
 
 }
