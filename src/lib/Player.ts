@@ -102,6 +102,7 @@ export class Player extends EventEmitter {
     public async pause(pause: boolean): Promise<boolean> {
         const d = await this.send("pause", { pause });
         this.paused = pause;
+        if (this.listenerCount("paused")) this.emit("paused", pause);
         return d;
     }
 
@@ -109,6 +110,7 @@ export class Player extends EventEmitter {
      * Resumes the current song
      */
     public resume(): Promise<boolean> {
+        if (this.listenerCount("resume")) this.emit("resume");
         return this.pause(false);
     }
 
@@ -127,6 +129,7 @@ export class Player extends EventEmitter {
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
     public seek(position: number): Promise<boolean> {
+        if (this.listenerCount("seeked")) this.emit("seeked", position);
         return this.send("seek", { position });
     }
 
