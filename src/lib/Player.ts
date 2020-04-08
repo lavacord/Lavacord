@@ -128,7 +128,7 @@ export class Player extends EventEmitter {
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
     public seek(position: number): Promise<boolean> {
-        if (this.listenerCount("seeked")) this.emit("seeked", position);
+        if (this.listenerCount("seek")) this.emit("seek", position);
         return this.send("seek", { position });
     }
 
