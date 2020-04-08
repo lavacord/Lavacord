@@ -102,7 +102,7 @@ export class Player extends EventEmitter {
     public async pause(pause: boolean): Promise<boolean> {
         const d = await this.send("pause", { pause });
         this.paused = pause;
-        if (this.listenerCount("paused") && pause === true) this.emit("paused");
+        if (this.listenerCount("pause")) this.emit("pause", pause);
         if (this.listenerCount("resumed") && pause === false) this.emit("resumed");
         return d;
     }
