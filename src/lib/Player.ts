@@ -103,7 +103,6 @@ export class Player extends EventEmitter {
         const d = await this.send("pause", { pause });
         this.paused = pause;
         if (this.listenerCount("pause")) this.emit("pause", pause);
-        if (this.listenerCount("resumed") && pause === false) this.emit("resumed");
         return d;
     }
 
