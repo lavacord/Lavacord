@@ -190,7 +190,7 @@ export interface Player {
     once(event: "event", listener: (data: LavalinkEvent) => void): this;
     once(event: "start", listener: (data: LavalinkEvent) => void): this;
     once(event: "end", listener: (data: LavalinkEvent) => void): this;
-    once(event: "pause", listener: (data: LavalinkEvent) => void): this;
+    once(event: "pause", listener: (pause: boolean) => void): this;
     once(event: "seek", listener: (data: LavalinkEvent) => void): this;
     once(event: "error", listener: (error: LavalinkEvent) => void): this;
     once(event: "warn", listener: (warning: string) => void): this;
