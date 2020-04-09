@@ -208,7 +208,7 @@ export interface Player {
     emit(event: "event", data: LavalinkEvent): boolean;
     emit(event: "start", data: LavalinkEvent): boolean;
     emit(event: "end", data: LavalinkEvent): boolean;
-    emit(event: "pause", data: LavalinkEvent): boolean;
+    emit(event: "pause", pause: boolean): boolean;
     emit(event: "seek", data: LavalinkEvent): boolean;
     emit(event: "error", error: LavalinkEvent): boolean;
     emit(event: "warn", warning: string): boolean;
