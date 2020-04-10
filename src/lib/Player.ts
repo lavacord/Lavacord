@@ -102,6 +102,7 @@ export class Player extends EventEmitter {
     public async pause(pause: boolean): Promise<boolean> {
         const d = await this.send("pause", { pause });
         this.paused = pause;
+        if (this.listenerCount("pause")) this.emit("pause", pause);
         return d;
     }
 
@@ -126,8 +127,10 @@ export class Player extends EventEmitter {
      * Seeks the current song to a certain position
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
-    public seek(position: number): Promise<boolean> {
-        return this.send("seek", { position });
+    public async seek(position: number): Promise<boolean> {
+        const d = await this.send("seek", { position });
+        if (this.listenerCount("seek")) this.emit("seek", position);
+        return d;
     }
 
     /**
@@ -179,6 +182,8 @@ export interface Player {
     on(event: "event", listener: (data: LavalinkEvent) => void): this;
     on(event: "start", listener: (data: LavalinkEvent) => void): this;
     on(event: "end", listener: (data: LavalinkEvent) => void): this;
+    on(event: "pause", listener: (pause: boolean) => void): this;
+    on(event: "seek", listener: (position: number) => void): this;
     on(event: "error", listener: (error: LavalinkEvent) => void): this;
     on(event: "warn", listener: (warning: string) => void): this;
     on(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
@@ -186,6 +191,8 @@ export interface Player {
     once(event: "event", listener: (data: LavalinkEvent) => void): this;
     once(event: "start", listener: (data: LavalinkEvent) => void): this;
     once(event: "end", listener: (data: LavalinkEvent) => void): this;
+    once(event: "pause", listener: (pause: boolean) => void): this;
+    once(event: "seek", listener: (position: number) => void): this;
     once(event: "error", listener: (error: LavalinkEvent) => void): this;
     once(event: "warn", listener: (warning: string) => void): this;
     once(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
@@ -193,6 +200,8 @@ export interface Player {
     off(event: "event", listener: (data: LavalinkEvent) => void): this;
     off(event: "start", listener: (data: LavalinkEvent) => void): this;
     off(event: "end", listener: (data: LavalinkEvent) => void): this;
+    off(event: "pause", listener: (pause: boolean) => void): this;
+    off(event: "seek", listener: (position: number) => void): this;
     off(event: "error", listener: (error: LavalinkEvent) => void): this;
     off(event: "warn", listener: (warning: string) => void): this;
     off(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
@@ -200,6 +209,8 @@ export interface Player {
     emit(event: "event", data: LavalinkEvent): boolean;
     emit(event: "start", data: LavalinkEvent): boolean;
     emit(event: "end", data: LavalinkEvent): boolean;
+    emit(event: "pause", pause: boolean): boolean;
+    emit(event: "seek", position: number): boolean;
     emit(event: "error", error: LavalinkEvent): boolean;
     emit(event: "warn", warning: string): boolean;
     emit(event: "playerUpdate", data: { state: LavalinkPlayerState; }): boolean;
