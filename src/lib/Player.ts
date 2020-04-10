@@ -132,7 +132,6 @@ export class Player extends EventEmitter {
         if (this.listenerCount("seek")) this.emit("seek", position);
         return d;
     }
-        if (this.listenerCount("seek")) this.emit("seek", position);
         return this.send("seek", { position });
 
     /**
