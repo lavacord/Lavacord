@@ -132,7 +132,6 @@ export class Player extends EventEmitter {
         if (this.listenerCount("seek")) this.emit("seek", position);
         return d;
     }
-        return this.send("seek", { position });
 
     /**
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
