@@ -120,6 +120,7 @@ export class Player extends EventEmitter {
     public async volume(volume: number): Promise<boolean> {
         const d = await this.send("volume", { volume });
         this.state.volume = volume;
+        if (this.listenerCount("volume")) this.emit("volume", volume);
         return d;
     }
 
@@ -186,6 +187,7 @@ export interface Player {
     on(event: "seek", listener: (position: number) => void): this;
     on(event: "error", listener: (error: LavalinkEvent) => void): this;
     on(event: "warn", listener: (warning: string) => void): this;
+    on(event: "volume", listener: (volume: number) => void): this;
     on(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     once(event: "event", listener: (data: LavalinkEvent) => void): this;
@@ -195,6 +197,7 @@ export interface Player {
     once(event: "seek", listener: (position: number) => void): this;
     once(event: "error", listener: (error: LavalinkEvent) => void): this;
     once(event: "warn", listener: (warning: string) => void): this;
+    once(event: "volume", listener: (volume: number) => void): this;
     once(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     off(event: "event", listener: (data: LavalinkEvent) => void): this;
@@ -204,6 +207,7 @@ export interface Player {
     off(event: "seek", listener: (position: number) => void): this;
     off(event: "error", listener: (error: LavalinkEvent) => void): this;
     off(event: "warn", listener: (warning: string) => void): this;
+    off(event: "volume", listener: (volume: number) => void): this;
     off(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
 
     emit(event: "event", data: LavalinkEvent): boolean;
@@ -213,5 +217,6 @@ export interface Player {
     emit(event: "seek", position: number): boolean;
     emit(event: "error", error: LavalinkEvent): boolean;
     emit(event: "warn", warning: string): boolean;
+    emit(event: "volume", volume: number): boolean;
     emit(event: "playerUpdate", data: { state: LavalinkPlayerState; }): boolean;
 }
