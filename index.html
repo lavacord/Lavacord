@@ -117,7 +117,7 @@ npm install lavacord/lavacord</code></pre>
 <span class="hljs-comment">// Initilize the Manager with all the data it needs</span>
 <span class="hljs-keyword">const</span> manager = <span class="hljs-keyword">new</span> Manager(nodes, {
     <span class="hljs-attr">user</span>: client.user.id, <span class="hljs-comment">// Client id</span>
-    <span class="hljs-attr">shards</span>: shardCount <span class="hljs-comment">// Total number of shards your bot is operating on</span>
+    <span class="hljs-attr">shards</span>: shardCount, <span class="hljs-comment">// Total number of shards your bot is operating on</span>
     <span class="hljs-attr">send</span>: <span class="hljs-function">(<span class="hljs-params">packet</span>) =&gt;</span> {
         <span class="hljs-comment">// this needs to send the provided packet to discord using the method from your library. use the @lavacord package for the discord library you use if you don't understand this</span>
     }
