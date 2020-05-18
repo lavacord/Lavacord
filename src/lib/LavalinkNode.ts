@@ -45,9 +45,9 @@ export class LavalinkNode {
      */
     public resumeTimeout = 120;
     /**
-     * Extra info attached to your node
+     * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    public extra?: object;
+    public state?: object;
 
     /**
      * The reconnect timeout
@@ -74,7 +74,7 @@ export class LavalinkNode {
         if (options.reconnectInterval) this.reconnectInterval = options.reconnectInterval;
         if (options.resumeKey) this.resumeKey = options.resumeKey;
         if (options.resumeTimeout) this.resumeTimeout = options.resumeTimeout;
-        if (options.extra) this.extra = options.extra;
+        if (options.state) this.state = options.state;
 
         this.stats = {
             players: 0,
