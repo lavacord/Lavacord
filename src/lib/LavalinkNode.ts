@@ -45,7 +45,7 @@ export class LavalinkNode {
      */
     public resumeTimeout = 120;
     /**
-     * The resume timeout
+     * Extra info attached to your node
      */
     public extra?: object;
 
