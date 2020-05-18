@@ -13,6 +13,14 @@ export interface LavalinkEvent {
      * Why the event was sent, only used for TrackEndEvent
      */
     reason?: "FINISHED" | "LOAD_FAILED" | "STOPPED" | "REPLACED" | "CLEANUP";
+    /**
+     * The buffer threshold in milliseconds
+     */
+    thresholdMs?: number;
+    /**
+     * the error for TrackExceptionEvent
+     */
+    error?: string;
 }
 
 /**
