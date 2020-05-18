@@ -84,7 +84,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lavalinkevent.html#error" class="tsd-kind-icon">error</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lavalinkevent.html#reason" class="tsd-kind-icon">reason</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lavalinkevent.html#thresholdms" class="tsd-kind-icon">threshold<wbr>Ms</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lavalinkevent.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
@@ -94,12 +96,27 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="error" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> error</h3>
+					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5bf6f77/src/lib/Types.ts#L23">src/lib/Types.ts:23</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>the error for TrackExceptionEvent</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="reason" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> reason</h3>
 					<div class="tsd-signature tsd-kind-icon">reason<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"FINISHED"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"LOAD_FAILED"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"STOPPED"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"REPLACED"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"CLEANUP"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5832368/src/lib/Types.ts#L15">src/lib/Types.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5bf6f77/src/lib/Types.ts#L15">src/lib/Types.ts:15</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -109,12 +126,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="thresholdms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> threshold<wbr>Ms</h3>
+					<div class="tsd-signature tsd-kind-icon">threshold<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5bf6f77/src/lib/Types.ts#L19">src/lib/Types.ts:19</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The buffer threshold in milliseconds</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"TrackStartEvent"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"TrackEndEvent"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"TrackExceptionEvent"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"TrackStuckEvent"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"WebSocketClosedEvent"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5832368/src/lib/Types.ts#L11">src/lib/Types.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/5bf6f77/src/lib/Types.ts#L11">src/lib/Types.ts:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -168,7 +200,13 @@
 						<a href="lavalinkevent.html" class="tsd-kind-icon">Lavalink<wbr>Event</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lavalinkevent.html#error" class="tsd-kind-icon">error</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="lavalinkevent.html#reason" class="tsd-kind-icon">reason</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lavalinkevent.html#thresholdms" class="tsd-kind-icon">threshold<wbr>Ms</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="lavalinkevent.html#type" class="tsd-kind-icon">type</a>
