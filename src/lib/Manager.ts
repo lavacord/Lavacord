@@ -28,11 +28,11 @@ export class Manager extends EventEmitter {
     /**
      * The user id of the bot this Manager is managing
      */
-    public user?: string;
+    public user!: string;
     /**
      * The amount of shards the bot has, by default its 1
      */
-    public shards: number;
+    public shards = 1;
     /**
      * The send function needs for the library to function
      */
@@ -40,7 +40,11 @@ export class Manager extends EventEmitter {
     /**
      * The Player the manager will use when creating new Players
      */
-    private Player: Player;
+    private Player: typeof Player = Player;
+    /**
+     * An Set of all the expecting connections guild id's
+     */
+    private expecting = new Set();
 
     /**
      * The constructor of the Manager
@@ -50,10 +54,10 @@ export class Manager extends EventEmitter {
     public constructor(nodes: LavalinkNodeOptions[], options: ManagerOptions) {
         super();
 
-        this.user = options.user;
-        this.shards = options.shards || 1;
-        this.Player = options.Player as any || Player;
-        if (typeof options.send !== "undefined") this.send = options.send;
+        if (options.user) this.user = options.user;
+        if (options.shards) this.shards = options.shards;
+        if (options.player) this.Player = options.player;
+        if (options.send) this.send = options.send;
 
         for (const node of nodes) this.createNode(node);
     }
@@ -63,6 +67,17 @@ export class Manager extends EventEmitter {
      */
     public connect(): Promise<Array<WebSocket | boolean>> {
         return Promise.all([...this.nodes.values()].map(node => node.connect()));
+    }
+
+    /**
+     * Disconnects everything, basically destorying the manager.
+     * Stops all players, leaves all voice channels then disconnects all LavalinkNodes
+     */
+    public disconnect(): Promise<boolean[]> {
+        const promises = [];
+        for (const id of [...this.players.keys()]) promises.push(this.leave(id));
+        for (const node of [...this.nodes.values()]) promises.push(node.destroy());
+        return Promise.all(promises);
     }
 
     /**
@@ -90,18 +105,10 @@ export class Manager extends EventEmitter {
      * @param data The Join Data
      * @param param1 Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
      */
-    public async join(data: JoinData, { selfmute = false, selfdeaf = false }: JoinOptions = {}): Promise<Player> {
+    public async join(data: JoinData, joinOptions: JoinOptions = {}): Promise<Player> {
         const player = this.players.get(data.guild);
         if (player) return player;
-        await this.send!({
-            op: 4,
-            d: {
-                guild_id: data.guild,
-                channel_id: data.channel,
-                self_mute: selfmute,
-                self_deaf: selfdeaf
-            }
-        });
+        await this.sendWS(data.guild, data.channel, joinOptions);
         return this.spawnPlayer(data);
     }
 
@@ -110,15 +117,7 @@ export class Manager extends EventEmitter {
      * @param guild The guild you want the bot to leave the voice channel of
      */
     public async leave(guild: string): Promise<boolean> {
-        await this.send!({
-            op: 4,
-            d: {
-                guild_id: guild,
-                channel_id: null,
-                self_mute: false,
-                self_deaf: false
-            }
-        });
+        await this.sendWS(guild, null);
         const player = this.players.get(guild);
         if (!player) return false;
         player.removeAllListeners();
@@ -152,6 +151,7 @@ export class Manager extends EventEmitter {
      */
     public voiceServerUpdate(data: VoiceServerUpdate): Promise<boolean> {
         this.voiceServers.set(data.guild_id, data);
+        this.expecting.add(data.guild_id);
         return this._attemptConnection(data.guild_id);
     }
 
@@ -174,6 +174,24 @@ export class Manager extends EventEmitter {
     }
 
     /**
+     * Just a utility method to easily send OPCode 4 websocket events to discord
+     * @param guild The guild is
+     * @param channel Voice channel id, or null to leave a voice channel
+     * @param param2 Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
+     */
+    public sendWS(guild: string, channel: string | null, { selfmute = false, selfdeaf = false }: JoinOptions = {}): any {
+        return this.send!({
+            op: 4,
+            d: {
+                guild_id: guild,
+                channel_id: channel,
+                self_mute: selfmute,
+                self_deaf: selfdeaf
+            }
+        });
+    }
+
+    /**
      * Gets all connected nodes, sorts them by cou load of the node
      */
     public get idealNodes(): LavalinkNode[] {
@@ -190,16 +208,18 @@ export class Manager extends EventEmitter {
      * Handles the data of voiceServerUpdate & voiceStateUpdate to see if a connection is possible with the data we have and if it is then make the connection to lavalink
      * @param guildId The guild id that we're trying to attempt to connect to
      */
-    private async _attemptConnection(guildId: string): Promise<boolean> {
-        const server = this.voiceServers.get(guildId);
-        const state = this.voiceStates.get(guildId);
+    private async _attemptConnection(guildID: string): Promise<boolean> {
+        const server = this.voiceServers.get(guildID);
+        const state = this.voiceStates.get(guildID);
 
-        if (!server || !state) return false;
+        if (!server || !state || !this.expecting.has(guildID)) return false;
 
-        const player = this.players.get(guildId);
+        const player = this.players.get(guildID);
         if (!player) return false;
 
         await player.connect({ sessionId: state.session_id, event: server });
+        this.expecting.delete(guildID);
+
         return true;
     }
 
