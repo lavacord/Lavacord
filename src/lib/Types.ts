@@ -285,6 +285,10 @@ export interface LavalinkNodeOptions {
      * Resume timeout
      */
     resumeTimeout?: number;
+    /**
+     * Extra info attached to your node
+     */
+    extra?: object;
 }
 
 /**
