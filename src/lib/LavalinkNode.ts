@@ -23,7 +23,7 @@ export class LavalinkNode {
     /**
      * The interval that the node will try to reconnect to lavalink at in milliseconds
      */
-    public reconnectInterval = 5000;
+    public reconnectInterval = 10000;
     /**
      * The password of the lavalink node
      */
@@ -37,9 +37,13 @@ export class LavalinkNode {
      */
     public stats: LavalinkStats;
     /**
-     * The resuming key
+     * The resume key to send to the LavalinkNode so you can resume properly
      */
     public resumeKey?: string;
+    /**
+     * The resume timeout
+     */
+    public resumeTimeout = 120;
 
     /**
      * The reconnect timeout
@@ -63,6 +67,9 @@ export class LavalinkNode {
         if (options.host) Object.defineProperty(this, "host", { value: options.host });
         if (options.port) Object.defineProperty(this, "port", { value: options.port });
         if (options.password) Object.defineProperty(this, "password", { value: options.password });
+        if (options.reconnectInterval) this.reconnectInterval = options.reconnectInterval;
+        if (options.resumeKey) this.resumeKey = options.resumeKey;
+        if (options.resumeTimeout) this.resumeTimeout = options.resumeTimeout;
 
         this.stats = {
             players: 0,
@@ -142,9 +149,7 @@ export class LavalinkNode {
      * @param key the actual key to send to lavalink to resume with
      * @param timeout how long before the key invalidates and lavalinknode will stop expecting you to resume
      */
-    public configureResuming(key: string = Date.now().toString(16), timeout = 120): Promise<boolean> {
-        this.resumeKey = key;
-
+    public configureResuming(key: string, timeout = this.resumeTimeout): Promise<boolean> {
         return this.send({ op: "configureResuming", key, timeout });
     }
 
@@ -172,8 +177,10 @@ export class LavalinkNode {
     private onOpen(): void {
         if (this._reconnect) clearTimeout(this._reconnect);
         this._queueFlush()
-            .then(() => this.configureResuming())
             .catch(error => this.manager.emit("error", error, this));
+
+        if (this.resumeKey) this.configureResuming(this.resumeKey).catch(error => this.manager.emit("error", error, this));
+
         this.manager.emit("ready", this);
     }
 
