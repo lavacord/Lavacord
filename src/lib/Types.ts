@@ -286,9 +286,9 @@ export interface LavalinkNodeOptions {
      */
     resumeTimeout?: number;
     /**
-     * Extra info attached to your node
+     * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    extra?: object;
+    state?: object;
 }
 
 /**
