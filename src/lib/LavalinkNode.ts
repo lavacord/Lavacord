@@ -47,7 +47,7 @@ export class LavalinkNode {
     /**
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    public state?: object;
+    public state?: any;
 
     /**
      * The reconnect timeout
