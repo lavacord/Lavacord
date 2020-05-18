@@ -133,7 +133,7 @@ export interface ManagerOptions {
     /**
      * The Player class that the manager uses to create Players, so users can modify this
      */
-    Player?: Player;
+    player?: typeof Player;
     /**
      * The send function for end users to implement for their specific library
      */
@@ -277,6 +277,14 @@ export interface LavalinkNodeOptions {
      * The interval that the node will try to reconnect to lavalink at in milliseconds
      */
     reconnectInterval?: number;
+    /**
+     * The resume key to send to the LavalinkNode so you can resume properly
+     */
+    resumeKey?: string;
+    /**
+     * Resume timeout
+     */
+    resumeTimeout?: number;
 }
 
 /**
