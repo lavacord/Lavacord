@@ -288,7 +288,7 @@ export interface LavalinkNodeOptions {
     /**
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    state?: object;
+    state?: any;
 }
 
 /**
