@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState } from "./Types";
+import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState, JoinOptions } from "./Types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -158,6 +158,15 @@ export class Player extends EventEmitter {
     public connect(data: PlayerUpdateVoiceState): Promise<boolean> {
         this.voiceUpdateState = data;
         return this.send("voiceUpdate", data);
+    }
+
+    /**
+     * Use this to switch channels
+     * @param channel The channel id of the channel you want to switch to
+     * @param options selfMute and selfDeaf options
+     */
+    public switchChannel(channel: string, options: JoinOptions = {}): any {
+        return this.manager.sendWS(this.id, channel, options);
     }
 
     /**
