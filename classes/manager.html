@@ -117,6 +117,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#connect" class="tsd-kind-icon">connect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#createnode" class="tsd-kind-icon">create<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#disconnect" class="tsd-kind-icon">disconnect</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#emit" class="tsd-kind-icon">emit</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
@@ -133,6 +134,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#removenode" class="tsd-kind-icon">remove<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#sendws" class="tsd-kind-icon">sendWS</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="manager.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#switch" class="tsd-kind-icon">switch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="manager.html#voiceserverupdate" class="tsd-kind-icon">voice<wbr>Server<wbr>Update</a></li>
@@ -156,7 +158,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventEmitter.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L43">src/lib/Manager.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L47">src/lib/Manager.ts:47</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -196,7 +198,7 @@
 					<div class="tsd-signature tsd-kind-icon">nodes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="lavalinknode.html" class="tsd-signature-type">LavalinkNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;string, LavalinkNode&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L15">src/lib/Manager.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L15">src/lib/Manager.ts:15</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -211,7 +213,7 @@
 					<div class="tsd-signature tsd-kind-icon">players<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;string, Player&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L19">src/lib/Manager.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L19">src/lib/Manager.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -226,7 +228,7 @@
 					<div class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>packet<span class="tsd-signature-symbol">: </span><a href="../interfaces/discordpacket.html" class="tsd-signature-type">DiscordPacket</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L39">src/lib/Manager.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L39">src/lib/Manager.ts:39</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -238,10 +240,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="shards" class="tsd-anchor"></a>
 					<h3>shards</h3>
-					<div class="tsd-signature tsd-kind-icon">shards<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">shards<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L35">src/lib/Manager.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L35">src/lib/Manager.ts:35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -252,11 +254,11 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="user" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> user</h3>
-					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<h3>user</h3>
+					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L31">src/lib/Manager.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L31">src/lib/Manager.ts:31</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -271,7 +273,7 @@
 					<div class="tsd-signature tsd-kind-icon">voice<wbr>Servers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/voiceserverupdate.html" class="tsd-signature-type">VoiceServerUpdate</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;string, VoiceServerUpdate&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L23">src/lib/Manager.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L23">src/lib/Manager.ts:23</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -286,7 +288,7 @@
 					<div class="tsd-signature tsd-kind-icon">voice<wbr>States<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/voicestateupdate.html" class="tsd-signature-type">VoiceStateUpdate</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;string, VoiceStateUpdate&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L27">src/lib/Manager.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L27">src/lib/Manager.ts:27</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -319,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L179">src/lib/Manager.ts:179</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L197">src/lib/Manager.ts:197</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -389,7 +391,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L64">src/lib/Manager.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L68">src/lib/Manager.ts:68</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -411,7 +413,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L72">src/lib/Manager.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L87">src/lib/Manager.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -429,6 +431,29 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="lavalinknode.html" class="tsd-signature-type">LavalinkNode</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="disconnect" class="tsd-anchor"></a>
+					<h3>disconnect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">disconnect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L76">src/lib/Manager.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Disconnects everything, basically destorying the manager.
+									Stops all players, leaves all voice channels then disconnects all LavalinkNodes</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -466,7 +491,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L241">src/lib/Manager.ts:241</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L261">src/lib/Manager.ts:261</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -484,7 +509,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L242">src/lib/Manager.ts:242</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L262">src/lib/Manager.ts:262</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -505,7 +530,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L243">src/lib/Manager.ts:243</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L263">src/lib/Manager.ts:263</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -526,7 +551,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L244">src/lib/Manager.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L264">src/lib/Manager.ts:264</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -547,7 +572,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#emit">emit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L245">src/lib/Manager.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L265">src/lib/Manager.ts:265</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -603,13 +628,13 @@
 					<a name="join" class="tsd-anchor"></a>
 					<h3>join</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">join<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/joindata.html" class="tsd-signature-type">JoinData</a>, __namedParameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">join<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/joindata.html" class="tsd-signature-type">JoinData</a>, joinOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/joinoptions.html" class="tsd-signature-type">JoinOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L93">src/lib/Manager.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L108">src/lib/Manager.ts:108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -626,15 +651,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> __namedParameters: <span class="tsd-signature-symbol">{ </span>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = {}</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-										</li>
-									</ul>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> joinOptions: <a href="../interfaces/joinoptions.html" class="tsd-signature-type">JoinOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -651,7 +668,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L112">src/lib/Manager.ts:112</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L119">src/lib/Manager.ts:119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -772,7 +789,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L235">src/lib/Manager.ts:235</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L255">src/lib/Manager.ts:255</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -808,7 +825,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L236">src/lib/Manager.ts:236</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L256">src/lib/Manager.ts:256</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -847,7 +864,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L237">src/lib/Manager.ts:237</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L257">src/lib/Manager.ts:257</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -886,7 +903,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L238">src/lib/Manager.ts:238</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L258">src/lib/Manager.ts:258</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -925,7 +942,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#off">off</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L239">src/lib/Manager.ts:239</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L259">src/lib/Manager.ts:259</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1011,7 +1028,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L223">src/lib/Manager.ts:223</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L243">src/lib/Manager.ts:243</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1047,7 +1064,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L224">src/lib/Manager.ts:224</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L244">src/lib/Manager.ts:244</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1086,7 +1103,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L225">src/lib/Manager.ts:225</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L245">src/lib/Manager.ts:245</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1125,7 +1142,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L226">src/lib/Manager.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L246">src/lib/Manager.ts:246</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1164,7 +1181,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#on">on</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L227">src/lib/Manager.ts:227</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L247">src/lib/Manager.ts:247</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1250,7 +1267,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L229">src/lib/Manager.ts:229</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L249">src/lib/Manager.ts:249</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1286,7 +1303,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L230">src/lib/Manager.ts:230</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L250">src/lib/Manager.ts:250</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1325,7 +1342,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L231">src/lib/Manager.ts:231</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L251">src/lib/Manager.ts:251</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1364,7 +1381,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L232">src/lib/Manager.ts:232</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L252">src/lib/Manager.ts:252</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1403,7 +1420,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="player.html">Player</a>.<a href="player.html#once">once</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L233">src/lib/Manager.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L253">src/lib/Manager.ts:253</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1630,7 +1647,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L82">src/lib/Manager.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L97">src/lib/Manager.ts:97</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1648,6 +1665,54 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="sendws" class="tsd-anchor"></a>
+					<h3>sendWS</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">sendWS<span class="tsd-signature-symbol">(</span>guild<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, channel<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, __namedParameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L182">src/lib/Manager.ts:182</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Just a utility method to easily send OPCode 4 websocket events to discord</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>guild: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The guild is</p>
+									</div>
+								</li>
+								<li>
+									<h5>channel: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Voice channel id, or null to leave a voice channel</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> __namedParameters: <span class="tsd-signature-symbol">{ </span>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = {}</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>selfdeaf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>selfmute<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1685,7 +1750,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L134">src/lib/Manager.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L133">src/lib/Manager.ts:133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1722,7 +1787,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L153">src/lib/Manager.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L152">src/lib/Manager.ts:152</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1753,7 +1818,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/6a08f06/src/lib/Manager.ts#L162">src/lib/Manager.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/e4b0d38/src/lib/Manager.ts#L162">src/lib/Manager.ts:162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1870,6 +1935,9 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="manager.html#createnode" class="tsd-kind-icon">create<wbr>Node</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="manager.html#disconnect" class="tsd-kind-icon">disconnect</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="manager.html#emit" class="tsd-kind-icon">emit</a>
 							</li>
@@ -1917,6 +1985,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="manager.html#removenode" class="tsd-kind-icon">remove<wbr>Node</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="manager.html#sendws" class="tsd-kind-icon">sendWS</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="manager.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a>
