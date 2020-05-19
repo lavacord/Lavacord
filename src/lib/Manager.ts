@@ -176,7 +176,7 @@ export class Manager extends EventEmitter {
 
     /**
      * Just a utility method to easily send OPCode 4 websocket events to discord
-     * @param guild The guild is
+     * @param guild The guild id
      * @param channel Voice channel id, or null to leave a voice channel
      * @param param2 Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
      */
