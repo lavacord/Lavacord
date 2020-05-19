@@ -119,9 +119,10 @@ export class Manager extends EventEmitter {
     public async leave(guild: string): Promise<boolean> {
         await this.sendWS(guild, null);
         const player = this.players.get(guild);
-        if (!player) return false;
-        player.removeAllListeners();
-        await player.destroy();
+        if(player){
+            player.removeAllListeners();
+            await player.destroy();
+        }
         return this.players.delete(guild);
     }
 
