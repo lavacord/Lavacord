@@ -163,7 +163,7 @@ export class Manager extends EventEmitter {
         if (data.user_id !== this.user) return Promise.resolve(false);
 
         if (data.channel_id) {
-            if (this.voiceStates.get(data.guild_id) !== undefined) {
+            if (this.voiceStates.has(data.guild_id)) {
                 if (data.channel_id !== this.voiceStates.get(data.guild_id).channel_id) {
                     return this.voiceStates.set(data.guild_id, data);
                 }
