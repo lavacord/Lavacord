@@ -164,8 +164,8 @@ export class Manager extends EventEmitter {
 
         if (data.channel_id && data.guild_id) {
             if (this.voiceStates.has(data.guild_id)) {
-                const oldVoiceState = this.voiceStates.get(data.guild_id);
-                if (oldVoiceState!.channel_id) {
+                const oldVoiceState = this.voiceStates.get(data.guild_id)!;
+                if (oldVoiceState.channel_id) {
                     if (data.channel_id !== oldVoiceState.channel_id) {
                         this.voiceStates.set(data.guild_id, data);
                         return Promise.resolve(false);
