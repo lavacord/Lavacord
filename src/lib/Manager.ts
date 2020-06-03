@@ -162,7 +162,7 @@ export class Manager extends EventEmitter {
     public voiceStateUpdate(data: VoiceStateUpdate): Promise<boolean> {
         if (data.user_id !== this.user) return Promise.resolve(false);
 
-        if (data.channel_id && data.guild_id) {
+        if (data.channel_id) {
             if (this.voiceStates.has(data.guild_id)) {
                 const oldVoiceState = this.voiceStates.get(data.guild_id)!;
                 if (oldVoiceState.channel_id) {
