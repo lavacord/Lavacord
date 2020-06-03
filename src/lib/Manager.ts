@@ -167,7 +167,8 @@ export class Manager extends EventEmitter {
                 const oldVoiceState = this.voiceStates.get(data.guild_id);
                 if (oldVoiceState!.channel_id) {
                     if (data.channel_id !== oldVoiceState.channel_id) {
-                        return this.voiceStates.set(data.guild_id, data);
+                        this.voiceStates.set(data.guild_id, data);
+                        return Promise.resolve(false);
                     }
                 }
             }
