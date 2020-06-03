@@ -163,9 +163,15 @@ export class Manager extends EventEmitter {
         if (data.user_id !== this.user) return Promise.resolve(false);
 
         if (data.channel_id && data.guild_id) {
-            if (this && this.voiceStates && this.voiceStates.has(data.guild_id) && this.voiceStates.get(data.guild_id).channel_id) {
-                if (data.channel_id !== this.voiceStates.get(data.guild_id).channel_id) {
-                    return this.voiceStates.set(data.guild_id, data);
+            if (this !== undefined) {
+                if (this.voiceStates !== undefined) {
+                    if (this.voiceStates.has(data.guild_id) !== false) {
+                        if (this.voiceStates.get(data.guild_id).channel_id !== undefined) {
+                            if (data.channel_id !== this.voiceStates.get(data.guild_id).channel_id) {
+                                return this.voiceStates.set(data.guild_id, data);
+                            }
+                        }
+                    }
                 }
             }
             this.voiceStates.set(data.guild_id, data);
