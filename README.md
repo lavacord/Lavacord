@@ -1,12 +1,9 @@
 [![Discord](https://discordapp.com/api/guilds/323779330033319941/embed.png)](https://discord.gg/wXrjZmV)
-[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/lavacord)
-[![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?maxAge=3600)](https://www.npmjs.com/package/lavacord)
-[![NPM version](https://badge.fury.io/js/lavacord.svg)](http://badge.fury.io/js/lavacord)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/lavacord/lavacord?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lavacord/lavacord&amp;utm_campaign=Badge_Grade)
-[![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
-[![dependencies Status](https://david-dm.org/lavacord/lavacord/status.svg)](https://david-dm.org/lavacord/lavacord)
-[![devDependencies Status](https://david-dm.org/lavacord/lavacord/dev-status.svg)](https://david-dm.org/lavacord/lavacord?type=dev)
-[![NPM](https://nodei.co/npm/lavacord.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/lavacord/)
+[![npm (scoped)](https://img.shields.io/npm/v/lavacord?label=npm%20version)](https://www.npmjs.com/package/lavacord)
+[![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?label=total%20downloads)](https://www.npmjs.com/package/lavacord)
+[![GitHub](https://img.shields.io/github/license/lavacord/lavacord)](https://github.com/lavacord/lavacord/)
+[![Depfu](https://badges.depfu.com/badges/70051aad57dddc0c44a990d26b1f6e23/overview.svg)](https://depfu.com/github/lavacord/Lavacord?project_id=11810)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/lavacord/lavacord)
 
 # LavaCord
 A simple and easy to use lavalink wrapper.
