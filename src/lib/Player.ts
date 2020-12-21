@@ -118,7 +118,8 @@ export class Player extends EventEmitter {
      * @param volume The volume as a float from 0.0 to 1.0 (volumes > 1.0 may cause clipping)
      */
     public async volume(volume: number): Promise<boolean> {
-        const d = await this.filters({ volume: volume });
+        const newFilters = Object.assign(this.state.filters, { volume: volume });
+        const d = await this.filters(newFilters);
         if (this.listenerCount("volume")) this.emit("volume", volume);
         return d;
     }
@@ -145,7 +146,8 @@ export class Player extends EventEmitter {
      * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/Frederikam/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
      */
     public async equalizer(bands: PlayerEqualizerBand[]): Promise<boolean> {
-        const d = await this.filters({ equalizer: bands });
+        const newFilters = Object.assign(this.state.filters, { equalizer: bands });
+        const d = await this.filters(newFilters);
         return d;
     }
 
