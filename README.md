@@ -70,7 +70,7 @@ await manager.connect();
 
 // The error event, which you should handle otherwise your application will crash when an error is emitted
 manager.on("error", (error, node) => {
-    error // is the error
+    error, // is the error
     node // is the node which the error is from
 });
 ```
