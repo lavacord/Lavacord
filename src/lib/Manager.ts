@@ -131,7 +131,7 @@ export class Manager extends EventEmitter {
      * @param node The node you want to switch to
      */
     public async switch(player: Player, node: LavalinkNode): Promise<Player> {
-        const { track, state, voiceUpdateState } = { ...player } as any;
+        const { track, state, voiceUpdateState } = { ...player };
         const position = state.position ? state.position + 2000 : 2000;
 
         await player.destroy();
@@ -139,8 +139,8 @@ export class Manager extends EventEmitter {
         player.node = node;
 
         await player.connect(voiceUpdateState as PlayerUpdateVoiceState);
-        await player.play(track, { startTime: position, volume: state.volume });
-        await player.equalizer(state.equalizer);
+        await player.play(track as string, { startTime: position, volume: state.filters.volume || 1.0 });
+        await player.filters(state.filters);
 
         return player;
     }
@@ -232,11 +232,10 @@ export class Manager extends EventEmitter {
         if (exists) return exists;
         const node = this.nodes.get(data.node);
         if (!node) throw new Error(`INVALID_HOST: No available node with ${data.node}`);
-        const player: Player = new (this.Player as any)(node, data.guild);
+        const player = new this.Player(node, data.guild);
         this.players.set(data.guild, player);
         return player;
     }
-
 }
 
 export interface Manager {
