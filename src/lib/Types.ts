@@ -620,6 +620,37 @@ export interface PlayerFilterOptions {
         frequency?: number;
         depth?: number;
     };
+    /** Rotates the sound around the stereo channels/user headphones aka Audio Panning */
+    rotation?: {
+        /** The frequency of the audio rotating around the listener in Hz */
+        rotationHz: number;
+    };
+    /** Distortion effect. It can generate some pretty unique audio effects */
+    distortion?: {
+        sinOffset?: number;
+        sinScale?: number;
+        cosOffset?: number;
+        cosScale?: number;
+        tanOffset?: number;
+        tanScale?: number;
+        offset?: number;
+        scale?: number;
+    };
+    /**
+     * Mixes both channels (left and right), with a configurable factor on how much each channel affects the other.
+     * With the defaults, both channels are kept independent from each other.
+     * Setting all factors to 0.5 means both channels get the same audio.
+     */
+    channelMix?: {
+        leftToLeft?: number;
+        leftToRight?: number;
+        rightToLeft?: number;
+        rightToRight?: number;
+    };
+    /** Higher frequencies get suppressed, while lower frequencies pass through this filter, thus the name low pass */
+    lowPass?: {
+        smoothing: number;
+    };
 }
 
 export interface PlayerKaraokeOptions {
