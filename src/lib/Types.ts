@@ -611,7 +611,7 @@ export interface PlayerFilterOptions {
         rate?: number;
     };
     /** Uses amplification to create a shuddering effect, where the volume quickly oscillates */
-    tremelo?: {
+    tremolo?: {
         frequency?: number;
         depth?: number;
     };
