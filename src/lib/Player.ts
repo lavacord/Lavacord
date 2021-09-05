@@ -115,11 +115,10 @@ export class Player extends EventEmitter {
 
     /**
      * Changes the volume, only for the current song
-     * @param volume The volume as a float from 0.0 to 1.0 (volumes > 1.0 may cause clipping)
+     * @param volume The volume as a float from 0.0 to 10.0. 1.0 is default.
      */
     public async volume(volume: number): Promise<boolean> {
-        const newFilters = Object.assign(this.state.filters, { volume: volume });
-        const d = await this.filters(newFilters);
+        const d = await this.send("volume", { volume: volume * 100 });
         if (this.listenerCount("volume")) this.emit("volume", volume);
         return d;
     }
