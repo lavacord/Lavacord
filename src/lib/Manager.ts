@@ -120,6 +120,7 @@ export class Manager extends EventEmitter {
         await this.sendWS(guild, null);
         const player = this.players.get(guild);
         if (!player) return false;
+        if (player.listenerCount("end") && player.playing) player.emit("end", { type: "TrackEndEvent", reason: "CLEANUP" });
         player.removeAllListeners();
         await player.destroy();
         return this.players.delete(guild);
