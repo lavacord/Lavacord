@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>VoiceServerUpdate | Lavacord</title>
+	<title>PlayerKaraokeOptions | Lavacord</title>
 	<meta name="description" content="Documentation for Lavacord">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,28 +52,21 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="voiceserverupdate.html">VoiceServerUpdate</a>
+					<a href="playerkaraokeoptions.html">PlayerKaraokeOptions</a>
 				</li>
 			</ul>
-			<h1>Interface VoiceServerUpdate</h1>
+			<h1>Interface PlayerKaraokeOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Voice Server Update</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">VoiceServerUpdate</span>
+						<span class="target">PlayerKaraokeOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -84,9 +77,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="voiceserverupdate.html#endpoint" class="tsd-kind-icon">endpoint</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="voiceserverupdate.html#guild_id" class="tsd-kind-icon">guild_<wbr>id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="voiceserverupdate.html#token" class="tsd-kind-icon">token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerkaraokeoptions.html#filterband" class="tsd-kind-icon">filter<wbr>Band</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerkaraokeoptions.html#filterwidth" class="tsd-kind-icon">filter<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerkaraokeoptions.html#level" class="tsd-kind-icon">level</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerkaraokeoptions.html#monolevel" class="tsd-kind-icon">mono<wbr>Level</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,49 +89,44 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="endpoint" class="tsd-anchor"></a>
-					<h3>endpoint</h3>
-					<div class="tsd-signature tsd-kind-icon">endpoint<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="filterband" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> filter<wbr>Band</h3>
+					<div class="tsd-signature tsd-kind-icon">filter<wbr>Band<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L185">src/lib/Types.ts:185</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L659">src/lib/Types.ts:659</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The endpoint lavalink will connect to</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="guild_id" class="tsd-anchor"></a>
-					<h3>guild_<wbr>id</h3>
-					<div class="tsd-signature tsd-kind-icon">guild_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="filterwidth" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> filter<wbr>Width</h3>
+					<div class="tsd-signature tsd-kind-icon">filter<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L181">src/lib/Types.ts:181</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L660">src/lib/Types.ts:660</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Guild if of the voice connection</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="token" class="tsd-anchor"></a>
-					<h3>token</h3>
-					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="level" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> level</h3>
+					<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L177">src/lib/Types.ts:177</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L657">src/lib/Types.ts:657</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The token for the session</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="monolevel" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mono<wbr>Level</h3>
+					<div class="tsd-signature tsd-kind-icon">mono<wbr>Level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L658">src/lib/Types.ts:658</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -202,9 +191,27 @@
 					<li class=" tsd-kind-interface">
 						<a href="playerfilteroptions.html" class="tsd-kind-icon">Player<wbr>Filter<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="playerkaraokeoptions.html" class="tsd-kind-icon">Player<wbr>Karaoke<wbr>Options</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="playerkaraokeoptions.html#filterband" class="tsd-kind-icon">filter<wbr>Band</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="playerkaraokeoptions.html#filterwidth" class="tsd-kind-icon">filter<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="playerkaraokeoptions.html#level" class="tsd-kind-icon">level</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="playerkaraokeoptions.html#monolevel" class="tsd-kind-icon">mono<wbr>Level</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="playerplayoptions.html" class="tsd-kind-icon">Player<wbr>Play<wbr>Options</a>
 					</li>
@@ -232,24 +239,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="trackresponse.html" class="tsd-kind-icon">Track<wbr>Response</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="voiceserverupdate.html" class="tsd-kind-icon">Voice<wbr>Server<wbr>Update</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="voiceserverupdate.html#endpoint" class="tsd-kind-icon">endpoint</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="voiceserverupdate.html#guild_id" class="tsd-kind-icon">guild_<wbr>id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="voiceserverupdate.html#token" class="tsd-kind-icon">token</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="voicestateupdate.html" class="tsd-kind-icon">Voice<wbr>State<wbr>Update</a>
 					</li>

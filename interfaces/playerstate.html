@@ -89,10 +89,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerstate.html#equalizer" class="tsd-kind-icon">equalizer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerstate.html#filters" class="tsd-kind-icon">filters</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="playerstate.html#position" class="tsd-kind-icon">position</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="playerstate.html#time" class="tsd-kind-icon">time</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="playerstate.html#volume" class="tsd-kind-icon">volume</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,17 +100,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="equalizer" class="tsd-anchor"></a>
-					<h3>equalizer</h3>
-					<div class="tsd-signature tsd-kind-icon">equalizer<span class="tsd-signature-symbol">:</span> <a href="playerequalizerband.html" class="tsd-signature-type">PlayerEqualizerBand</a><span class="tsd-signature-symbol">[]</span></div>
+					<a name="filters" class="tsd-anchor"></a>
+					<h3>filters</h3>
+					<div class="tsd-signature tsd-kind-icon">filters<span class="tsd-signature-symbol">:</span> <a href="playerfilteroptions.html" class="tsd-signature-type">PlayerFilterOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/83cf277/src/lib/Types.ts#L51">src/lib/Types.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L47">src/lib/Types.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The current equalizer state of the Player, so end users can keep track if they need to</p>
+							<p>The current filters state of the Player, so end users can keep track if they need to</p>
 						</div>
 					</div>
 				</section>
@@ -122,7 +121,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="lavalinkplayerstate.html">LavalinkPlayerState</a>.<a href="lavalinkplayerstate.html#position">position</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/83cf277/src/lib/Types.ts#L37">src/lib/Types.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L37">src/lib/Types.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -138,27 +137,12 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="lavalinkplayerstate.html">LavalinkPlayerState</a>.<a href="lavalinkplayerstate.html#time">time</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/83cf277/src/lib/Types.ts#L33">src/lib/Types.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/48fb973/src/lib/Types.ts#L33">src/lib/Types.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>The current time in milliseconds</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="volume" class="tsd-anchor"></a>
-					<h3>volume</h3>
-					<div class="tsd-signature tsd-kind-icon">volume<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/lavacord/Lavacord/blob/83cf277/src/lib/Types.ts#L47">src/lib/Types.ts:47</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The current volume of the Player, used for end user as lavalink doesn&#39;t provide this</p>
 						</div>
 					</div>
 				</section>
@@ -223,6 +207,12 @@
 						<a href="playerequalizerband.html" class="tsd-kind-icon">Player<wbr>Equalizer<wbr>Band</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="playerfilteroptions.html" class="tsd-kind-icon">Player<wbr>Filter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="playerkaraokeoptions.html" class="tsd-kind-icon">Player<wbr>Karaoke<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="playerplayoptions.html" class="tsd-kind-icon">Player<wbr>Play<wbr>Options</a>
 					</li>
 				</ul>
@@ -231,16 +221,13 @@
 						<a href="playerstate.html" class="tsd-kind-icon">Player<wbr>State</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerstate.html#equalizer" class="tsd-kind-icon">equalizer</a>
+								<a href="playerstate.html#filters" class="tsd-kind-icon">filters</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="playerstate.html#position" class="tsd-kind-icon">position</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="playerstate.html#time" class="tsd-kind-icon">time</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="playerstate.html#volume" class="tsd-kind-icon">volume</a>
 							</li>
 						</ul>
 					</li>
