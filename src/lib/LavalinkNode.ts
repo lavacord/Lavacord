@@ -159,12 +159,11 @@ export class LavalinkNode {
     }
 
     /**
-     * Destorys the connection to the Lavalink Websocket
+     * Destroys the connection to the Lavalink Websocket
      */
     public destroy(): boolean {
         if (!this.connected) return false;
         this.ws!.close(1000, "destroy");
-        this.ws = null;
         return true;
     }
 

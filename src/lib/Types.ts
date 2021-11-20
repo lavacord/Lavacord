@@ -42,13 +42,9 @@ export interface LavalinkPlayerState {
  */
 export interface PlayerState extends LavalinkPlayerState {
     /**
-     * The current volume of the Player, used for end user as lavalink doesn't provide this
+     * The current filters state of the Player, so end users can keep track if they need to
      */
-    volume: number;
-    /**
-     * The current equalizer state of the Player, so end users can keep track if they need to
-     */
-    equalizer: PlayerEqualizerBand[];
+    filters: PlayerFilterOptions;
 }
 
 /**
@@ -602,3 +598,64 @@ export interface RotatingNanoIpRoutePlanner {
     };
 }
 
+export interface PlayerFilterOptions {
+    /** Float value of 0-1 where 1.0 is 100%. Values >1.0 may cause clipping */
+    volume?: number;
+    equalizer?: PlayerEqualizerBand[];
+    /** Uses equalization to eliminate part of a band, usually targeting vocals */
+    karaoke?: PlayerKaraokeOptions;
+    /** Changes the speed, pitch, and rate. All default to 1.0 */
+    timescale?: {
+        speed?: number;
+        pitch?: number;
+        rate?: number;
+    };
+    /** Uses amplification to create a shuddering effect, where the volume quickly oscillates */
+    tremolo?: {
+        frequency?: number;
+        depth?: number;
+    };
+    /** Similar to tremolo. While tremolo oscillates the volume, vibrato oscillates the pitch */
+    vibrato?: {
+        frequency?: number;
+        depth?: number;
+    };
+    /** Rotates the sound around the stereo channels/user headphones aka Audio Panning */
+    rotation?: {
+        /** The frequency of the audio rotating around the listener in Hz */
+        rotationHz: number;
+    };
+    /** Distortion effect. It can generate some pretty unique audio effects */
+    distortion?: {
+        sinOffset?: number;
+        sinScale?: number;
+        cosOffset?: number;
+        cosScale?: number;
+        tanOffset?: number;
+        tanScale?: number;
+        offset?: number;
+        scale?: number;
+    };
+    /**
+     * Mixes both channels (left and right), with a configurable factor on how much each channel affects the other.
+     * With the defaults, both channels are kept independent from each other.
+     * Setting all factors to 0.5 means both channels get the same audio.
+     */
+    channelMix?: {
+        leftToLeft?: number;
+        leftToRight?: number;
+        rightToLeft?: number;
+        rightToRight?: number;
+    };
+    /** Higher frequencies get suppressed, while lower frequencies pass through this filter, thus the name low pass */
+    lowPass?: {
+        smoothing: number;
+    };
+}
+
+export interface PlayerKaraokeOptions {
+    level?: number;
+    monoLevel?: number;
+    filterBand?: number;
+    filterWidth?: number;
+}
