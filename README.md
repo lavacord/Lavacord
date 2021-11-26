@@ -34,7 +34,7 @@ npm install lavacord/lavacord
 ## LavaLink configuration
 Download from [the CI server](https://ci.fredboat.com/viewLog.html?buildId=lastSuccessful&buildTypeId=Lavalink_Build&tab=artifacts&guest=1)
 
-Put an `application.yml` file in your working directory. [Example](https://github.com/Frederikam/Lavalink/blob/master/LavalinkServer/application.yml.example)
+Put an `application.yml` file in your working directory. [Example](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/application.yml.example)
 
 Run with `java -jar Lavalink.jar`
 
