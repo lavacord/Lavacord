@@ -2,6 +2,7 @@ import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
 import { LavalinkNodeOptions, LavalinkStats, QueueData, WebsocketCloseEvent } from "./Types";
+import pack from "../../package.json";
 
 /**
  * The class for handling everything to do with connecting to Lavalink
@@ -104,7 +105,8 @@ export class LavalinkNode {
             const headers: Record<string, string> = {
                 Authorization: this.password,
                 "Num-Shards": String(this.manager.shards || 1),
-                "User-Id": this.manager.user!
+                "User-Id": this.manager.user!,
+                "Client-Name": `${pack.name}/${pack.version}`
             };
 
             if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;
