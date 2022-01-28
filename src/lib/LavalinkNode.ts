@@ -51,7 +51,7 @@ export class LavalinkNode {
     /**
      * The Discord VOICE_SERVER_UPDATE regions this node should cover.
      * The regions are regexed out of the url you send to LavaLink in the format of:
-     * /^([\w-]+)\d+\./
+     * /^([^\d]+)\d+\./
      *
      * Example VOICE_SERVER_UPDATE packet region: us-west4887.discord.media:443
      *

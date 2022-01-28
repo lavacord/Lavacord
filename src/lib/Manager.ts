@@ -30,7 +30,7 @@ export class Manager extends EventEmitter {
      * [**Promises**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolve with a node ID when
      * a region-based node is selected
      */
-    public selectPromises = new Map() as Map<string, (value: string | undefined) => unknown>;
+    public selectPromises = new Map() as Map<string, (value: string | Error) => unknown>;
     /**
      * The user id of the bot this Manager is managing
      */
@@ -116,8 +116,8 @@ export class Manager extends EventEmitter {
         if (player) return player;
         await this.sendWS(data.guild, data.channel, joinOptions);
         if (!data.node) {
-            const node = await new Promise<string | undefined>(resolve => this.selectPromises.set(data.guild, resolve));
-            if (!node) throw new Error(`INVALID_REGION: No available node with region for ${data.channel} on connect`);
+            const node = await new Promise<string | Error>(resolve => this.selectPromises.set(data.guild, resolve));
+            if (node instanceof Error) throw node;
             data.node = node;
         }
         return this.spawnPlayer(data);
@@ -226,10 +226,10 @@ export class Manager extends EventEmitter {
 
         if (!server || !state || !this.expecting.has(guildID)) return false;
         if (this.selectPromises.has(guildID)) {
-            const region = server.endpoint.match(/^([\w-]+)\d+\./)?.[1];
+            const region = server.endpoint.match(/^([^\d]+)\d+\./)?.[1];
             // The region should always exist regardless, but TypeScript says it *could* be undefined so just sanity checking.
             if (!region) {
-                this.selectPromises.get(guildID)?.(undefined);
+                this.selectPromises.get(guildID)?.(new Error(`INVALID_REGION: Cannot extract region from server endpoint`));
                 this.selectPromises.delete(guildID);
                 return false;
             }
@@ -239,7 +239,7 @@ export class Manager extends EventEmitter {
             let node: string | undefined;
             if (onlyIncludesRegion.length) node = onlyIncludesRegion.length > 1 ? onlyIncludesRegion[Math.floor(Math.random() * onlyIncludesRegion.length)].id : onlyIncludesRegion[0].id;
             else if (predicate.length) node = predicate.length > 1 ? predicate[Math.floor(Math.random() * predicate.length)].id : predicate[0].id;
-            this.selectPromises.get(guildID)?.(node);
+            this.selectPromises.get(guildID)?.(node || new Error(`NODE_NODE_FOR_REGION: No available node covering ${region} region`));
             this.selectPromises.delete(guildID);
         }
 
