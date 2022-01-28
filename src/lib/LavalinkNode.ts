@@ -48,7 +48,16 @@ export class LavalinkNode {
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
     public state?: any;
-
+    /**
+     * The Discord VOICE_SERVER_UPDATE regions this node should cover.
+     * The regions are regexed out of the url you send to LavaLink in the format of:
+     * /^([\w-]+)\d+\./
+     *
+     * Example VOICE_SERVER_UPDATE packet region: us-west4887.discord.media:443
+     *
+     * What you would put: ["us-west"] to only cover us-west
+     */
+    public regions?: string[];
     /**
      * The reconnect timeout
      * @private
@@ -75,6 +84,7 @@ export class LavalinkNode {
         if (options.resumeKey) this.resumeKey = options.resumeKey;
         if (options.resumeTimeout) this.resumeTimeout = options.resumeTimeout;
         if (options.state) this.state = options.state;
+        if (options.regions) this.regions = options.regions;
 
         this.stats = {
             players: 0,

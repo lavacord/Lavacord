@@ -26,6 +26,12 @@ export class Manager extends EventEmitter {
      */
     public voiceStates = new Map<string, VoiceStateUpdate>();
     /**
+     * A [**Map**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) of
+     * [**Promises**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolve with a node ID when
+     * a region-based node is selected
+     */
+    public selectPromises = new Map() as Map<string, (value: string | undefined) => unknown>;
+    /**
      * The user id of the bot this Manager is managing
      */
     public user!: string;
@@ -109,6 +115,11 @@ export class Manager extends EventEmitter {
         const player = this.players.get(data.guild);
         if (player) return player;
         await this.sendWS(data.guild, data.channel, joinOptions);
+        if (!data.node) {
+            const node = await new Promise<string | undefined>(resolve => this.selectPromises.set(data.guild, resolve));
+            if (!node) throw new Error(`INVALID_REGION: No available node with region for ${data.channel} on connect`);
+            data.node = node;
+        }
         return this.spawnPlayer(data);
     }
 
@@ -214,6 +225,27 @@ export class Manager extends EventEmitter {
         const state = this.voiceStates.get(guildID);
 
         if (!server || !state || !this.expecting.has(guildID)) return false;
+        if (this.selectPromises.has(guildID)) {
+            const region = server.endpoint.match(/^([\w-]+)\d+\./)?.[1];
+            // The region should always exist regardless, but TypeScript says it *could* be undefined so just sanity checking.
+            if (!region) {
+                this.selectPromises.get(guildID)?.(undefined);
+                this.selectPromises.delete(guildID);
+                return false;
+            }
+
+            const predicate = Array.from(this.nodes.values()).filter(n => n.regions && n.regions.includes(region));
+            const onlyIncludesRegion = predicate.filter(n => n.regions && n.regions.length === 1);
+            let node: string | undefined;
+            if (onlyIncludesRegion.length) node = onlyIncludesRegion.length > 1 ? onlyIncludesRegion[Math.floor(Math.random() * onlyIncludesRegion.length)].id : onlyIncludesRegion[0].id;
+            else if (predicate.length) node = predicate.length > 1 ? predicate[Math.floor(Math.random() * predicate.length)].id : predicate[0].id;
+            this.selectPromises.get(guildID)?.(node);
+            this.selectPromises.delete(guildID);
+        }
+
+        // The resolve with region is inside an async function, but calls a sync method to spawn a player directly after the region is resolved.
+        // The player should be available on the nextTick which we can wait for with setImmediate.
+        await new Promise(resolve => setImmediate(resolve));
 
         const player = this.players.get(guildID);
         if (!player) return false;
@@ -231,7 +263,7 @@ export class Manager extends EventEmitter {
     private spawnPlayer(data: JoinData): Player {
         const exists = this.players.get(data.guild);
         if (exists) return exists;
-        const node = this.nodes.get(data.node);
+        const node = this.nodes.get(data.node!);
         if (!node) throw new Error(`INVALID_HOST: No available node with ${data.node}`);
         const player = new this.Player(node, data.guild);
         this.players.set(data.guild, player);

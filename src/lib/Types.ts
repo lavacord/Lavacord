@@ -148,9 +148,9 @@ export interface JoinData {
      */
     channel: string;
     /**
-     * The LavalinkNode ID you want to use
+     * The LavalinkNode ID you want to use. None to auto determine based off region if defined
      */
-    node: string;
+    node?: string;
 }
 
 /**
@@ -285,6 +285,16 @@ export interface LavalinkNodeOptions {
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
     state?: any;
+    /**
+     * The Discord VOICE_SERVER_UPDATE regions this node should cover.
+     * The regions are regexed out of the url you send to LavaLink in the format of:
+     * /^([\w-]+)\d+\./
+     *
+     * Example VOICE_SERVER_UPDATE packet region: us-west4887.discord.media:443
+     *
+     * What you would put: ["us-west"] to only cover us-west
+     */
+    regions?: string[];
 }
 
 /**
