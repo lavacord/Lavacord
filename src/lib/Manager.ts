@@ -114,9 +114,11 @@ export class Manager extends EventEmitter {
     public async join(data: JoinData, joinOptions: JoinOptions = {}): Promise<Player> {
         const player = this.players.get(data.guild);
         if (player) return player;
+        let promise: Promise<string | Error> | undefined;
+        if (!data.node) promise = new Promise<string | Error>(resolve => this.selectPromises.set(data.guild, resolve));
         await this.sendWS(data.guild, data.channel, joinOptions);
-        if (!data.node) {
-            const node = await new Promise<string | Error>(resolve => this.selectPromises.set(data.guild, resolve));
+        if (promise) {
+            const node = await promise;
             if (node instanceof Error) throw node;
             data.node = node;
         }
