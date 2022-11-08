@@ -113,7 +113,7 @@ await player.play(track); // Track is a base64 string we get from Lavalink REST 
 
 player.once("error", error => console.error(error));
 player.once("end", data => {
-    if (data.reason === "REPLACED") return; // Ignore REPLACED reason to prevent skip loops
+    if (data.type === "TrackEndEvent" && data.reason === "REPLACED") return; // Ignore REPLACED reason to prevent skip loops
     // Play next song
 });
 

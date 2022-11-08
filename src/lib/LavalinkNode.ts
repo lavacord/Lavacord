@@ -1,7 +1,8 @@
 import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
-import { LavalinkNodeOptions, LavalinkStats, QueueData, WebsocketCloseEvent } from "./Types";
+import { LavalinkNodeOptions, QueueData } from "./Types";
+import { Stats } from "lavalink-types";
 
 /**
  * The class for handling everything to do with connecting to Lavalink
@@ -35,7 +36,7 @@ export class LavalinkNode {
     /**
      * The statistics of the LavalinkNode
      */
-    public stats: LavalinkStats;
+    public stats: Stats;
     /**
      * The resume key to send to the LavalinkNode so you can resume properly
      */
@@ -90,6 +91,11 @@ export class LavalinkNode {
                 cores: 0,
                 systemLoad: 0,
                 lavalinkLoad: 0
+            },
+            frameStats: {
+                sent: 0,
+                nulled: 0,
+                deficit: 0
             }
         };
     }
@@ -104,7 +110,8 @@ export class LavalinkNode {
             const headers: Record<string, string> = {
                 Authorization: this.password,
                 "Num-Shards": String(this.manager.shards || 1),
-                "User-Id": this.manager.user!
+                "User-Id": this.manager.user!,
+                "Client-Name": "Lavacord"
             };
 
             if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;
@@ -118,7 +125,9 @@ export class LavalinkNode {
 
             const onOpen = (): void => {
                 this.onOpen();
-                ws.removeAllListeners();
+                ws.removeListener("open", onOpen);
+                ws.removeListener("error", onEvent);
+                ws.removeListener("close", onEvent);
                 resolve(ws);
             };
 
@@ -129,9 +138,9 @@ export class LavalinkNode {
         });
 
         this.ws!
-            .on("message", this.onMessage.bind(this))
-            .on("error", this.onError.bind(this))
-            .on("close", this.onClose.bind(this));
+            .on("message", data => this.onMessage(data))
+            .on("error", error => this.onError(error))
+            .on("close", (code, reason) => this.onClose(code, reason));
         return this.ws!;
     }
 
@@ -142,7 +151,7 @@ export class LavalinkNode {
     public send(msg: object): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const parsed = JSON.stringify(msg);
-            const queueData = { data: parsed, resolve, reject };
+            const queueData: QueueData = { data: parsed, resolve, reject };
 
             if (this.connected) return this._send(queueData);
             else this._queue.push(queueData);
@@ -208,10 +217,9 @@ export class LavalinkNode {
 
     /**
      * Private function for handling the error event from WebSocket
-     * @param event WebSocket event data
+     * @param error WebSocket error
      */
-    private onError(event: { error: any; message: string; type: string; target: WebSocket; }): void {
-        const error = event && event.error ? event.error : event;
+    private onError(error: Error): void {
         if (!error) return;
 
         this.manager.emit("error", error, this);
@@ -220,11 +228,12 @@ export class LavalinkNode {
 
     /**
      * Private function for handling the close event from WebSocket
-     * @param event WebSocket event data
+     * @param code WebSocket close code
+     * @param reason WebSocket close reason
      */
-    private onClose(event: WebsocketCloseEvent): void {
-        this.manager.emit("disconnect", event, this);
-        if (event.code !== 1000 || event.reason !== "destroy") return this.reconnect();
+    private onClose(code: number, reason: Buffer): void {
+        this.manager.emit("disconnect", code, reason.toString(), this);
+        if (code !== 1000 || reason.toString() !== "destroy") return this.reconnect();
     }
 
     /**
@@ -258,5 +267,4 @@ export class LavalinkNode {
         await Promise.all(this._queue.map(this._send));
         this._queue = [];
     }
-
 }

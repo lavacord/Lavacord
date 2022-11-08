@@ -1,7 +1,7 @@
 import fetch, { Response } from "node-fetch";
 import { URLSearchParams } from "url";
 import { LavalinkNode } from "./LavalinkNode";
-import { TrackResponse, TrackData, RoutePlannerStatus } from "./Types";
+import { TrackLoadingResult, TrackInfo, RoutePlannerStatus } from "lavalink-types";
 
 const json = (res: Response): Promise<any> => res.json();
 
@@ -15,7 +15,7 @@ export class Rest {
      * @param node The LavalinkNode
      * @param identifer The thing you want to load
      */
-    static load(node: LavalinkNode, identifer: string): Promise<TrackResponse> {
+    static load(node: LavalinkNode, identifer: string): Promise<TrackLoadingResult> {
         const params = new URLSearchParams();
         params.append("identifier", identifer);
 
@@ -27,10 +27,10 @@ export class Rest {
      * @param node The lavalink node
      * @param track the track(s) you want to decode
      */
-    static decode(node: LavalinkNode, track: string): Promise<TrackData>;
-    static decode(node: LavalinkNode, tracks: string[]): Promise<TrackData[]>;
-    static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackData | TrackData[]>;
-    static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackData | TrackData[]> {
+    static decode(node: LavalinkNode, track: string): Promise<TrackInfo>;
+    static decode(node: LavalinkNode, tracks: string[]): Promise<TrackInfo[]>;
+    static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackInfo | TrackInfo[]>;
+    static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackInfo | TrackInfo[]> {
         if (Array.isArray(tracks)) {
             return fetch(`http://${node.host}:${node.port}/decodetracks`, { method: "POST", body: JSON.stringify(tracks), headers: { Authorization: node.password } }).then(json);
         } else {

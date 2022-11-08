@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions, PlayerUpdateVoiceState, WebsocketCloseEvent } from "./Types";
+import { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions, PlayerUpdateVoiceState } from "./Types";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
 import WebSocket from "ws";
@@ -120,7 +120,7 @@ export class Manager extends EventEmitter {
         await this.sendWS(guild, null);
         const player = this.players.get(guild);
         if (!player) return false;
-        if (player.listenerCount("end") && player.playing) player.emit("end", { type: "TrackEndEvent", reason: "CLEANUP" });
+        if (player.listenerCount("end") && player.playing) player.emit("end", { type: "TrackEndEvent", reason: "CLEANUP", track: player.track || "UNKNOWN", op: "event", guildId: guild });
         player.removeAllListeners();
         await player.destroy();
         return this.players.delete(guild);
@@ -239,28 +239,26 @@ export class Manager extends EventEmitter {
     }
 }
 
+interface ManagerEvents {
+    ready: [LavalinkNode];
+    raw: [unknown, LavalinkNode];
+    error: [unknown, LavalinkNode];
+    disconnect: [number, string, LavalinkNode];
+    reconnecting: [LavalinkNode];
+}
+
 export interface Manager {
-    on(event: "ready", listener: (node: LavalinkNode) => void): this;
-    on(event: "raw", listener: (message: unknown, node: LavalinkNode) => void): this;
-    on(event: "error", listener: (error: unknown, node: LavalinkNode) => void): this;
-    on(event: "disconnect", listener: (eventData: WebsocketCloseEvent, node: LavalinkNode) => void): this;
-    on(event: "reconnecting", listener: (node: LavalinkNode) => void): this;
-
-    once(event: "ready", listener: (node: LavalinkNode) => void): this;
-    once(event: "raw", listener: (message: unknown, node: LavalinkNode) => void): this;
-    once(event: "error", listener: (error: unknown, node: LavalinkNode) => void): this;
-    once(event: "disconnect", listener: (eventData: WebsocketCloseEvent, node: LavalinkNode) => void): this;
-    once(event: "reconnecting", listener: (node: LavalinkNode) => void): this;
-
-    off(event: "ready", listener: (node: LavalinkNode) => void): this;
-    off(event: "raw", listener: (message: unknown, node: LavalinkNode) => void): this;
-    off(event: "error", listener: (error: unknown, node: LavalinkNode) => void): this;
-    off(event: "disconnect", listener: (eventData: WebsocketCloseEvent, node: LavalinkNode) => void): this;
-    off(event: "reconnecting", listener: (node: LavalinkNode) => void): this;
-
-    emit(event: "ready", node: LavalinkNode): boolean;
-    emit(event: "raw", message: unknown, node: LavalinkNode): boolean;
-    emit(event: "error", error: unknown, node: LavalinkNode): boolean;
-    emit(event: "disconnect", eventData: WebsocketCloseEvent, node: LavalinkNode): boolean;
-    emit(event: "reconnecting", node: LavalinkNode): boolean;
+    addListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    emit<E extends keyof ManagerEvents>(event: E, ...args: ManagerEvents[E]): boolean;
+    eventNames(): Array<keyof ManagerEvents>;
+    listenerCount(event: keyof ManagerEvents): number;
+    listeners(event: keyof ManagerEvents): Array<(...args: Array<any>) => any>;
+    off<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    on<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    once<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    prependListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    prependOnceListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    rawListeners(event: keyof ManagerEvents): Array<(...args: Array<any>) => any>;
+    removeAllListeners(event?: keyof ManagerEvents): this;
+    removeListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
 }
