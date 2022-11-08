@@ -1,4 +1,4 @@
-import fetch, { Response } from "node-fetch";
+import { Response, fetch } from "undici";
 import { URLSearchParams } from "url";
 import { LavalinkNode } from "./LavalinkNode";
 import { TrackLoadingResult, TrackInfo, RoutePlannerStatus } from "lavalink-types";

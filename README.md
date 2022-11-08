@@ -75,7 +75,7 @@ manager.on("error", (error, node) => {
 Resolving tracks using LavaLink REST API
 
 ```javascript
-const fetch = require("node-fetch");
+const fetch = require("undici");
 const { URLSearchParams } = require("url");
 
 async function getSongs(search) {
