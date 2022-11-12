@@ -78,7 +78,7 @@ export class Player extends EventEmitter {
      * @param track The base64 string of the song that you want to play
      * @param options Play options
      */
-    public async play(track: string, options: Omit<PlayData, "op" | "guildId" | "track">): Promise<boolean> {
+    public async play(track: string, options?: Omit<PlayData, "op" | "guildId" | "track">): Promise<boolean> {
         const d = await this.send("play", { ...options, track });
         this.track = track;
         this.playing = true;
