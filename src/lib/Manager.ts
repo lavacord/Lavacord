@@ -63,7 +63,7 @@ export class Manager extends EventEmitter {
     }
 
     /**
-     * Connects all the {@link LavalinkNode|LavalinkNodes} to the respective Lavalink instance
+     * Connects all the {@link LavalinkNode} to the respective Lavalink instance
      */
     public connect(): Promise<Array<WebSocket | boolean>> {
         return Promise.all([...this.nodes.values()].map(node => node.connect()));
@@ -239,7 +239,7 @@ export class Manager extends EventEmitter {
     }
 }
 
-interface ManagerEvents {
+export interface ManagerEvents {
     ready: [LavalinkNode];
     raw: [unknown, LavalinkNode];
     error: [unknown, LavalinkNode];

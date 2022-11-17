@@ -194,7 +194,7 @@ export class Player extends EventEmitter {
     }
 }
 
-interface PlayerEvents {
+export interface PlayerEvents {
     event: [Event];
     start: [TrackStartEvent];
     end: [TrackEndEvent | TrackStuckEvent];
