@@ -23,10 +23,6 @@ export interface ManagerOptions {
      */
     user?: string;
     /**
-     * The amount of shards the bot is currently operating on, by default this is `1`
-     */
-    shards?: number;
-    /**
      * The Player class that the manager uses to create Players, so users can modify this
      */
     player?: typeof Player;

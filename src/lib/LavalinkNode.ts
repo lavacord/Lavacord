@@ -2,7 +2,10 @@ import WebSocket from "ws";
 import { Manager } from "./Manager";
 import { Player } from "./Player";
 import { LavalinkNodeOptions, QueueData } from "./Types";
-import { Stats } from "lavalink-types";
+import { Stats, OutboundHandshakeHeaders } from "lavalink-types";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require("../../package.json");
 
 /**
  * The class for handling everything to do with connecting to Lavalink
@@ -107,11 +110,10 @@ export class LavalinkNode {
         this.ws = await new Promise((resolve, reject) => {
             if (this.connected) this.ws!.close();
 
-            const headers: Record<string, string> = {
+            const headers: OutboundHandshakeHeaders = {
                 Authorization: this.password,
-                "Num-Shards": String(this.manager.shards || 1),
                 "User-Id": this.manager.user!,
-                "Client-Name": "Lavacord"
+                "Client-Name": `Lavacord/${version}`
             };
 
             if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;
@@ -192,7 +194,7 @@ export class LavalinkNode {
         this._queueFlush()
             .catch(error => this.manager.emit("error", error, this));
 
-        if (this.resumeKey) this.configureResuming(this.resumeKey).catch(error => this.manager.emit("error", error, this));
+        if (this.resumeKey) setTimeout(() => this.configureResuming(this.resumeKey!).catch(error => this.manager.emit("error", error, this)), 1000);
 
         this.manager.emit("ready", this);
     }

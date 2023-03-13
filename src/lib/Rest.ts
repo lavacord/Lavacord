@@ -29,7 +29,6 @@ export class Rest {
      */
     static decode(node: LavalinkNode, track: string): Promise<TrackInfo>;
     static decode(node: LavalinkNode, tracks: string[]): Promise<TrackInfo[]>;
-    static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackInfo | TrackInfo[]>;
     static decode(node: LavalinkNode, tracks: string | string[]): Promise<TrackInfo | TrackInfo[]> {
         if (Array.isArray(tracks)) {
             return fetch(`http://${node.host}:${node.port}/decodetracks`, { method: "POST", body: JSON.stringify(tracks), headers: { Authorization: node.password } }).then(json);

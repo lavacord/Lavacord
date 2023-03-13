@@ -30,10 +30,6 @@ export class Manager extends EventEmitter {
      */
     public user!: string;
     /**
-     * The amount of shards the bot has, by default its 1
-     */
-    public shards = 1;
-    /**
      * The send function needs for the library to function
      */
     public send?: (packet: DiscordPacket) => unknown;
@@ -55,7 +51,6 @@ export class Manager extends EventEmitter {
         super();
 
         if (options.user) this.user = options.user;
-        if (options.shards) this.shards = options.shards;
         if (options.player) this.Player = options.player;
         if (options.send) this.send = options.send;
 
