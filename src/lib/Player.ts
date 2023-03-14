@@ -1,8 +1,8 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import { Event, TrackStartEvent, TrackEndEvent, TrackExceptionEvent, WebSocketClosedEvent, TrackStuckEvent, PlayerState, Equalizer, PlayData, Filters } from "lavalink-types";
+import { PlayerUpdateVoiceState, JoinOptions, PlayData } from "./Types";
+import { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate } from "lavalink-types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -78,7 +78,7 @@ export class Player extends EventEmitter {
      * @param track The base64 string of the song that you want to play
      * @param options Play options
      */
-    public async play(track: string, options?: Omit<PlayData, "op" | "guildId" | "track">): Promise<boolean> {
+    public async play(track: string, options?: PlayData): Promise<boolean> {
         const d = await this.send("play", { ...options, track });
         this.track = track;
         this.playing = true;
@@ -195,15 +195,15 @@ export class Player extends EventEmitter {
 }
 
 export interface PlayerEvents {
-    event: [Event];
-    start: [TrackStartEvent];
-    end: [TrackEndEvent | TrackStuckEvent];
+    event: [EventOP];
+    start: [Extract<EventOP, { type: "TrackStartEvent"; }>];
+    end: [Extract<EventOP, { type: "TrackEndEvent" | "TrackStuckEvent"; }>];
     pause: [boolean];
     seek: [number];
-    error: [TrackExceptionEvent | WebSocketClosedEvent];
+    error: [Extract<EventOP, { type: "TrackExceptionEvent" | "WebSocketClosedEvent"; }>];
     warn: [string];
     volume: [number];
-    playerUpdate: [{ state: PlayerState; }];
+    playerUpdate: [PlayerUpdate];
     filters: [Filters];
 }
 

@@ -200,3 +200,11 @@ export interface QueueData {
      */
     reject: (reason?: any) => void;
 }
+
+export type PlayData = {
+    startTime?: number;
+    endTime?: number;
+    volume?: number;
+    noReplace?: boolean;
+    pause?: boolean;
+}
