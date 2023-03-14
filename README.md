@@ -74,19 +74,13 @@ manager.on("error", (error, node) => {
 Resolving tracks using LavaLink REST API
 
 ```javascript
-const fetch = require("undici");
-const { URLSearchParams } = require("url");
+const { Rest } = require("lavacord");
 
 async function getSongs(search) {
     // This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.
     const node = manager.idealNodes[0];
 
-    const params = new URLSearchParams();
-    params.append("identifier", search);
-
-    return fetch(`http://${node.host}:${node.port}/loadtracks?${params}`, { headers: { Authorization: node.password } })
-        .then(res => res.json())
-        .then(data => data.tracks)
+    return Rest.load(node, search).then(data => data.tracks)
         .catch(err => {
             console.error(err);
             return null;
