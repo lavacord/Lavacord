@@ -1,8 +1,9 @@
 import { EventEmitter } from "events";
-import { LavalinkNode } from "./LavalinkNode";
-import { Manager } from "./Manager";
-import { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import { Event, TrackStartEvent, TrackEndEvent, TrackExceptionEvent, WebSocketClosedEvent, TrackStuckEvent, PlayerState, Equalizer, PlayData, Filters } from "lavalink-types";
+import { Rest } from "./Rest";
+import type { LavalinkNode } from "./LavalinkNode";
+import type { Manager } from "./Manager";
+import type { PlayerUpdateVoiceState, JoinOptions } from "./Types";
+import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, ErrorResponse, DestroyPlayerResult } from "lavalink-types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -72,15 +73,28 @@ export class Player extends EventEmitter {
             });
     }
 
+    /**
+     * Updates the current player on lavalink
+     * @param options Update options
+     * @param noReplace If the event should be dropped if there's a currently playing track should encodedTrack or identifier be present in options
+     */
+    public async update(options: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
+        const d = await Rest.updatePlayer(this.node, this.id, options, noReplace);
+        if ((d as ErrorResponse).error) throw new Error((d as ErrorResponse).message);
+        const narrowed = d as UpdatePlayerResult;
+        if (narrowed.track) this.track = narrowed.track.encoded;
+        return narrowed;
+    }
 
     /**
      * Plays the specified song using the base64 string from lavalink
      * @param track The base64 string of the song that you want to play
      * @param options Play options
      */
-    public async play(track: string, options?: Omit<PlayData, "op" | "guildId" | "track">): Promise<boolean> {
-        const d = await this.send("play", { ...options, track });
-        this.track = track;
+    public async play(track: string, options?: Omit<UpdatePlayerData, "encodedTrack" | "identifier"> & { noReplace?: boolean; }): Promise<UpdatePlayerResult> {
+        const noReplace = options ? options.noReplace : false;
+        if (options) delete options.noReplace;
+        const d = await this.update(Object.assign({ encodedTrack: track } as UpdatePlayerData, options), noReplace);
         this.playing = true;
         this.timestamp = Date.now();
         return d;
@@ -89,8 +103,8 @@ export class Player extends EventEmitter {
     /**
      * Stops the music, depending on how the end event is handled this will either stop
      */
-    public async stop(): Promise<boolean> {
-        const d = await this.send("stop");
+    public async stop(): Promise<UpdatePlayerData> {
+        const d = await this.update({ encodedTrack: null });
         this.playing = false;
         this.timestamp = null;
         return d;
@@ -100,8 +114,8 @@ export class Player extends EventEmitter {
      * Pauses/Resumes the song depending on what is specified
      * @param pause Whether or not to pause whats currently playing
      */
-    public async pause(pause: boolean): Promise<boolean> {
-        const d = await this.send("pause", { pause });
+    public async pause(pause: boolean): Promise<UpdatePlayerData> {
+        const d = await this.update({ paused: pause });
         this.paused = pause;
         if (this.listenerCount("pause")) this.emit("pause", pause);
         return d;
@@ -110,7 +124,7 @@ export class Player extends EventEmitter {
     /**
      * Resumes the current song
      */
-    public resume(): Promise<boolean> {
+    public resume(): Promise<UpdatePlayerData> {
         return this.pause(false);
     }
 
@@ -118,8 +132,8 @@ export class Player extends EventEmitter {
      * Changes the volume, only for the current song
      * @param volume The volume as a float from 0.0 to 10.0. 1.0 is default.
      */
-    public async volume(volume: number): Promise<boolean> {
-        const d = await this.send("volume", { volume: volume * 100 });
+    public async volume(volume: number): Promise<UpdatePlayerData> {
+        const d = await this.update({ volume: volume * 100 });
         if (this.listenerCount("volume")) this.emit("volume", volume);
         return d;
     }
@@ -128,14 +142,14 @@ export class Player extends EventEmitter {
      * Seeks the current song to a certain position
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
-    public async seek(position: number): Promise<boolean> {
-        const d = await this.send("seek", { position });
+    public async seek(position: number): Promise<UpdatePlayerData> {
+        const d = await this.update({ position });
         if (this.listenerCount("seek")) this.emit("seek", position);
         return d;
     }
 
-    public async filters(options: Filters): Promise<boolean> {
-        const d = await this.send("filters", options);
+    public async filters(options: Filters): Promise<UpdatePlayerData> {
+        const d = await this.update({ filters: options });
         this.state.filters = options;
         if (this.listenerCount("filters")) this.emit("filters", options);
         return d;
@@ -145,7 +159,7 @@ export class Player extends EventEmitter {
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
      * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/freyacodes/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
      */
-    public async equalizer(bands: Equalizer[]): Promise<boolean> {
+    public async equalizer(bands: Equalizer[]): Promise<UpdatePlayerData> {
         const newFilters = Object.assign(this.state.filters, { equalizer: bands });
         const d = await this.filters(newFilters);
         return d;
@@ -154,17 +168,19 @@ export class Player extends EventEmitter {
     /**
      * Sends a destroy signal to lavalink, basically just a cleanup op for lavalink to clean its shit up
      */
-    public destroy(): Promise<boolean> {
-        return this.send("destroy");
+    public async destroy(): Promise<DestroyPlayerResult> {
+        const d = await Rest.destroyPlayer(this.node, this.id);
+        if (d && d.error) throw new Error(d.message);
+        return d as DestroyPlayerResult;
     }
 
     /**
      * Sends voiceUpdate information to lavalink so it can connect to discords voice servers properly
      * @param data The data lavalink needs to connect and recieve data from discord
      */
-    public connect(data: PlayerUpdateVoiceState): Promise<boolean> {
+    public connect(data: PlayerUpdateVoiceState): Promise<UpdatePlayerData> {
         this.voiceUpdateState = data;
-        return this.send("voiceUpdate", data);
+        return this.update({ voice: { token: data.event.token, endpoint: data.event.endpoint, sessionId: data.sessionId } });
     }
 
     /**
@@ -177,16 +193,6 @@ export class Player extends EventEmitter {
     }
 
     /**
-     * Used internally to make sure the Player's node is connected and to easily send data to lavalink
-     * @param op the op code
-     * @param data the data to send
-     */
-    private send(op: string, data?: object): Promise<boolean> {
-        if (!this.node.connected) return Promise.reject(new Error("No available websocket connection for selected node."));
-        return this.node.send({ ...data, op, guildId: this.id });
-    }
-
-    /**
      * The manager that created the player
      */
     public get manager(): Manager {
@@ -195,15 +201,15 @@ export class Player extends EventEmitter {
 }
 
 export interface PlayerEvents {
-    event: [Event];
-    start: [TrackStartEvent];
-    end: [TrackEndEvent | TrackStuckEvent];
+    event: [EventOP];
+    start: [Extract<EventOP, { type: "TrackStartEvent"; }>];
+    end: [Extract<EventOP, { type: "TrackEndEvent" | "TrackStuckEvent"; }>];
     pause: [boolean];
     seek: [number];
-    error: [TrackExceptionEvent | WebSocketClosedEvent];
+    error: [Extract<EventOP, { type: "TrackExceptionEvent" | "WebSocketClosedEvent"; }>];
     warn: [string];
     volume: [number];
-    playerUpdate: [{ state: PlayerState; }];
+    playerUpdate: [PlayerUpdate];
     filters: [Filters];
 }
 

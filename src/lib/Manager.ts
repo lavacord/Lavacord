@@ -1,8 +1,8 @@
 import { EventEmitter } from "events";
-import { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions, PlayerUpdateVoiceState } from "./Types";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
 import WebSocket from "ws";
+import type { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
 
 /**
  * The class that handles everything to do with Lavalink. it is the hub of the library basically
@@ -71,7 +71,7 @@ export class Manager extends EventEmitter {
     public disconnect(): Promise<boolean[]> {
         const promises = [];
         for (const id of [...this.players.keys()]) promises.push(this.leave(id));
-        for (const node of [...this.nodes.values()]) promises.push(node.destroy());
+        for (const node of [...this.nodes.values()]) node.destroy();
         return Promise.all(promises);
     }
 
@@ -98,7 +98,7 @@ export class Manager extends EventEmitter {
     /**
      * Connects the bot to the selected voice channel
      * @param data The Join Data
-     * @param param1 Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
+     * @param joinOptions Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
      */
     public async join(data: JoinData, joinOptions: JoinOptions = {}): Promise<Player> {
         const player = this.players.get(data.guild);
@@ -115,7 +115,7 @@ export class Manager extends EventEmitter {
         await this.sendWS(guild, null);
         const player = this.players.get(guild);
         if (!player) return false;
-        if (player.listenerCount("end") && player.playing) player.emit("end", { type: "TrackEndEvent", reason: "CLEANUP", track: player.track || "UNKNOWN", op: "event", guildId: guild });
+        if (player.listenerCount("end") && player.playing) player.emit("end", { op: "event", type: "TrackEndEvent", reason: "CLEANUP", guildId: guild });
         player.removeAllListeners();
         await player.destroy();
         return this.players.delete(guild);
@@ -129,14 +129,25 @@ export class Manager extends EventEmitter {
     public async switch(player: Player, node: LavalinkNode): Promise<Player> {
         const { track, state, voiceUpdateState } = { ...player };
         const position = state.position ? state.position + 2000 : 2000;
+        if (!voiceUpdateState) {
+            player.node = node;
+            return player;
+        }
 
         await player.destroy();
 
         player.node = node;
 
-        await player.connect(voiceUpdateState as PlayerUpdateVoiceState);
-        await player.play(track as string, { startTime: position, volume: state.filters.volume || 1.0 });
-        await player.filters(state.filters);
+        await player.play(track!, {
+            position,
+            volume: state.filters.volume || 1.0,
+            filters: state.filters,
+            voice: {
+                token: voiceUpdateState.event.token,
+                endpoint: voiceUpdateState.event.endpoint,
+                sessionId: voiceUpdateState.sessionId
+            }
+        });
 
         return player;
     }

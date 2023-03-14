@@ -1,8 +1,9 @@
 import WebSocket from "ws";
-import { Manager } from "./Manager";
-import { Player } from "./Player";
-import { LavalinkNodeOptions, QueueData } from "./Types";
-import { Stats, OutboundHandshakeHeaders } from "lavalink-types";
+import { Rest } from "./Rest";
+
+import type { Manager } from "./Manager";
+import type { LavalinkNodeOptions } from "./Types";
+import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, ErrorResponse } from "lavalink-types";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../../package.json");
@@ -52,17 +53,20 @@ export class LavalinkNode {
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
     public state?: any;
+    /**
+     * The major version of the LavaLink node as indicated by /version
+     */
+    public version?: number;
+    /**
+     * The session ID sent by LavaLink on connect. Used for some REST routes
+     */
+    public sessionId?: string;
 
     /**
      * The reconnect timeout
      * @private
      */
     private _reconnect?: NodeJS.Timeout;
-    /**
-     * The queue for send
-     * @private
-     */
-    private _queue: QueueData[] = [];
 
     /**
      * The base of the connection to lavalink
@@ -106,37 +110,46 @@ export class LavalinkNode {
     /**
      * Connects the node to Lavalink
      */
-    public async connect(): Promise<WebSocket | boolean> {
+    public async connect(): Promise<WebSocket> {
         this.ws = await new Promise((resolve, reject) => {
             if (this.connected) this.ws!.close();
 
-            const headers: OutboundHandshakeHeaders = {
-                Authorization: this.password,
-                "User-Id": this.manager.user!,
-                "Client-Name": `Lavacord/${version}`
-            };
+            return Rest.version(this)
+                .then(nodeVersion => {
+                    if ((nodeVersion as ErrorResponse).error || typeof nodeVersion !== "string") return reject(new Error((nodeVersion as ErrorResponse).message));
+                    const major = nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : undefined;
+                    if (!major || isNaN(Number(major))) return reject(new Error("Node didn't respond to /version with a major.minor.patch version string"));
+                    const numMajor = Number(major);
+                    this.version = numMajor;
 
-            if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;
+                    const headers: OutboundHandshakeHeaders = {
+                        Authorization: this.password,
+                        "User-Id": this.manager.user!,
+                        "Client-Name": `Lavacord/${version}`
+                    };
 
-            const ws = new WebSocket(`ws://${this.host}:${this.port}/`, { headers });
+                    if (this.resumeKey) headers["Resume-Key"] = this.resumeKey;
 
-            const onEvent = (event: unknown): void => {
-                ws.removeAllListeners();
-                reject(event);
-            };
+                    const ws = new WebSocket(`ws://${this.host}:${this.port}/v${numMajor}/websocket`, { headers });
 
-            const onOpen = (): void => {
-                this.onOpen();
-                ws.removeListener("open", onOpen);
-                ws.removeListener("error", onEvent);
-                ws.removeListener("close", onEvent);
-                resolve(ws);
-            };
+                    const onEvent = (event: unknown): void => {
+                        ws.removeAllListeners();
+                        reject(event);
+                    };
 
-            ws
-                .once("open", onOpen)
-                .once("error", onEvent)
-                .once("close", onEvent);
+                    const onOpen = (): void => {
+                        this.onOpen();
+                        ws.removeListener("open", onOpen);
+                        ws.removeListener("error", onEvent);
+                        ws.removeListener("close", onEvent);
+                        resolve(ws);
+                    };
+
+                    ws
+                        .once("open", onOpen)
+                        .once("error", onEvent)
+                        .once("close", onEvent);
+                }).catch(reject);
         });
 
         this.ws!
@@ -144,29 +157,6 @@ export class LavalinkNode {
             .on("error", error => this.onError(error))
             .on("close", (code, reason) => this.onClose(code, reason));
         return this.ws!;
-    }
-
-    /**
-     * Sends data to lavalink or puts it in a queue if not connected yet
-     * @param msg Data you want to send to lavalink
-     */
-    public send(msg: object): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            const parsed = JSON.stringify(msg);
-            const queueData: QueueData = { data: parsed, resolve, reject };
-
-            if (this.connected) return this._send(queueData);
-            else this._queue.push(queueData);
-        });
-    }
-
-    /**
-     * Configures the resuming key for the LavalinkNode
-     * @param key the actual key to send to lavalink to resume with
-     * @param timeout how long before the key invalidates and lavalinknode will stop expecting you to resume
-     */
-    public configureResuming(key: string, timeout = this.resumeTimeout): Promise<boolean> {
-        return this.send({ op: "configureResuming", key, timeout });
     }
 
     /**
@@ -191,10 +181,6 @@ export class LavalinkNode {
      */
     private onOpen(): void {
         if (this._reconnect) clearTimeout(this._reconnect);
-        this._queueFlush()
-            .catch(error => this.manager.emit("error", error, this));
-
-        if (this.resumeKey) setTimeout(() => this.configureResuming(this.resumeKey!).catch(error => this.manager.emit("error", error, this)), 1000);
 
         this.manager.emit("ready", this);
     }
@@ -207,12 +193,17 @@ export class LavalinkNode {
         if (Array.isArray(data)) data = Buffer.concat(data);
         else if (data instanceof ArrayBuffer) data = Buffer.from(data);
 
-        const msg = JSON.parse(data.toString());
+        const msg: WebsocketMessage = JSON.parse(data.toString());
 
-        if (msg.op && msg.op === "stats") this.stats = { ...msg };
-        delete (this.stats as any).op;
-
-        if (msg.guildId && this.manager.players.has(msg.guildId)) (this.manager.players.get(msg.guildId) as Player).emit(msg.op, msg);
+        if (msg.op === "ready") {
+            this.sessionId = msg.sessionId;
+            if (this.resumeKey) Rest.updateSession(this);
+        } else if (msg.op && msg.op === "stats") {
+            this.stats = { ...msg };
+            delete (this.stats as any).op;
+        } else if ((msg.op === "event" || msg.op === "playerUpdate") && this.manager.players.has(msg.guildId)) {
+            this.manager.players.get(msg.guildId)!.emit(msg.op, msg as any);
+        }
 
         this.manager.emit("raw", msg, this);
     }
@@ -249,24 +240,5 @@ export class LavalinkNode {
             this.manager.emit("reconnecting", this);
             this.connect();
         }, this.reconnectInterval);
-    }
-
-    /**
-     * Sends data to the Lavalink Websocket
-     * @param param0 data to send
-     */
-    private _send({ data, resolve, reject }: QueueData): void {
-        this.ws!.send(data, (error: Error | undefined) => {
-            if (error) reject(error);
-            else resolve(true);
-        });
-    }
-
-    /**
-     * Flushs the send queue
-     */
-    private async _queueFlush(): Promise<void> {
-        await Promise.all(this._queue.map(this._send));
-        this._queue = [];
     }
 }

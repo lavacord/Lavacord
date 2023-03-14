@@ -1,4 +1,4 @@
-import { Player } from "./Player";
+import type { Player } from "./Player";
 
 /**
  * Player Update Voice State
@@ -31,6 +31,7 @@ export interface ManagerOptions {
      */
     send?: (packet: DiscordPacket) => unknown;
 }
+
 /**
  * Manager Join Data
  */
@@ -181,22 +182,4 @@ export interface LavalinkNodeOptions {
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
     state?: any;
-}
-
-/**
- * Queue Data
- */
-export interface QueueData {
-    /**
-     * The data to actually send from the queue
-     */
-    data: string;
-    /**
-     * The resolve function for the promise
-     */
-    resolve: (value: boolean) => void;
-    /**
-     * The reject function for the promise
-     */
-    reject: (reason?: any) => void;
 }
