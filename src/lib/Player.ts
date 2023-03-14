@@ -1,7 +1,8 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Manager } from "./Manager";
-import { LavalinkEvent, LavalinkPlayerState, PlayerEqualizerBand, PlayerPlayOptions, PlayerState, PlayerUpdateVoiceState, JoinOptions, PlayerFilterOptions } from "./Types";
+import { PlayerUpdateVoiceState, JoinOptions, PlayData } from "./Types";
+import { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate } from "lavalink-types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -10,7 +11,7 @@ export class Player extends EventEmitter {
     /**
      * The PlayerState of this Player
      */
-    public state: PlayerState = { filters: {} };
+    public state: Partial<PlayerState> & { filters: Filters; } = { filters: {} };
     /**
      * Whether or not the player is actually playing anything
      */
@@ -62,7 +63,7 @@ export class Player extends EventEmitter {
                     if (this.listenerCount("error")) this.emit("error", data);
                     break;
                 default:
-                    if (this.listenerCount("warn")) this.emit("warn", `Unexpected event type: ${data.type}`);
+                    if (this.listenerCount("warn")) this.emit("warn", `Unexpected event type: ${(data as { type: string; }).type}`);
                     break;
             }
         })
@@ -77,7 +78,7 @@ export class Player extends EventEmitter {
      * @param track The base64 string of the song that you want to play
      * @param options Play options
      */
-    public async play(track: string, options: PlayerPlayOptions = {}): Promise<boolean> {
+    public async play(track: string, options?: PlayData): Promise<boolean> {
         const d = await this.send("play", { ...options, track });
         this.track = track;
         this.playing = true;
@@ -133,7 +134,7 @@ export class Player extends EventEmitter {
         return d;
     }
 
-    public async filters(options: PlayerFilterOptions): Promise<boolean> {
+    public async filters(options: Filters): Promise<boolean> {
         const d = await this.send("filters", options);
         this.state.filters = options;
         if (this.listenerCount("filters")) this.emit("filters", options);
@@ -144,7 +145,7 @@ export class Player extends EventEmitter {
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
      * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/freyacodes/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
      */
-    public async equalizer(bands: PlayerEqualizerBand[]): Promise<boolean> {
+    public async equalizer(bands: Equalizer[]): Promise<boolean> {
         const newFilters = Object.assign(this.state.filters, { equalizer: bands });
         const d = await this.filters(newFilters);
         return d;
@@ -191,51 +192,33 @@ export class Player extends EventEmitter {
     public get manager(): Manager {
         return this.node.manager;
     }
+}
 
+export interface PlayerEvents {
+    event: [EventOP];
+    start: [Extract<EventOP, { type: "TrackStartEvent"; }>];
+    end: [Extract<EventOP, { type: "TrackEndEvent" | "TrackStuckEvent"; }>];
+    pause: [boolean];
+    seek: [number];
+    error: [Extract<EventOP, { type: "TrackExceptionEvent" | "WebSocketClosedEvent"; }>];
+    warn: [string];
+    volume: [number];
+    playerUpdate: [PlayerUpdate];
+    filters: [Filters];
 }
 
 export interface Player {
-    on(event: "event", listener: (data: LavalinkEvent) => void): this;
-    on(event: "start", listener: (data: LavalinkEvent) => void): this;
-    on(event: "end", listener: (data: LavalinkEvent) => void): this;
-    on(event: "pause", listener: (pause: boolean) => void): this;
-    on(event: "seek", listener: (position: number) => void): this;
-    on(event: "error", listener: (error: LavalinkEvent) => void): this;
-    on(event: "warn", listener: (warning: string) => void): this;
-    on(event: "volume", listener: (volume: number) => void): this;
-    on(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
-    on(event: "filters", listener: (data: PlayerFilterOptions) => void): this;
-
-    once(event: "event", listener: (data: LavalinkEvent) => void): this;
-    once(event: "start", listener: (data: LavalinkEvent) => void): this;
-    once(event: "end", listener: (data: LavalinkEvent) => void): this;
-    once(event: "pause", listener: (pause: boolean) => void): this;
-    once(event: "seek", listener: (position: number) => void): this;
-    once(event: "error", listener: (error: LavalinkEvent) => void): this;
-    once(event: "warn", listener: (warning: string) => void): this;
-    once(event: "volume", listener: (volume: number) => void): this;
-    once(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
-    once(event: "filters", listener: (data: PlayerFilterOptions) => void): this;
-
-    off(event: "event", listener: (data: LavalinkEvent) => void): this;
-    off(event: "start", listener: (data: LavalinkEvent) => void): this;
-    off(event: "end", listener: (data: LavalinkEvent) => void): this;
-    off(event: "pause", listener: (pause: boolean) => void): this;
-    off(event: "seek", listener: (position: number) => void): this;
-    off(event: "error", listener: (error: LavalinkEvent) => void): this;
-    off(event: "warn", listener: (warning: string) => void): this;
-    off(event: "volume", listener: (volume: number) => void): this;
-    off(event: "playerUpdate", listener: (data: { state: LavalinkPlayerState; }) => void): this;
-    off(event: "filters", listener: (data: PlayerFilterOptions) => void): this;
-
-    emit(event: "event", data: LavalinkEvent): boolean;
-    emit(event: "start", data: LavalinkEvent): boolean;
-    emit(event: "end", data: LavalinkEvent): boolean;
-    emit(event: "pause", pause: boolean): boolean;
-    emit(event: "seek", position: number): boolean;
-    emit(event: "error", error: LavalinkEvent): boolean;
-    emit(event: "warn", warning: string): boolean;
-    emit(event: "volume", volume: number): boolean;
-    emit(event: "playerUpdate", data: { state: LavalinkPlayerState; }): boolean;
-    emit(event: "filters", data: PlayerFilterOptions): boolean;
+    addListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    emit<E extends keyof PlayerEvents>(event: E, ...args: PlayerEvents[E]): boolean;
+    eventNames(): Array<keyof PlayerEvents>;
+    listenerCount(event: keyof PlayerEvents): number;
+    listeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
+    off<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    on<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    once<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    prependListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    prependOnceListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+    rawListeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
+    removeAllListeners(event?: keyof PlayerEvents): this;
+    removeListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
 }

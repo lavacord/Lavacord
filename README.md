@@ -42,7 +42,7 @@ Run with `java -jar Lavalink.jar`
 If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/wXrjZmV)
 
 # Implementation
-Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id and `shards` The total number of shards your bot is operating on.
+Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id.
 
 ```javascript
 // import the Manager class from lavacord
@@ -56,7 +56,6 @@ const nodes = [
 // Initilize the Manager with all the data it needs
 const manager = new Manager(nodes, {
     user: client.user.id, // Client id
-    shards: shardCount, // Total number of shards your bot is operating on
     send: (packet) => {
         // this needs to send the provided packet to discord using the method from your library. use the @lavacord package for the discord library you use if you don't understand this
     }
@@ -75,7 +74,7 @@ manager.on("error", (error, node) => {
 Resolving tracks using LavaLink REST API
 
 ```javascript
-const fetch = require("node-fetch");
+const fetch = require("undici");
 const { URLSearchParams } = require("url");
 
 async function getSongs(search) {
@@ -113,7 +112,7 @@ await player.play(track); // Track is a base64 string we get from Lavalink REST 
 
 player.once("error", error => console.error(error));
 player.once("end", data => {
-    if (data.reason === "REPLACED") return; // Ignore REPLACED reason to prevent skip loops
+    if (data.type === "TrackEndEvent" && data.reason === "REPLACED") return; // Ignore REPLACED reason to prevent skip loops
     // Play next song
 });
 

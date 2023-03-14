@@ -20,19 +20,19 @@
 			"strictFunctionTypes": true,
 			"strictBindCallApply": true,
 			"target": "esnext",
-			"types": ["node", "node-fetch", "ws"]
+			"types": ["node", "ws"],
+			"skipLibCheck": true
 	},
 	"exclude": ["node_modules"],
 	"include": ["src"],
 	"typedocOptions": {
+		"entryPoints": ["src/index.ts"],
 		"out": "./docs/",
 		"readme": "./README.md",
 		"name": "Lavacord",
 		"exclude": ["**/node_modules/**"],
-		"mode": "file",
 		"excludeExternals": true,
 		"excludePrivate": true,
-		"excludeProtected": true,
-		"excludeNotExported": true
+		"excludeProtected": true
 }
 }
