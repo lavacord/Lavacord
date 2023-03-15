@@ -26,8 +26,10 @@ export class Rest {
      */
     private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: Array<"version" | "sessionId">): Promise<T> {
         if (requires && !requires.every(r => !!node[r])) throw new RestError({ timestamp: Date.now(), status: 400, error: "Bad Request", message: `Node ${requires.join(", ")} is required for this route. Did you forget to connect?`, path });
-
-        const res = await fetch(`${node.host}:${node.port}${path}`, Object.assign({ headers: { Authorization: node.password } }, init));
+        if (!init) init = {};
+        if (!init.headers) init.headers = {};
+        Object.assign(init.headers, { Authorization: node.password });
+        const res = await fetch(`http://${node.host}:${node.port}${path}`, init);
         let body;
         if (res.status !== 204 && res.headers.get("content-type") === "application/json") body = await res.json();
         else if (res.status !== 204) body = await res.text();
@@ -60,7 +62,11 @@ export class Rest {
     static decode(node: LavalinkNode, tracks: string[]): Promise<DecodeTracksResult>;
     static decode(node: LavalinkNode, tracks: string | string[]): Promise<DecodeTrackResult | DecodeTracksResult> {
         if (Array.isArray(tracks)) {
-            return Rest.baseRequest(node, `/v${node.version}/decodetracks`, { method: "POST", body: JSON.stringify(tracks) }, ["version"]);
+            return Rest.baseRequest(node, `/v${node.version}/decodetracks`, {
+                method: "POST",
+                body: JSON.stringify(tracks),
+                headers: { "Content-Type": "application/json" }
+            }, ["version"]);
         } else {
             const params = new URLSearchParams();
             params.append("track", tracks);
@@ -85,7 +91,8 @@ export class Rest {
     static updateSession(node: LavalinkNode): Promise<UpdateSessionResult> {
         return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}`, {
             method: "PATCH",
-            body: JSON.stringify({ resumingKey: node.resumeKey, timeout: node.resumeTimeout } as UpdateSessionData)
+            body: JSON.stringify({ resumingKey: node.resumeKey, timeout: node.resumeTimeout } as UpdateSessionData),
+            headers: { "Content-Type": "application/json" }
         }, ["version", "sessionId"]);
     }
 
@@ -100,7 +107,8 @@ export class Rest {
     static updatePlayer(node: LavalinkNode, guildId: string, data: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
         return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}/players/${guildId}${noReplace ? `?noReplace=${noReplace}` : ""}`, {
             method: "PATCH",
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            headers: { "Content-Type": "application/json" }
         }, ["version", "sessionId"]);
     }
 
