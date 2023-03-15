@@ -3,7 +3,7 @@ import { Rest } from "./Rest";
 
 import type { Manager } from "./Manager";
 import type { LavalinkNodeOptions } from "./Types";
-import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, ErrorResponse } from "lavalink-types";
+import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../../package.json");
@@ -116,8 +116,7 @@ export class LavalinkNode {
 
             return Rest.version(this)
                 .then(nodeVersion => {
-                    if ((nodeVersion as ErrorResponse).error || typeof nodeVersion !== "string") return reject(new Error((nodeVersion as ErrorResponse).message));
-                    const major = nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : undefined;
+                    const major = typeof nodeVersion === "string" && nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : undefined;
                     if (!major || isNaN(Number(major))) return reject(new Error("Node didn't respond to /version with a major.minor.patch version string"));
                     const numMajor = Number(major);
                     this.version = numMajor;
