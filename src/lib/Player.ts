@@ -3,7 +3,7 @@ import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
 import type { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, ErrorResponse, DestroyPlayerResult } from "lavalink-types";
+import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -80,10 +80,8 @@ export class Player extends EventEmitter {
      */
     public async update(options: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
         const d = await Rest.updatePlayer(this.node, this.id, options, noReplace);
-        if ((d as ErrorResponse).error) throw new Error((d as ErrorResponse).message);
-        const narrowed = d as UpdatePlayerResult;
-        if (narrowed.track) this.track = narrowed.track.encoded;
-        return narrowed;
+        if (d.track) this.track = d.track.encoded;
+        return d;
     }
 
     /**
