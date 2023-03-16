@@ -79,7 +79,7 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/node@*", "@types/node@^18.15.2":
+"@types/node@*", "@types/node@^18.15.3":
   version "18.15.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.3.tgz#f0b991c32cfc6a4e7f3399d6cb4b8cf9a0315014"
   integrity sha512-p6ua9zBxz5otCmbpb5D3U4B5Nanw6Pk3PPyX05xnxbB/fRv71N7CPmORg7uAD5P70T0xmx1pzAx/FUfa5X+3cw==
@@ -705,10 +705,10 @@ jsonc-parser@^3.2.0:
   resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-3.2.0.tgz#31ff3f4c2b9793f89c67212627c51c6394f88e76"
   integrity sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==
 
-lavalink-types@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/lavalink-types/-/lavalink-types-2.0.0.tgz#e302dcc4b5934cef5a80b4c267a111727440d5ad"
-  integrity sha512-VDlkZt3oyH509u2k8CkVqggDwxBurGtg3Zlpw8M8zfanOdtnjWoHFsRzCrRG9kd1NoEX1mz/S299CCYx8NKq0g==
+lavalink-types@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/lavalink-types/-/lavalink-types-2.0.1.tgz#917c7132ba3d2d22efc3699eb321b36e67979748"
+  integrity sha512-er8j4L2qnMRRA94ms0QIUkad+iCzthBW59oFtoj38mwc/d7u4rmlv9v1n2xGZr6Tso8A9QR1B0C4cpPowHvTOg==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -1016,10 +1016,10 @@ type-fest@^0.20.2:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
   integrity sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==
 
-typedoc@^0.23.26:
-  version "0.23.26"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.23.26.tgz#ae082683698bad68757d8fe619242a56d6b5bf36"
-  integrity sha512-5m4KwR5tOLnk0OtMaRn9IdbeRM32uPemN9kur7YK9wFqx8U0CYrvO9aVq6ysdZSV1c824BTm+BuQl2Ze/k1HtA==
+typedoc@^0.23.27:
+  version "0.23.27"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.23.27.tgz#3491f4331d181d9c7f4064971295a9b32718b72c"
+  integrity sha512-YKjlxX3LEhYbMCkemjlpNh1OKDiFa+ynqP0VRPsH28bEugrMTGI6l8DC6oX5kzFcUKKlYWKpZDSGWszuO/FR3g==
   dependencies:
     lunr "^2.3.9"
     marked "^4.2.12"
