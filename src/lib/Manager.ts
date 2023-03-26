@@ -47,7 +47,7 @@ export class Manager extends EventEmitter {
      * @param nodes A Array of {@link LavalinkNodeOptions} that the Manager will connect to
      * @param options The options for the Manager {@link ManagerOptions}
      */
-    public constructor(nodes: LavalinkNodeOptions[], options: ManagerOptions) {
+    public constructor(nodes: Array<LavalinkNodeOptions>, options: ManagerOptions) {
         super();
 
         if (options.user) this.user = options.user;
@@ -55,6 +55,9 @@ export class Manager extends EventEmitter {
         if (options.send) this.send = options.send;
 
         for (const node of nodes) this.createNode(node);
+        setImmediate(() => {
+            if (this.send) this.send = () => undefined;
+        });
     }
 
     /**
@@ -68,7 +71,7 @@ export class Manager extends EventEmitter {
      * Disconnects everything, basically destorying the manager.
      * Stops all players, leaves all voice channels then disconnects all LavalinkNodes
      */
-    public disconnect(): Promise<boolean[]> {
+    public disconnect(): Promise<Array<boolean>> {
         const promises = [];
         for (const id of [...this.players.keys()]) promises.push(this.leave(id));
         for (const node of [...this.nodes.values()]) node.destroy();
@@ -201,7 +204,7 @@ export class Manager extends EventEmitter {
     /**
      * Gets all connected nodes, sorts them by cou load of the node
      */
-    public get idealNodes(): LavalinkNode[] {
+    public get idealNodes(): Array<LavalinkNode> {
         return [...this.nodes.values()]
             .filter(node => node.connected)
             .sort((a, b) => {
