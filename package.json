@@ -1,6 +1,6 @@
 {
   "name": "lavacord",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A simple by design lavalink wrapper made for any discord library.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

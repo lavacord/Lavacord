@@ -56,7 +56,7 @@ export class Manager extends EventEmitter {
 
         for (const node of nodes) this.createNode(node);
         setImmediate(() => {
-            if (this.send) this.send = () => undefined;
+            if (!this.send) this.send = () => undefined;
         });
     }
 
