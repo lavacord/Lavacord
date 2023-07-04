@@ -8,20 +8,19 @@ export * from "./index";
 export class Manager extends BaseManager {
     public constructor(public readonly client: Client, nodes: Array<LavalinkNodeOptions>, options?: ManagerOptions) {
         if (!options) options = {};
-        if (!options.user) options.user = client.user?.id ? client.user.id : undefined;
+        if (!options.user) options.user = client.user?.id;
         super(nodes, options);
 
         if (!this.send) {
             this.send = packet => {
                 const guild = this.client.guilds.get(packet.d.guild_id);
-                if (guild) guild.shard.sendWS(packet.op, packet.d);
+                if (guild) {
+                    guild.shard.sendWS(packet.op, packet.d);
+                    return true;
+                } else {
+                    return false;
+                }
             };
-        }
-
-        if (!client.ready) {
-            client.once("ready", () => {
-                this.user = client.user.id;
-            });
         }
 
         client.on("rawWS", (packet: DiscordPacket) => {

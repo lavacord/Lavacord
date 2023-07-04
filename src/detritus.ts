@@ -13,11 +13,18 @@ export class Manager extends BaseManager {
             this.send = packet => {
                 const asCluster = this.client as ClusterClient;
                 const asShard = this.client as ShardClient;
+
                 if (asShard.guilds) {
                     asShard.gateway.send(packet.op, packet.d);
+                    return true;
                 } else if (asCluster.shards) {
                     const shard = asCluster.shards.find(c => c.guilds.has(packet.d.guild_id));
-                    if (shard) shard.gateway.send(packet.op, packet.d);
+                    if (shard) {
+                        shard.gateway.send(packet.op, packet.d);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             };
         }
