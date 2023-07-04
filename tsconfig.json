@@ -12,7 +12,7 @@
 			"module": "commonjs",
 			"moduleResolution": "node",
 			"noUnusedLocals": true,
-			"outDir": "./",
+			"outDir": "./dist",
 			"pretty": true,
 			"removeComments": false,
 			"resolveJsonModule": true,

@@ -1,9 +1,9 @@
 {
   "name": "lavacord",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A simple by design lavalink wrapper made for any discord library.",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn compile",
     "lint": "eslint --fix --ext ts src",
@@ -11,6 +11,20 @@
     "compile": "tsc -p .",
     "watch": "tsc -p . -w",
     "docs": "typedoc"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./lib/LavalinkNode": "./dist/lib/LavalinkNode",
+    "./lib/Manager": "./dist/lib/Manager",
+    "./lib/Player": "./dist/lib/Player",
+    "./lib/Rest": "./dist/lib/Rest",
+    "./lib/Types": "./dist/lib/Types",
+    "./cloudstorm": "./dist/cloudstorm",
+    "./detritus": "./dist/detritus",
+    "./discord": "./dist/discord",
+    "./eris": "./dist/eris",
+    "./index": "./dist/index",
+    "./oceanic": "./dist/oceanic"
   },
   "repository": {
     "type": "git",
@@ -58,11 +72,8 @@
     "oceanic.js": "1.7.1"
   },
   "files": [
-    "/*.js",
-    "/*.d.ts",
-    "/*.js.map",
-    "lib",
-    "LICENCE"
+    "dist",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=10",
