@@ -55,6 +55,8 @@ jspm_packages/
 .env
 
 # Build
-dist
+/*.js
+/*.d.ts
+/*.js.map
+lib/
 docs
-
