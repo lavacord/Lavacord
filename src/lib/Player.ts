@@ -3,7 +3,7 @@ import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
 import type { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types";
+import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types/v4";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -48,7 +48,7 @@ export class Player extends EventEmitter {
                     if (this.listenerCount("start")) this.emit("start", data);
                     break;
                 case "TrackEndEvent":
-                    if (data.reason !== "REPLACED") this.playing = false;
+                    if (data.reason !== "replaced") this.playing = false;
                     this.track = null;
                     this.timestamp = null;
                     if (this.listenerCount("end")) this.emit("end", data);
@@ -167,9 +167,7 @@ export class Player extends EventEmitter {
      * Sends a destroy signal to lavalink, basically just a cleanup op for lavalink to clean its shit up
      */
     public async destroy(): Promise<DestroyPlayerResult> {
-        const d = await Rest.destroyPlayer(this.node, this.id);
-        if (d && d.error) throw new Error(d.message);
-        return d as DestroyPlayerResult;
+        return Rest.destroyPlayer(this.node, this.id);
     }
 
     /**

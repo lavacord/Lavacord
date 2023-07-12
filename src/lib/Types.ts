@@ -171,9 +171,13 @@ export interface LavalinkNodeOptions {
      */
     reconnectInterval?: number;
     /**
-     * The resume key to send to the LavalinkNode so you can resume properly
+     * The previous sessionId to send to the LavalinkNode so you can resume properly
      */
-    resumeKey?: string;
+    sessionId?: string;
+    /**
+     * If the node should attempt to resume if the sessionId is present on WS open/node ready
+     */
+    resuming?: boolean;
     /**
      * Resume timeout
      */

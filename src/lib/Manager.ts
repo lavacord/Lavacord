@@ -40,7 +40,7 @@ export class Manager extends EventEmitter {
     /**
      * An Set of all the expecting connections guild id's
      */
-    private expecting = new Set();
+    private expecting = new Set<string>();
 
     /**
      * The constructor of the Manager
@@ -118,7 +118,31 @@ export class Manager extends EventEmitter {
         await this.sendWS(guild, null);
         const player = this.players.get(guild);
         if (!player) return false;
-        if (player.listenerCount("end") && player.playing) player.emit("end", { encodedTrack: player.track!, op: "event", type: "TrackEndEvent", reason: "CLEANUP", guildId: guild });
+        if (player.listenerCount("end") && player.playing) {
+            player.emit("end", {
+                track: {
+                    encoded: player.track!,
+                    info: {
+                        identifier: "PLACEHOLDER",
+                        isSeekable: false,
+                        author: "PLACEHOLDER",
+                        length: 0,
+                        isStream: false,
+                        position: 0,
+                        title: "PLACEHOLDER",
+                        uri: "PLACEHOLDER",
+                        artworkUrl: null,
+                        isrc: null,
+                        sourceName: "PLACEHOLDER"
+                    },
+                    pluginInfo: {}
+                },
+                op: "event",
+                type: "TrackEndEvent",
+                reason: "cleanup",
+                guildId: guild
+            });
+        }
         player.removeAllListeners();
         await player.destroy();
         return this.players.delete(guild);
@@ -143,7 +167,7 @@ export class Manager extends EventEmitter {
 
         await player.play(track!, {
             position,
-            volume: state.filters.volume || 1.0,
+            volume: state.filters.volume ?? 1.0,
             filters: state.filters,
             voice: {
                 token: voiceUpdateState.event.token,
