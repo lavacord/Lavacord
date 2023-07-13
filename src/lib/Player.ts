@@ -155,7 +155,7 @@ export class Player extends EventEmitter {
 
     /**
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
-     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/freyacodes/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
+     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/lavalink-devs/Lavalink/blob/master/IMPLEMENTATION.md#equalizer) for more information
      */
     public async equalizer(bands: Equalizer[]): Promise<UpdatePlayerData> {
         const newFilters = Object.assign(this.state.filters, { equalizer: bands });
