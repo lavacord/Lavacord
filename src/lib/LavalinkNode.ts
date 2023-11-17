@@ -203,7 +203,7 @@ export class LavalinkNode {
         const msg: WebsocketMessage = JSON.parse(str);
 
         if (msg.op === "ready") {
-            this.sessionId = msg.sessionId;
+            if (msg.sessionId) this.sessionId = msg.sessionId;
             if (!this._sessionUpdated) {
                 this._sessionUpdated = true;
                 Rest.updateSession(this).catch(e => this.manager.emit("error", e, this));

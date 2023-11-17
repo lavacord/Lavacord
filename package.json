@@ -1,6 +1,6 @@
 {
   "name": "lavacord",
-  "version": "2.1.0-v4",
+  "version": "2.1.1-v4",
   "description": "A simple by design lavalink wrapper made for any discord library.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,26 +35,26 @@
   "homepage": "https://github.com/MrJacz/lavacord#readme",
   "dependencies": {
     "lavalink-types": "^2.1.0",
-    "undici": "^5.22.1",
-    "ws": "^8.13.0"
+    "undici": "^5.27.2",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@types/node": "^20.4.1",
-    "@types/ws": "^8.5.5",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.44.0",
+    "@types/node": "^20.9.1",
+    "@types/ws": "^8.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.53.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "typedoc": "^0.24.8",
-    "typescript": "^5.1.6"
+    "typedoc": "^0.25.3",
+    "typescript": "^5.2.2"
   },
   "optionalDependencies": {
     "discord.js": "14.x",
     "eris": "0.17.x",
     "detritus-client": "0.16.x",
-    "cloudstorm": "0.8.x",
-    "oceanic.js": "1.7.1"
+    "cloudstorm": "0.9.x",
+    "oceanic.js": "1.8.1"
   },
   "files": [
     "dist",
