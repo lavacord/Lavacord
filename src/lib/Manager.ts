@@ -135,7 +135,8 @@ export class Manager extends EventEmitter {
                         isrc: null,
                         sourceName: "PLACEHOLDER"
                     },
-                    pluginInfo: {}
+                    pluginInfo: {},
+                    userData: {}
                 },
                 op: "event",
                 type: "TrackEndEvent",
@@ -155,7 +156,7 @@ export class Manager extends EventEmitter {
      */
     public async switch(player: Player, node: LavalinkNode): Promise<Player> {
         const { track, state, voiceUpdateState } = { ...player };
-        const position = state.position ? state.position + 2000 : 2000;
+        const position = (state.position ?? 0) + 2000;
         if (!voiceUpdateState) {
             player.node = node;
             return player;
