@@ -4,11 +4,8 @@ import type { LavalinkNode } from "./LavalinkNode";
 import type { TrackLoadingResult, DecodeTrackResult, DecodeTracksResult, GetLavalinkVersionResult, UpdateSessionResult, UpdateSessionData, ErrorResponse, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types/v4";
 
 export class RestError extends Error {
-    public json: ErrorResponse;
-
-    constructor(data: ErrorResponse) {
-        super(data.message);
-        this.json = data;
+    constructor(public json: ErrorResponse) {
+        super(json.message);
     }
 }
 

@@ -63,8 +63,14 @@ export class Manager extends EventEmitter {
     /**
      * Connects all the {@link LavalinkNode} to the respective Lavalink instance
      */
-    public connect(): Promise<Array<WebSocket | boolean>> {
-        return Promise.all([...this.nodes.values()].map(node => node.connect()));
+    public connect(): Promise<Array<WebSocket>> {
+        if (!this.user) {
+            console.warn("Lavacord Manager.connect was called without the client user ID being set.\
+                You should construct your Manager when your client becomes ready as that's where you/your Discord lib receives the current user info.\
+                Alternatively, you can get your client's user ID (which is all that lavacord needs) by doing\
+                Buffer.from(token.split(\".\")[0], \"base64\").toString(\"utf8\") unless your token was generated a REALLY long time ago.");
+        }
+        return Promise.all(Array.from(this.nodes.values()).map(node => node.connect()));
     }
 
     /**
@@ -73,8 +79,8 @@ export class Manager extends EventEmitter {
      */
     public disconnect(): Promise<Array<boolean>> {
         const promises = [];
-        for (const id of [...this.players.keys()]) promises.push(this.leave(id));
-        for (const node of [...this.nodes.values()]) node.destroy();
+        for (const id of Array.from(this.players.keys())) promises.push(this.leave(id));
+        for (const node of Array.from(this.nodes.values())) node.destroy();
         return Promise.all(promises);
     }
 
@@ -230,7 +236,7 @@ export class Manager extends EventEmitter {
      * Gets all connected nodes, sorts them by cou load of the node
      */
     public get idealNodes(): Array<LavalinkNode> {
-        return [...this.nodes.values()]
+        return Array.from(this.nodes.values())
             .filter(node => node.connected)
             .sort((a, b) => {
                 const aload = a.stats.cpu ? a.stats.cpu.systemLoad / a.stats.cpu.cores * 100 : 0;

@@ -1,6 +1,6 @@
 import { Manager as BaseManager } from "./lib/Manager";
 import type { ManagerOptions, LavalinkNodeOptions, VoiceServerUpdate, VoiceStateUpdate } from "./lib/Types";
-import type { Client, RawVoiceState } from "oceanic.js";
+import type { Client } from "oceanic.js";
 
 export * from "./index";
 
@@ -23,14 +23,21 @@ export class Manager extends BaseManager {
         }
 
         client.on("packet", packet => {
-            if (packet.t === "VOICE_SERVER_UPDATE") {
-                this.voiceServerUpdate(packet.d as VoiceServerUpdate);
-            } else if (packet.t === "VOICE_STATE_UPDATE") {
-                this.voiceStateUpdate(packet.d as VoiceStateUpdate);
-            } else if (packet.t === "GUILD_CREATE") {
-                for (const state of (packet.d as { voice_states?: Array<RawVoiceState>; }).voice_states ?? []) {
-                    this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as VoiceStateUpdate);
-                }
+            switch (packet.t) {
+                case "VOICE_SERVER_UPDATE":
+                    this.voiceServerUpdate(packet.d as VoiceServerUpdate);
+                    break;
+
+                case "VOICE_STATE_UPDATE":
+                    this.voiceStateUpdate(packet.d as VoiceStateUpdate);
+                    break;
+
+                case "GUILD_CREATE":
+                    if (packet.d.unavailable) break;
+                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as VoiceStateUpdate);
+                    break;
+
+                default: break;
             }
         });
     }

@@ -114,7 +114,7 @@ export class LavalinkNode {
      * Connects the node to Lavalink
      */
     public async connect(): Promise<WebSocket> {
-        this.ws = await new Promise<WebSocket>((resolve, reject) => {
+        return new Promise<WebSocket>((resolve, reject) => {
             if (this.connected) this.ws!.close();
 
             return Rest.version(this)
@@ -140,25 +140,22 @@ export class LavalinkNode {
                     };
 
                     const onOpen = (): void => {
+                        this.ws = ws;
                         this.onOpen();
-                        ws.removeListener("open", onOpen);
-                        ws.removeListener("error", onEvent);
-                        ws.removeListener("close", onEvent);
+                        ws.removeListener("open", onOpen)
+                            .removeListener("error", onEvent)
+                            .removeListener("close", onEvent)
+                            .on("error", error => this.onError(error))
+                            .on("close", (code, reason) => this.onClose(code, reason));
                         resolve(ws);
                     };
-
                     ws
+                        .on("message", data => this.onMessage(data))
                         .once("open", onOpen)
                         .once("error", onEvent)
                         .once("close", onEvent);
                 }).catch(reject);
         });
-
-        this.ws!
-            .on("message", data => this.onMessage(data))
-            .on("error", error => this.onError(error))
-            .on("close", (code, reason) => this.onClose(code, reason));
-        return this.ws!;
     }
 
     /**
@@ -202,17 +199,27 @@ export class LavalinkNode {
 
         const msg: WebsocketMessage = JSON.parse(str);
 
-        if (msg.op === "ready") {
-            if (msg.sessionId) this.sessionId = msg.sessionId;
-            if (!this._sessionUpdated) {
-                this._sessionUpdated = true;
-                Rest.updateSession(this).catch(e => this.manager.emit("error", e, this));
-            }
-        } else if (msg.op && msg.op === "stats") {
-            this.stats = { ...msg };
-            delete (this.stats as any).op;
-        } else if ((msg.op === "event" || msg.op === "playerUpdate") && this.manager.players.has(msg.guildId)) {
-            this.manager.players.get(msg.guildId)!.emit(msg.op, msg as any);
+        switch (msg.op) {
+            case "ready":
+                if (msg.sessionId) this.sessionId = msg.sessionId;
+                if (!this._sessionUpdated) {
+                    this._sessionUpdated = true;
+                    Rest.updateSession(this).catch(e => this.manager.emit("error", e, this));
+                }
+                break;
+
+            case "stats":
+                this.stats = { ...msg };
+                delete (this.stats as any).op;
+                break;
+
+            case "event":
+            case "playerUpdate":
+                if (!this.manager.players.has(msg.guildId)) break;
+                this.manager.players.get(msg.guildId)!.emit(msg.op, msg as any);
+                break;
+
+            default: break;
         }
 
         this.manager.emit("raw", msg, this);
