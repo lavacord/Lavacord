@@ -17,7 +17,7 @@ jobs:
       - name: Install NodeJS v16
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 18
       - name: Restore CI Cache
         uses: actions/cache@v1
         with:
