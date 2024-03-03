@@ -119,7 +119,8 @@ export class LavalinkNode {
 
             return Rest.version(this)
                 .then(nodeVersion => {
-                    const major = typeof nodeVersion === "string" && nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : undefined;
+                    // defaults to v4 which is reasonable. Actually supports snapshot versions now
+                    const major = typeof nodeVersion === "string" && nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : "4";
                     if (!major || isNaN(Number(major))) return reject(new Error("Node didn't respond to /version with a major.minor.patch version string"));
                     const numMajor = Number(major);
                     this.version = numMajor;
