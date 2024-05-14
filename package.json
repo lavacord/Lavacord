@@ -54,7 +54,7 @@
     "eris": "0.17.x",
     "detritus-client": "0.16.x",
     "cloudstorm": "0.10.x",
-    "oceanic.js": "1.9.0"
+    "oceanic.js": "1.10.4"
   },
   "files": [
     "dist",

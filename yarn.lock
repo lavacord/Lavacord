@@ -1078,13 +1078,13 @@ node-fetch@^2.6.1:
   dependencies:
     whatwg-url "^5.0.0"
 
-oceanic.js@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/oceanic.js/-/oceanic.js-1.9.0.tgz#f3ddbe1be76abf231e201334dd27cd9c17521258"
-  integrity sha512-zBHxBnJDkhYiHvQnTWcLsdRa/0v7+S2BYHWS3TLZpmMDXJU/+KOB9oL17YqSK8xvfpA0ykIsZTPKTgwxQUfLxA==
+oceanic.js@1.10.4:
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/oceanic.js/-/oceanic.js-1.10.4.tgz#4d0154ff3cb731aecc7d257c35e8d5a89bcd050e"
+  integrity sha512-pgTc4xYUBgXvyxHit7NuwON7yYpKaO2F/4xego08TNGPCwzU1hE+NQGTKw6A8+AYOoF6R3V6oJSuGAq2pXdsKA==
   dependencies:
     tslib "^2.6.2"
-    ws "^8.16.0"
+    ws "^8.17.0"
   optionalDependencies:
     "@discordjs/voice" "^0.16.1"
 
@@ -1427,10 +1427,10 @@ ws@^7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
-ws@^8.14.2, ws@^8.15.0, ws@^8.16.0, ws@^8.2.3:
-  version "8.16.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
-  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
+ws@^8.14.2, ws@^8.15.0, ws@^8.17.0, ws@^8.2.3:
+  version "8.17.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.17.0.tgz#d145d18eca2ed25aaf791a183903f7be5e295fea"
+  integrity sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==
 
 yallist@^4.0.0:
   version "4.0.0"
