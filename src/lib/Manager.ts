@@ -36,11 +36,11 @@ export class Manager extends EventEmitter {
     /**
      * The Player the manager will use when creating new Players
      */
-    private Player: typeof Player = Player;
+    private readonly Player: typeof Player = Player;
     /**
      * An Set of all the expecting connections guild id's
      */
-    private expecting = new Set<string>();
+    private readonly expecting = new Set<string>();
 
     /**
      * The constructor of the Manager

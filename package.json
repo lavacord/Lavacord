@@ -6,11 +6,11 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "yarn compile",
-    "lint": "eslint --fix --ext ts src",
-    "test": "eslint --ext ts src",
+    "lint": "eslint . -c eslint.config.js --fix",
+    "test": "eslint . -c eslint.config.js",
     "compile": "tsc -p .",
     "watch": "tsc -p . -w",
-    "docs": "typedoc"
+    "docs": "typedoc --sort static-first --sort alphabetical"
   },
   "repository": {
     "type": "git",
@@ -35,26 +35,26 @@
   "homepage": "https://github.com/MrJacz/lavacord#readme",
   "dependencies": {
     "lavalink-types": "^2.1.1",
-    "undici": "^6.0.1",
-    "ws": "^8.15.0"
+    "undici": "^7.2.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.24",
-    "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
-    "eslint": "^8.57.0",
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "eslint": "^9.17.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "typedoc": "^0.25.9",
-    "typescript": "^5.3.3"
+    "eslint-plugin-promise": "^7.2.1",
+    "typedoc": "^0.27.5",
+    "typescript": "^5.7.2"
   },
   "optionalDependencies": {
     "discord.js": "14.x",
-    "eris": "0.17.x",
+    "eris": "0.18.x",
     "detritus-client": "0.16.x",
-    "cloudstorm": "0.10.x",
-    "oceanic.js": "1.9.0"
+    "cloudstorm": "0.11.x",
+    "oceanic.js": "1.11.x"
   },
   "files": [
     "dist",
