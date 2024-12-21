@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
-      - name: Install NodeJS v16
+      - name: Install NodeJS v20
         uses: actions/setup-node@v1
         with:
-          node-version: 18
+          node-version: 20
       - name: Restore CI Cache
         uses: actions/cache@v1
         with:
