@@ -136,7 +136,6 @@ export class LavalinkNode {
                     const ws = new WebSocket(`ws://${this.host}:${this.port}/v${numMajor}/websocket`, { headers });
 
                     const onEvent = (event: unknown): void => {
-                        // @ts-expect-error removeAllListeners still exists
                         ws.removeAllListeners();
                         reject(event instanceof Error ? event : new Error("Premature close"));
                     };
@@ -254,7 +253,6 @@ export class LavalinkNode {
      */
     private reconnect(): void {
         this._reconnect = setTimeout(() => {
-            // @ts-expect-error removeAllListeners still exists
             this.ws!.removeAllListeners();
             this.ws = null;
 

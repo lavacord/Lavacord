@@ -1,4 +1,3 @@
-import { fetch, RequestInit } from "undici";
 import { URLSearchParams } from "url";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { TrackLoadingResult, DecodeTrackResult, DecodeTracksResult, GetLavalinkVersionResult, UpdateSessionResult, UpdateSessionData, ErrorResponse, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types/v4";

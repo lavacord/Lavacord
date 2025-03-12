@@ -18,7 +18,7 @@ export class Manager extends BaseManager {
                 const s = Object.entries(this.client.shardManager.shards).find(e => String(e[0]) === String(shardID))?.[1];
 
                 if (s) {
-                    s.connector.betterWs.sendMessage(packet);
+                    s.connector.sendMessage(packet);
                     return true;
                 } else {
                     return false;
