@@ -32,9 +32,9 @@ npm install lavacord/lavacord
 ```
 
 ## LavaLink configuration
-Download from [the CI server](https://ci.fredboat.com/viewLog.html?buildId=lastSuccessful&buildTypeId=Lavalink_Build&tab=artifacts&guest=1)
+Download Lavalink from [their GitHub releases](https://github.com/lavalink-devs/Lavalink/releases)
 
-Put an `application.yml` file in your working directory. [Example](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/application.yml.example)
+Put an `application.yml` file in your working directory. [Example](https://github.com/lavalink-devs/Lavalink/blob/master/LavalinkServer/application.yml.example)
 
 Run with `java -jar Lavalink.jar`
 
@@ -57,7 +57,8 @@ const nodes = [
 const manager = new Manager(nodes, {
     user: client.user.id, // Client id
     send: (packet) => {
-        // this needs to send the provided packet to discord using the method from your library. use the @lavacord package for the discord library you use if you don't understand this
+        // this needs to send the provided packet to discord's WS using the method from your library.
+        // use the bindings for the discord library you use if you don't understand this
     }
 });
 
@@ -80,7 +81,7 @@ async function getSongs(search) {
     // This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.
     const node = manager.idealNodes[0];
 
-    return Rest.load(node, search).then(data => data.tracks)
+    return Rest.load(node, search)
         .catch(err => {
             console.error(err);
             return null;
@@ -106,10 +107,10 @@ await player.play(track); // Track is a base64 string we get from Lavalink REST 
 
 player.once("error", error => console.error(error));
 player.once("end", data => {
-    if (data.type === "TrackEndEvent" && data.reason === "REPLACED") return; // Ignore REPLACED reason to prevent skip loops
+    if (data.type === "TrackEndEvent" && data.reason === "replaced") return; // Ignore replaced reason to prevent skip loops
     // Play next song
 });
 
-// Leave voice channel and destory Player
+// Leave voice channel and destroy Player
 await manager.leave(guildId); // Player ID aka guild id
 ```

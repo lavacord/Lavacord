@@ -24,9 +24,21 @@ export class Manager extends BaseManager {
         }
 
         client.on("rawWS", (packet: DiscordPacket) => {
-            if (packet.t === "VOICE_SERVER_UPDATE") this.voiceServerUpdate(packet.d);
-            else if (packet.t === "VOICE_STATE_UPDATE") this.voiceStateUpdate(packet.d);
-            else if (packet.t === "GUILD_CREATE") for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id });
+            switch (packet.t) {
+                case "VOICE_SERVER_UPDATE":
+                    this.voiceServerUpdate(packet.d);
+                    break;
+
+                case "VOICE_STATE_UPDATE":
+                    this.voiceStateUpdate(packet.d);
+                    break;
+
+                case "GUILD_CREATE":
+                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id });
+                    break;
+
+                default: break;
+            }
         });
     }
 }

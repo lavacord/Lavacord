@@ -1,14 +1,10 @@
-import { fetch, RequestInit } from "undici";
 import { URLSearchParams } from "url";
 import type { LavalinkNode } from "./LavalinkNode";
-import type { TrackLoadingResult, DecodeTrackResult, DecodeTracksResult, GetLavalinkVersionResult, UpdateSessionResult, UpdateSessionData, ErrorResponse, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types";
+import type { TrackLoadingResult, DecodeTrackResult, DecodeTracksResult, GetLavalinkVersionResult, UpdateSessionResult, UpdateSessionData, ErrorResponse, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types/v4";
 
 export class RestError extends Error {
-    public json: ErrorResponse;
-
-    constructor(data: ErrorResponse) {
-        super(data.message);
-        this.json = data;
+    constructor(public json: ErrorResponse) {
+        super(json.message);
     }
 }
 
@@ -91,7 +87,7 @@ export class Rest {
     static updateSession(node: LavalinkNode): Promise<UpdateSessionResult> {
         return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}`, {
             method: "PATCH",
-            body: JSON.stringify({ resumingKey: node.resumeKey, timeout: node.resumeTimeout } as UpdateSessionData),
+            body: JSON.stringify({ resuming: node.resuming, timeout: node.resumeTimeout } as UpdateSessionData),
             headers: { "Content-Type": "application/json" }
         }, ["version", "sessionId"]);
     }
@@ -118,7 +114,7 @@ export class Rest {
      * @param guildId The Id of the guild
      * @throws {RestError} If lavalink encounters an error
      */
-    static destroyPlayer(node: LavalinkNode, guildId: string): Promise<ErrorResponse | DestroyPlayerResult> {
+    static destroyPlayer(node: LavalinkNode, guildId: string): Promise<DestroyPlayerResult> {
         return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, ["version", "sessionId"]);
     }
 }

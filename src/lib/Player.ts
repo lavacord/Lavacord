@@ -3,7 +3,7 @@ import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
 import type { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types";
+import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult, Player as APIPlayer } from "lavalink-types/v4";
 
 /**
  * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
@@ -48,7 +48,7 @@ export class Player extends EventEmitter {
                     if (this.listenerCount("start")) this.emit("start", data);
                     break;
                 case "TrackEndEvent":
-                    if (data.reason !== "REPLACED") this.playing = false;
+                    if (data.reason !== "replaced") this.playing = false;
                     this.track = null;
                     this.timestamp = null;
                     if (this.listenerCount("end")) this.emit("end", data);
@@ -89,10 +89,14 @@ export class Player extends EventEmitter {
      * @param track The base64 string of the song that you want to play
      * @param options Play options
      */
-    public async play(track: string, options?: Omit<UpdatePlayerData, "encodedTrack" | "identifier"> & { noReplace?: boolean; }): Promise<UpdatePlayerResult> {
-        const noReplace = options ? options.noReplace : false;
-        if (options) delete options.noReplace;
-        const d = await this.update(Object.assign({ encodedTrack: track } as UpdatePlayerData, options), noReplace);
+    public async play(track: string, options?: Omit<UpdatePlayerData, "track"> & { noReplace?: boolean; userData?: Record<any, any>; }): Promise<UpdatePlayerResult> {
+        const noReplace = options?.noReplace ?? false;
+        const userData = options?.userData;
+        if (options) {
+            delete options.noReplace;
+            delete options.userData;
+        }
+        const d = await this.update(Object.assign({ track: { encoded: track, userData } } as UpdatePlayerData, options), noReplace);
         this.playing = true;
         this.timestamp = Date.now();
         return d;
@@ -101,8 +105,8 @@ export class Player extends EventEmitter {
     /**
      * Stops the music, depending on how the end event is handled this will either stop
      */
-    public async stop(): Promise<UpdatePlayerData> {
-        const d = await this.update({ encodedTrack: null });
+    public async stop(): Promise<APIPlayer> {
+        const d = await this.update({ track: { encoded: null } });
         this.playing = false;
         this.timestamp = null;
         return d;
@@ -112,7 +116,7 @@ export class Player extends EventEmitter {
      * Pauses/Resumes the song depending on what is specified
      * @param pause Whether or not to pause whats currently playing
      */
-    public async pause(pause: boolean): Promise<UpdatePlayerData> {
+    public async pause(pause: boolean): Promise<APIPlayer> {
         const d = await this.update({ paused: pause });
         this.paused = pause;
         if (this.listenerCount("pause")) this.emit("pause", pause);
@@ -122,7 +126,7 @@ export class Player extends EventEmitter {
     /**
      * Resumes the current song
      */
-    public resume(): Promise<UpdatePlayerData> {
+    public resume(): Promise<APIPlayer> {
         return this.pause(false);
     }
 
@@ -130,7 +134,7 @@ export class Player extends EventEmitter {
      * Changes the volume, only for the current song
      * @param volume The volume as a float from 0.0 to 10.0. 1.0 is default.
      */
-    public async volume(volume: number): Promise<UpdatePlayerData> {
+    public async volume(volume: number): Promise<APIPlayer> {
         const d = await this.update({ volume: volume * 100 });
         if (this.listenerCount("volume")) this.emit("volume", volume);
         return d;
@@ -140,13 +144,13 @@ export class Player extends EventEmitter {
      * Seeks the current song to a certain position
      * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
      */
-    public async seek(position: number): Promise<UpdatePlayerData> {
+    public async seek(position: number): Promise<APIPlayer> {
         const d = await this.update({ position });
         if (this.listenerCount("seek")) this.emit("seek", position);
         return d;
     }
 
-    public async filters(options: Filters): Promise<UpdatePlayerData> {
+    public async filters(options: Filters): Promise<APIPlayer> {
         const d = await this.update({ filters: options });
         this.state.filters = options;
         if (this.listenerCount("filters")) this.emit("filters", options);
@@ -155,9 +159,9 @@ export class Player extends EventEmitter {
 
     /**
      * Sets the equalizer of the current song, if you wanted to do something like bassboost
-     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/freyacodes/Lavalink/blob/master/IMPLEMENTATION.md#outgoing-messages) for more information
+     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/lavalink-devs/Lavalink/blob/master/IMPLEMENTATION.md#equalizer) for more information
      */
-    public async equalizer(bands: Equalizer[]): Promise<UpdatePlayerData> {
+    public async equalizer(bands: Equalizer[]): Promise<APIPlayer> {
         const newFilters = Object.assign(this.state.filters, { equalizer: bands });
         const d = await this.filters(newFilters);
         return d;
@@ -167,16 +171,14 @@ export class Player extends EventEmitter {
      * Sends a destroy signal to lavalink, basically just a cleanup op for lavalink to clean its shit up
      */
     public async destroy(): Promise<DestroyPlayerResult> {
-        const d = await Rest.destroyPlayer(this.node, this.id);
-        if (d && d.error) throw new Error(d.message);
-        return d as DestroyPlayerResult;
+        return Rest.destroyPlayer(this.node, this.id);
     }
 
     /**
      * Sends voiceUpdate information to lavalink so it can connect to discords voice servers properly
      * @param data The data lavalink needs to connect and recieve data from discord
      */
-    public connect(data: PlayerUpdateVoiceState): Promise<UpdatePlayerData> {
+    public connect(data: PlayerUpdateVoiceState): Promise<APIPlayer> {
         this.voiceUpdateState = data;
         return this.update({ voice: { token: data.event.token, endpoint: data.event.endpoint, sessionId: data.sessionId } });
     }

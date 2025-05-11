@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - LL-v4
   pull_request:
 
 jobs:
@@ -12,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v2
-      - name: Install NodeJS v16
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
       - name: Restore CI Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
@@ -28,7 +29,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: yarn docs
       - name: Publish Docs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/LL-v4')
         run: |
           #!/bin/bash
           set -euxo pipefail

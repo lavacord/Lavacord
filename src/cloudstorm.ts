@@ -18,7 +18,7 @@ export class Manager extends BaseManager {
                 const s = Object.entries(this.client.shardManager.shards).find(e => String(e[0]) === String(shardID))?.[1];
 
                 if (s) {
-                    s.connector.betterWs.sendMessage(packet);
+                    s.connector.sendMessage(packet);
                     return true;
                 } else {
                     return false;
@@ -27,14 +27,20 @@ export class Manager extends BaseManager {
         }
 
         client.on("event", packet => {
-            if (packet.t === "VOICE_SERVER_UPDATE") {
-                this.voiceServerUpdate(packet.d as VoiceServerUpdate);
-            } else if (packet.t === "VOICE_STATE_UPDATE") {
-                this.voiceStateUpdate(packet.d as VoiceStateUpdate);
-            } else if (packet.t === "GUILD_CREATE") {
-                for (const state of packet.d.voice_states ?? []) {
-                    this.voiceStateUpdate({ ...state, guild_id: (packet.d as unknown as { id: string; }).id } as VoiceStateUpdate);
-                }
+            switch (packet.t) {
+                case "VOICE_SERVER_UPDATE":
+                    this.voiceServerUpdate(packet.d as VoiceServerUpdate);
+                    break;
+
+                case "VOICE_STATE_UPDATE":
+                    this.voiceStateUpdate(packet.d as VoiceStateUpdate);
+                    break;
+
+                case "GUILD_CREATE":
+                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as VoiceStateUpdate);
+                    break;
+
+                default: break;
             }
         });
     }
