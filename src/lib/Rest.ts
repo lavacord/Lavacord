@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 import { URLSearchParams } from "url";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { TrackLoadingResult, DecodeTrackResult, DecodeTracksResult, GetLavalinkVersionResult, UpdateSessionResult, UpdateSessionData, ErrorResponse, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult } from "lavalink-types/v4";
@@ -20,7 +21,7 @@ export class Rest {
      * @param requires Properties of the lavalink node the route requires
      * @throws {RestError} If lavalink encounters an error
      */
-    private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: Array<"version" | "sessionId">): Promise<T> {
+    private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: ("version" | "sessionId")[]): Promise<T> {
         if (requires && !requires.every(r => !!node[r])) throw new RestError({ timestamp: Date.now(), status: 400, error: "Bad Request", message: `Node ${requires.join(", ")} is required for this route. Did you forget to connect?`, path });
         if (!init) init = {};
         if (!init.headers) init.headers = {};

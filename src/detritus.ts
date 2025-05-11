@@ -6,7 +6,7 @@ import type { ClusterClient, ShardClient } from "detritus-client";
 export * from "./index";
 
 export class Manager extends BaseManager {
-    public constructor(public readonly client: ClusterClient | ShardClient, nodes: Array<LavalinkNodeOptions>, options: ManagerOptions) {
+    public constructor(public readonly client: ClusterClient | ShardClient, nodes: LavalinkNodeOptions[], options: ManagerOptions) {
         super(nodes, options);
 
         if (!this.send) {

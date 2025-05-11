@@ -2,11 +2,11 @@ import WebSocket from "ws";
 import { Rest } from "./Rest";
 
 import type { Manager } from "./Manager";
-import type { LavalinkNodeOptions } from "./Types";
+import type { LavalinkNodeOptions, LavalinkStats } from "./Types";
 import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require("../../package.json");
+ 
+import { version } from "../../package.json"
 
 /**
  * The class for handling everything to do with connecting to Lavalink
@@ -52,7 +52,7 @@ export class LavalinkNode {
     /**
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    public state?: any;
+    public state?: unknown;
     /**
      * The major version of the LavaLink node as indicated by /version
      */
@@ -115,7 +115,7 @@ export class LavalinkNode {
      */
     public async connect(): Promise<WebSocket> {
         return new Promise<WebSocket>((resolve, reject) => {
-            if (this.connected) this.ws!.close();
+            if (this.connected) this.ws?.close();
 
             return Rest.version(this)
                 .then(nodeVersion => {
@@ -127,7 +127,7 @@ export class LavalinkNode {
 
                     const headers: OutboundHandshakeHeaders = {
                         Authorization: this.password,
-                        "User-Id": this.manager.user!,
+                        "User-Id": this.manager.user,
                         "Client-Name": `Lavacord/${version}`
                     };
 
@@ -164,7 +164,7 @@ export class LavalinkNode {
      */
     public destroy(): boolean {
         if (!this.connected) return false;
-        this.ws!.close(1000, "destroy");
+        this.ws?.close(1000, "destroy");
         return true;
     }
 
@@ -173,7 +173,7 @@ export class LavalinkNode {
      */
     public get connected(): boolean {
         if (!this.ws) return false;
-        return this.ws!.readyState === WebSocket.OPEN;
+        return this.ws?.readyState === WebSocket.OPEN;
     }
 
     /**
@@ -193,10 +193,11 @@ export class LavalinkNode {
      * @param data The data that came from lavalink
      */
     private onMessage(data: WebSocket.Data): void {
-        let str = "";
-        if (Array.isArray(data)) str = Buffer.concat(data).toString();
-        else if (data instanceof ArrayBuffer) str = Buffer.from(data).toString();
-        else str = data.toString();
+        const str = Array.isArray(data) 
+    ? Buffer.concat(data).toString() 
+    : data instanceof ArrayBuffer 
+    ? Buffer.from(data).toString() 
+    : data.toString();
 
         const msg: WebsocketMessage = JSON.parse(str);
 
@@ -211,13 +212,13 @@ export class LavalinkNode {
 
             case "stats":
                 this.stats = { ...msg };
-                delete (this.stats as any).op;
+                delete (this.stats as LavalinkStats).op;
                 break;
 
             case "event":
             case "playerUpdate":
                 if (!this.manager.players.has(msg.guildId)) break;
-                this.manager.players.get(msg.guildId)!.emit(msg.op, msg as any);
+                this.manager.players.get(msg.guildId)?.emit(msg.op, msg as never);
                 break;
 
             default: break;
@@ -253,7 +254,7 @@ export class LavalinkNode {
      */
     private reconnect(): void {
         this._reconnect = setTimeout(() => {
-            this.ws!.removeAllListeners();
+            this.ws?.removeAllListeners();
             this.ws = null;
 
             this.manager.emit("reconnecting", this);

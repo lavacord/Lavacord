@@ -5,7 +5,7 @@ import type { Client } from "oceanic.js";
 export * from "./index";
 
 export class Manager extends BaseManager {
-    public constructor(public readonly client: Client, nodes: Array<LavalinkNodeOptions>, options?: ManagerOptions) {
+    public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options?: ManagerOptions) {
         if (!options) options = {};
         if (!options.user) options.user = client.user?.id;
         super(nodes, options);

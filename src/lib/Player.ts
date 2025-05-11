@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EventEmitter } from "events";
 import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
@@ -216,15 +217,15 @@ export interface PlayerEvents {
 export interface Player {
     addListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
     emit<E extends keyof PlayerEvents>(event: E, ...args: PlayerEvents[E]): boolean;
-    eventNames(): Array<keyof PlayerEvents>;
+    eventNames(): (keyof PlayerEvents)[];
     listenerCount(event: keyof PlayerEvents): number;
-    listeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
+    listeners(event: keyof PlayerEvents): ((...args: any[]) => any)[];
     off<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
     on<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
     once<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
     prependListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
     prependOnceListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    rawListeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
+    rawListeners(event: keyof PlayerEvents): ((...args: any[]) => any)[];
     removeAllListeners(event?: keyof PlayerEvents): this;
     removeListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
 }

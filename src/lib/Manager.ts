@@ -1,3 +1,5 @@
+ 
+ 
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
@@ -47,7 +49,7 @@ export class Manager extends EventEmitter {
      * @param nodes A Array of {@link LavalinkNodeOptions} that the Manager will connect to
      * @param options The options for the Manager {@link ManagerOptions}
      */
-    public constructor(nodes: Array<LavalinkNodeOptions>, options: ManagerOptions) {
+    public constructor(nodes: LavalinkNodeOptions[], options: ManagerOptions) {
         super();
 
         if (options.user) this.user = options.user;
@@ -63,7 +65,7 @@ export class Manager extends EventEmitter {
     /**
      * Connects all the {@link LavalinkNode} to the respective Lavalink instance
      */
-    public connect(): Promise<Array<WebSocket>> {
+    public connect(): Promise<WebSocket[]> {
         if (!this.user) {
             console.warn("Lavacord Manager.connect was called without the client user ID being set.\
                 You should construct your Manager when your client becomes ready as that's where you/your Discord lib receives the current user info.\
@@ -77,7 +79,7 @@ export class Manager extends EventEmitter {
      * Disconnects everything, basically destorying the manager.
      * Stops all players, leaves all voice channels then disconnects all LavalinkNodes
      */
-    public disconnect(): Promise<Array<boolean>> {
+    public disconnect(): Promise<boolean[]> {
         const promises = [];
         for (const id of Array.from(this.players.keys())) promises.push(this.leave(id));
         for (const node of Array.from(this.nodes.values())) node.destroy();
@@ -220,7 +222,7 @@ export class Manager extends EventEmitter {
      * @param channel Voice channel id, or null to leave a voice channel
      * @param param2 Selfmute and Selfdeaf options, if you want the bot to be deafen or muted upon joining
      */
-    public sendWS(guild: string, channel: string | null, { selfmute = false, selfdeaf = false }: JoinOptions = {}): any {
+    public sendWS(guild: string, channel: string | null, { selfmute = false, selfdeaf = false }: JoinOptions = {}): unknown {
         return this.send!({
             op: 4,
             d: {
@@ -235,7 +237,7 @@ export class Manager extends EventEmitter {
     /**
      * Gets all connected nodes, sorts them by cou load of the node
      */
-    public get idealNodes(): Array<LavalinkNode> {
+    public get idealNodes(): LavalinkNode[] {
         return Array.from(this.nodes.values())
             .filter(node => node.connected)
             .sort((a, b) => {
@@ -287,18 +289,18 @@ export interface ManagerEvents {
     reconnecting: [LavalinkNode];
 }
 
-export interface Manager {
-    addListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+export interface Manager extends EventEmitter {
+    addListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
     emit<E extends keyof ManagerEvents>(event: E, ...args: ManagerEvents[E]): boolean;
-    eventNames(): Array<keyof ManagerEvents>;
+    eventNames(): (keyof ManagerEvents)[];
     listenerCount(event: keyof ManagerEvents): number;
-    listeners(event: keyof ManagerEvents): Array<(...args: Array<any>) => any>;
-    off<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
-    on<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
-    once<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
-    prependListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
-    prependOnceListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
-    rawListeners(event: keyof ManagerEvents): Array<(...args: Array<any>) => any>;
+    listeners(event: keyof ManagerEvents): ((...args: unknown[]) => unknown)[];
+    off<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
+    on<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
+    once<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
+    prependListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
+    prependOnceListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
+    rawListeners(event: keyof ManagerEvents): ((...args: unknown[]) => unknown)[];
     removeAllListeners(event?: keyof ManagerEvents): this;
-    removeListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => any): this;
+    removeListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
 }

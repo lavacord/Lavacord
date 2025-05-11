@@ -135,6 +135,7 @@ export interface DiscordPacket {
     /**
      * event data
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     d: any;
     /**
      * sequence number, used for resuming sessions and heartbeats
@@ -185,5 +186,34 @@ export interface LavalinkNodeOptions {
     /**
      * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
      */
-    state?: any;
+    state?: unknown;
+}
+
+export interface LavalinkStats {
+            op?: number;
+
+            players?: number;
+            
+            playingPlayers?: number;
+
+            uptime: number;
+
+            memory?: {
+                free?: number;
+                used?: number;
+                allocated?: number;
+                reservable?: number;
+            };
+
+            cpu?: {
+                cores?: number;
+                systemLoad?: number;
+                lavalinkLoad?: number;
+            };
+
+            frameStats?: {
+                sent?: number;
+                nulled?: number;
+                deficit?: number;
+            };
 }

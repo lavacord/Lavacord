@@ -6,13 +6,13 @@ import { Client } from "cloudstorm";
 export * from "./index";
 
 export class Manager extends BaseManager {
-    public constructor(public readonly client: Client, nodes: Array<LavalinkNodeOptions>, options: ManagerOptions) {
+    public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options: ManagerOptions) {
         super(nodes, options);
 
         if (!this.send) {
             this.send = packet => {
                 if (!this.client.options.totalShards) return false;
-                // eslint-disable-next-line no-bitwise
+                 
                 const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
 
                 const s = Object.entries(this.client.shardManager.shards).find(e => String(e[0]) === String(shardID))?.[1];
