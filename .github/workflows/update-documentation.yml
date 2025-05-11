@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - LL-v4
   pull_request:
 
 jobs:
@@ -29,7 +28,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: yarn docs
       - name: Publish Docs
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/LL-v4')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master')
         run: |
           #!/bin/bash
           set -euxo pipefail
