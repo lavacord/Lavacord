@@ -5,8 +5,8 @@ import type { Manager } from "./Manager";
 import type { LavalinkNodeOptions, LavalinkStats } from "./Types";
 import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
 
- 
-import { version } from "../../package.json"
+// This is a placeholder for the version of the library, which should be injected during build time
+const version = '[VI]{{inject}}[/VI]';
 
 /**
  * The class for handling everything to do with connecting to Lavalink

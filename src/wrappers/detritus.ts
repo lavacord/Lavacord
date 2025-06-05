@@ -1,9 +1,9 @@
-import { Manager as BaseManager } from "./lib/Manager";
-import type { ManagerOptions, LavalinkNodeOptions } from "./lib/Types";
+import { Manager as BaseManager } from "../lib/Manager";
+import type { ManagerOptions, LavalinkNodeOptions } from "../lib/Types";
 
 import type { ClusterClient, ShardClient } from "detritus-client";
 
-export * from "./index";
+export * from "../index";
 
 export class Manager extends BaseManager {
     public constructor(public readonly client: ClusterClient | ShardClient, nodes: LavalinkNodeOptions[], options: ManagerOptions) {
@@ -14,17 +14,10 @@ export class Manager extends BaseManager {
                 const asCluster = this.client as ClusterClient;
                 const asShard = this.client as ShardClient;
 
-                if (asShard.guilds) {
-                    asShard.gateway.send(packet.op, packet.d);
-                    return true;
-                } else if (asCluster.shards) {
+                if (asShard.guilds) return asShard.gateway.send(packet.op, packet.d);
+                if (asCluster.shards) {
                     const shard = asCluster.shards.find(c => c.guilds.has(packet.d.guild_id));
-                    if (shard) {
-                        shard.gateway.send(packet.op, packet.d);
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    if (shard) shard.gateway.send(packet.op, packet.d);
                 }
             };
         }

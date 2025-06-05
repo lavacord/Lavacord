@@ -25,4 +25,4 @@ jobs:
       - name: Install Dependencies
         run: yarn --ignore-scripts
       - name: Compile TypeScript
-        run: yarn compile
+        run: yarn build

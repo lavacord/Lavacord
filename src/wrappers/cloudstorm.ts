@@ -1,20 +1,24 @@
-import { Manager as BaseManager } from "./lib/Manager";
-import type { ManagerOptions, LavalinkNodeOptions, VoiceServerUpdate, VoiceStateUpdate } from "./lib/Types";
-import type { Client } from "oceanic.js";
+import { Manager as BaseManager } from "../lib/Manager";
+import type { ManagerOptions, LavalinkNodeOptions, VoiceServerUpdate, VoiceStateUpdate } from "../lib/Types";
 
-export * from "./index";
+import { Client } from "cloudstorm";
+
+export * from "../index";
 
 export class Manager extends BaseManager {
-    public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options?: ManagerOptions) {
-        if (!options) options = {};
-        if (!options.user) options.user = client.user?.id;
+    public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options: ManagerOptions) {
         super(nodes, options);
 
         if (!this.send) {
             this.send = packet => {
-                const guild = this.client.guilds.get(packet.d.guild_id);
-                if (guild) {
-                    guild.shard.send(packet.op, packet.d);
+                if (!this.client.options.totalShards) return false;
+                 
+                const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
+
+                const s = Object.entries(this.client.shardManager.shards).find(e => String(e[0]) === String(shardID))?.[1];
+
+                if (s) {
+                    s.connector.sendMessage(packet);
                     return true;
                 } else {
                     return false;
@@ -22,7 +26,7 @@ export class Manager extends BaseManager {
             };
         }
 
-        client.on("packet", packet => {
+        client.on("event", packet => {
             switch (packet.t) {
                 case "VOICE_SERVER_UPDATE":
                     this.voiceServerUpdate(packet.d as VoiceServerUpdate);
@@ -33,7 +37,6 @@ export class Manager extends BaseManager {
                     break;
 
                 case "GUILD_CREATE":
-                    if (packet.d.unavailable) break;
                     for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as VoiceStateUpdate);
                     break;
 
