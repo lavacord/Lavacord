@@ -29,6 +29,7 @@
 	"strict": true,
 	"noEmit": true,
 	"incremental": false,
+	"skipLibCheck": true,
 	"target": "ES2020",
 	"useDefineForClassFields": true,
     "outDir": "./dist",
@@ -40,7 +41,7 @@
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["**/node_modules/**", "dist"],
   "typedocOptions": {
     "entryPoints": ["src/index.ts"],
     "out": "./docs/",
