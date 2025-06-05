@@ -5,13 +5,12 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
-  globalIgnores(["docs"]),
+  globalIgnores(["docs", "dist", "node_modules"]),
   eslint.configs.recommended,
   tseslint.configs.recommended,
   tseslint.configs.strict,
   tseslint.configs.stylistic,
   {
-    ignores: ["node_modules", "docs", "dist"],
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-unsafe-declaration-merging": "off",
