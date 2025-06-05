@@ -10,7 +10,6 @@ We welcome all help, whether it's bug reports, feature requests, code contributi
 - [Workflow](#workflow)
 - [How to Contribute](#how-to-contribute)
 - [Code Style](#code-style)
-- [Development Setup](#development-setup)
 - [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
 - [Community Standards](#community-standards)
