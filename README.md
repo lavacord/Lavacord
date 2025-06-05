@@ -20,18 +20,18 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 - [Features](#features)
 - [Supported Discord Libraries](#supported-discord-libraries)
 - [Requirements](#requirements)
-- [Installation](#installation)
+- [Installation](#-installation)
 - [Getting Started](#getting-started)
-- [Lavalink Setup](#lavalink-setup)
-- [Usage Examples](#usage-examples)
+- [Lavalink Setup](#️-lavalink-setup)
+- [Usage Examples](#-usage-examples)
   - [Basic Usage](#basic-usage)
   - [Resolving Tracks](#resolving-tracks)
-  - [Joining and Leaving Channels](#joining-and-leaving-channels)
-  - [Advanced Usage](#advanced-usage)
-- [Library Wrappers](#library-wrappers)
+  - [Joining and Leaving Voice Channels](#joining-and-leaving-voice-channels)
+  - [Advanced Usage](#-advanced-usage)
+- [Library Wrappers](#-library-wrappers)
   - [Wrapper Example](#wrapper-example)
-- [TypeScript, CommonJS, and ESM Support](#typescript-commonjs-and-esm-support)
-- [API Reference](#api-reference)
+- [TypeScript, CommonJS, and ESM Support](#-typescript-commonjs-and-esm-support)
+- [API Reference](#-api-reference)
 - [Community & Support](#community--support)
 - [License](#license)
 - [Contributing](#contributing)
@@ -40,7 +40,6 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 ---
 
 ## Features
-
 
 - 🚀 **Simple API** — Minimal boilerplate and a clear structure for controlling Lavalink.
 - 📦 **Modular Design** — Manager, Player, and Node layers for easy customization and extension.
@@ -283,7 +282,7 @@ See the [wrappers directory](src/wrappers/) for details and usage examples.
 ```js
 // Import the Manager class from lavacord's discord.js wrapper.
 // This manages Lavalink nodes and music playback for Discord.js bots.
-const { Manager } = require("lavacord/discord.js");	
+const { Manager } = require("lavacord/discord.js"); 
 
 // Import the main Discord.js Client class to interact with the Discord API.
 const { Client } = require("discord.js");
