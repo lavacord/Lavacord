@@ -32,10 +32,10 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
   - [Wrapper Example](#wrapper-example)
 - [TypeScript, CommonJS, and ESM Support](#typescript-commonjs-and-esm-support)
 - [API Reference](#api-reference)
-- [Contributing](#contributing)
 - [Community & Support](#community--support)
 - [License](#license)
-- [Contributors](#contributors)
+- [Contributing](#contributing)
+  - [Contributors](#contributors)
 
 ---
 
@@ -342,15 +342,6 @@ client.login("your-bot-token");
 - `Player`: Controls playback, filters, and events.
 - `Rest`: Lavalink REST API helpers.
 - `Types`: Type definitions for options, packets, and more.
-
----
-
-## Contributing
-
-Contributions are welcome!  
-If you'd like to suggest support for a new Discord API library, [open an issue or discussion](https://github.com/lavacord/lavacord/issues).
-
-See [CONTRIBUTING.md](https://github.com/lavacord/lavacord/blob/master/CONTRIBUTING.md) for guidelines.
 
 ---
 
