@@ -354,7 +354,12 @@ client.login("your-bot-token");
 
 ## 💖 Donate
 
-If you find Lavacord useful and want to support its development, you can sponsor us via [GitHub Sponsors](https://github.com/sponsors/lavacord). Thank you for your support!
+If you find Lavacord useful and want to support its development, you can sponsor the main maintainers directly:
+
+- [MrJacz](https://github.com/sponsors/MrJacz)
+- [AmandaDiscord](https://github.com/sponsors/AmandaDiscord)
+
+Thank you for your support!
 
 ---
 
