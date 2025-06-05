@@ -7,34 +7,34 @@
   "types": "./dist/cjs/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/cjs/index.d.ts",
       "require": "./dist/cjs/index.cjs",
-      "import": "./dist/esm/index.mjs",
-      "types": "./dist/cjs/index.d.ts"
+      "import": "./dist/esm/index.mjs"
     },
     "./cloudstorm": {
+      "types": "./dist/cjs/wrappers/cloudstorm.d.ts",
       "require": "./dist/cjs/wrappers/cloudstorm.cjs",
-      "import": "./dist/esm/wrappers/cloudstorm.mjs",
-      "types": "./dist/cjs/wrappers/cloudstorm.d.ts"
+      "import": "./dist/esm/wrappers/cloudstorm.mjs"
     },
     "./detritus": {
+      "types": "./dist/cjs/wrappers/detritus.d.ts",
       "require": "./dist/cjs/wrappers/detritus.cjs",
-      "import": "./dist/esm/wrappers/detritus.mjs",
-      "types": "./dist/cjs/wrappers/detritus.d.ts"
+      "import": "./dist/esm/wrappers/detritus.mjs"
     },
     "./discord.js": {
+      "types": "./dist/cjs/wrappers/discord.js.d.ts",
       "require": "./dist/cjs/wrappers/discord.js.cjs",
-      "import": "./dist/esm/wrappers/discord.js.mjs",
-      "types": "./dist/cjs/wrappers/discord.js.d.ts"
+      "import": "./dist/esm/wrappers/discord.js.mjs"
     },
     "./eris": {
+      "types": "./dist/cjs/wrappers/eris.d.ts",
       "require": "./dist/cjs/wrappers/eris.cjs",
-      "import": "./dist/esm/wrappers/eris.mjs",
-      "types": "./dist/cjs/wrappers/eris.d.ts"
+      "import": "./dist/esm/wrappers/eris.mjs"
     },
     "./oceanic": {
+      "types": "./dist/cjs/wrappers/oceanic.d.ts",
       "require": "./dist/cjs/wrappers/oceanic.cjs",
-      "import": "./dist/esm/wrappers/oceanic.mjs",
-      "types": "./dist/cjs/wrappers/oceanic.d.ts"
+      "import": "./dist/esm/wrappers/oceanic.mjs"
     }
   },
   "files": [
@@ -84,6 +84,7 @@
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "esbuild-plugin-file-path-extensions": "^2.1.4",
+    "esbuild-plugin-version-injector": "^1.2.1",
     "eslint": "^9.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^7.2.1",
