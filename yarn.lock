@@ -483,6 +483,11 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.5.5.tgz#2b18d402bb920b65b13ad4ed8dfb6c386300dd84"
   integrity sha512-cvGzxbba6sav2zZkH8GPf2oGk9yYoD5qrNWdu9fRehifgnFZJMV+nuy2nON2roRO4yQQ+v7MK/Pktl/HgfsUXg==
 
+"@sapphire/result@^2.6.4":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@sapphire/result/-/result-2.7.2.tgz#ce760d6d54039f6894267c453f4f4fa90f1ee4d2"
+  integrity sha512-DJbCGmvi8UZAu/hh85auQL8bODFlpcS3cWjRJZ5/cXTLekmGvs/CrRxrIzwbA6+poyYojo5rK4qu8trmjfneog==
+
 "@sapphire/shapeshift@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@sapphire/shapeshift/-/shapeshift-4.0.0.tgz#86c1b41002ff5d0b2ad21cbc3418b06834b89040"
@@ -1105,6 +1110,13 @@ esbuild-plugin-file-path-extensions@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/esbuild-plugin-file-path-extensions/-/esbuild-plugin-file-path-extensions-2.1.4.tgz#cad9d1d3133e95146eeabd76fdf3956a66f6348b"
   integrity sha512-lNjylaAsJMprYg28zjUyBivP3y0ms9b7RJZ5tdhDUFLa3sCbqZw4wDnbFUSmnyZYWhCYDPxxp7KkXM2TXGw3PQ==
+
+esbuild-plugin-version-injector@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/esbuild-plugin-version-injector/-/esbuild-plugin-version-injector-1.2.1.tgz#d7290e67aa56bb95e8793267a5015051c48b56f5"
+  integrity sha512-OKrLqniWutFlv36lKm2lIhJS1L5hncmbC4NXWjEt2a4bcMuyZ5TcZ/idUpH1Vju5FVlGX122cYcRhkMxHlq5GA==
+  dependencies:
+    "@sapphire/result" "^2.6.4"
 
 esbuild@^0.25.0:
   version "0.25.5"

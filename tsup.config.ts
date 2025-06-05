@@ -1,4 +1,5 @@
 import { esbuildPluginFilePathExtensions } from 'esbuild-plugin-file-path-extensions';
+import { esbuildPluginVersionInjector } from 'esbuild-plugin-version-injector';
 import { defineConfig, type Options } from 'tsup';
 
 const baseOptions: Options = {
@@ -11,7 +12,7 @@ const baseOptions: Options = {
 	target: 'es2021',
 	keepNames: true,
 	treeshake: true,
-    esbuildPlugins: [esbuildPluginFilePathExtensions()]
+    esbuildPlugins: [esbuildPluginFilePathExtensions(), esbuildPluginVersionInjector()]
 };
 
 export default [
