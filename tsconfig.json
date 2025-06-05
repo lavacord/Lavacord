@@ -21,7 +21,15 @@
 			"strictBindCallApply": true,
 			"target": "esnext",
 			"types": ["node", "ws"],
-			"skipLibCheck": true
+			"skipLibCheck": true,
+    		"baseUrl": "./src",
+    		"paths": {
+      		"lavacord/cloudstorm": ["./wrappers/cloudstorm.ts"],
+			"lavacord/detritus": ["./wrappers/detritus.ts"],
+			"lavacord/discord.js": ["./wrappers/discord.js.ts"],
+			"lavacord/eris": ["./wrappers/eris.ts"],
+			"lavacord/oceanic": ["./wrappers/oceanic.ts"]
+			}
 	},
 	"exclude": ["node_modules"],
 	"include": ["src"],
@@ -34,5 +42,5 @@
 		"excludeExternals": true,
 		"excludePrivate": true,
 		"excludeProtected": true
-}
+	}
 }

@@ -2,7 +2,14 @@
   "name": "lavacord",
   "version": "2.2.0",
   "description": "A simple by design lavalink wrapper made for any discord library.",
-  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./cloudstorm": "./dist/wrappers/cloudstorm.ts",
+		"./detritus": "./dist/wrappers/detritus.ts",
+		"./discord.js": "./dist/wrappers/discord.js.ts",
+		"./eris": "./dist/wrappers/eris.ts",
+		"./oceanic": "./dist/wrappers/oceanic.ts"
+  },
   "types": "./dist/index.d.ts",
   "scripts": {
     "postinstall": "yarn compile",
@@ -63,7 +70,8 @@
   },
   "files": [
     "dist",
-    "LICENSE"
+    "LICENSE",
+    "README"
   ],
   "engines": {
     "node": ">=16.15.0",

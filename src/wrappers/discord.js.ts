@@ -1,9 +1,9 @@
-import { Manager as BaseManager } from "./lib/Manager";
-import type { ManagerOptions, LavalinkNodeOptions } from "./lib/Types";
+import { Manager as BaseManager } from "../lib/Manager";
+import type { ManagerOptions, LavalinkNodeOptions } from "../lib/Types";
 
 import { Client, GatewayDispatchEvents } from "discord.js";
 
-export * from "./index";
+export * from "../index";
 
 export class Manager extends BaseManager {
     public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options?: ManagerOptions) {

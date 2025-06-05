@@ -1,9 +1,8 @@
-import { Manager as BaseManager } from "./lib/Manager";
-import type { ManagerOptions, LavalinkNodeOptions, DiscordPacket } from "./lib/Types";
+import { Manager as BaseManager } from "../lib/Manager";
+import type { ManagerOptions, LavalinkNodeOptions, VoiceServerUpdate, VoiceStateUpdate } from "../lib/Types";
+import type { Client } from "oceanic.js";
 
-import type { Client } from "eris";
-
-export * from "./index";
+export * from "../index";
 
 export class Manager extends BaseManager {
     public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options?: ManagerOptions) {
@@ -15,7 +14,7 @@ export class Manager extends BaseManager {
             this.send = packet => {
                 const guild = this.client.guilds.get(packet.d.guild_id);
                 if (guild) {
-                    guild.shard.sendWS(packet.op, packet.d);
+                    guild.shard.send(packet.op, packet.d);
                     return true;
                 } else {
                     return false;
@@ -23,18 +22,19 @@ export class Manager extends BaseManager {
             };
         }
 
-        client.on("rawWS", (packet: DiscordPacket) => {
+        client.on("packet", packet => {
             switch (packet.t) {
                 case "VOICE_SERVER_UPDATE":
-                    this.voiceServerUpdate(packet.d);
+                    this.voiceServerUpdate(packet.d as VoiceServerUpdate);
                     break;
 
                 case "VOICE_STATE_UPDATE":
-                    this.voiceStateUpdate(packet.d);
+                    this.voiceStateUpdate(packet.d as VoiceStateUpdate);
                     break;
 
                 case "GUILD_CREATE":
-                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id });
+                    if (packet.d.unavailable) break;
+                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as VoiceStateUpdate);
                     break;
 
                 default: break;
