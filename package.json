@@ -22,9 +22,9 @@
       "types": "./dist/cjs/wrappers/detritus.d.ts"
     },
     "./discord.js": {
-      "require": "./dist/cjs/wrappers/discord.cjs",
-      "import": "./dist/esm/wrappers/discord.mjs",
-      "types": "./dist/cjs/wrappers/discord.d.ts"
+      "require": "./dist/cjs/wrappers/discord.js.cjs",
+      "import": "./dist/esm/wrappers/discord.js.mjs",
+      "types": "./dist/cjs/wrappers/discord.js.d.ts"
     },
     "./eris": {
       "require": "./dist/cjs/wrappers/eris.cjs",
