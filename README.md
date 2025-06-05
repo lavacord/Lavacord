@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogo2.png?raw=true" alt="Lavacord Logo"  height="300">
+<img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="300">
 
 Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lavalink-devs/Lavalink) wrapper for Node.js, supporting multiple Discord libraries. It provides a consistent API for managing music playback, voice connections, and node management, making it easy for both beginners and advanced users to integrate high-performance audio into their Discord bots.
 
