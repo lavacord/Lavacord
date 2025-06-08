@@ -1,3 +1,4 @@
+import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
 import { Manager as BaseManager } from "../lib/Manager";
 import type { ManagerOptions, LavalinkNodeOptions } from "../lib/Types";
 
@@ -25,15 +26,15 @@ export class Manager extends BaseManager {
         client.on("raw", packet => {
             switch (packet.t) {
                 case "VOICE_SERVER_UPDATE":
-                    this.voiceServerUpdate(packet.d);
+                    this.voiceServerUpdate(packet.d as GatewayVoiceServerUpdateDispatchData);
                     break;
 
                 case "VOICE_STATE_UPDATE":
-                    this.voiceStateUpdate(packet.d);
+                    this.voiceStateUpdate(packet.d as GatewayVoiceStateUpdateDispatchData);
                     break;
 
                 case "GUILD_CREATE":
-                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id });
+                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as GatewayVoiceStateUpdateDispatchData);
                     break;
 
                 default: break;

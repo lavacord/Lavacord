@@ -2,7 +2,9 @@ import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
 import WebSocket from "ws";
-import type { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
+import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
+import { WebsocketMessage } from "lavalink-types/v4";
+import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
 
 /**
  * The class that handles everything to do with Lavalink. it is the hub of the library basically
@@ -20,11 +22,11 @@ export class Manager extends EventEmitter {
     /**
      * A [**Map**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) of all the VOICE_SERVER_UPDATE States
      */
-    public voiceServers = new Map<string, VoiceServerUpdate>();
+    public voiceServers = new Map<string, GatewayVoiceServerUpdateDispatchData>();
     /**
      * A [**Map**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) of all the VOICE_STATE_UPDATE States
      */
-    public voiceStates = new Map<string, VoiceStateUpdate>();
+    public voiceStates = new Map<string, GatewayVoiceStateUpdateDispatchData>();
     /**
      * The user id of the bot this Manager is managing
      */
@@ -32,7 +34,7 @@ export class Manager extends EventEmitter {
     /**
      * The send function needs for the library to function
      */
-    public send?: (packet: DiscordPacket) => unknown;
+    public send?: (packet: GatewayVoiceStateUpdate) => unknown;
     /**
      * The Player the manager will use when creating new Players
      */
@@ -190,7 +192,7 @@ export class Manager extends EventEmitter {
      * For handling voiceServerUpdate from the user's library of choice
      * @param data The data directly from discord
      */
-    public voiceServerUpdate(data: VoiceServerUpdate): Promise<boolean> {
+    public voiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): Promise<boolean> {
         this.voiceServers.set(data.guild_id, data);
         this.expecting.add(data.guild_id);
         return this._attemptConnection(data.guild_id);
@@ -200,8 +202,9 @@ export class Manager extends EventEmitter {
      * For handling voiceStateUpdate from the user's library of choice
      * @param data The data directly from discord
      */
-    public voiceStateUpdate(data: VoiceStateUpdate): Promise<boolean> {
+    public voiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): Promise<boolean> {
         if (data.user_id !== this.user) return Promise.resolve(false);
+        if (!data.guild_id) return Promise.resolve(false);
 
         if (data.channel_id) {
             this.voiceStates.set(data.guild_id, data);
@@ -281,7 +284,7 @@ export class Manager extends EventEmitter {
 
 export interface ManagerEvents {
     ready: [LavalinkNode];
-    raw: [unknown, LavalinkNode];
+    raw: [WebsocketMessage, LavalinkNode];
     error: [unknown, LavalinkNode];
     disconnect: [number, string, LavalinkNode];
     reconnecting: [LavalinkNode];

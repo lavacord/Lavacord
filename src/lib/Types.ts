@@ -1,219 +1,166 @@
+import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate } from "discord-api-types/v10";
 import type { Player } from "./Player";
 
 /**
- * Player Update Voice State
+ * Represents the voice state required for a player update, typically used when switching nodes or resuming.
  */
 export interface PlayerUpdateVoiceState {
     /**
-     * The session id of the voice connection
+     * The session ID of the voice connection.
      */
     sessionId: string;
     /**
-     * Event data
+     * The voice server update event data from Discord.
      */
-    event: VoiceServerUpdate;
+    event: GatewayVoiceServerUpdateDispatchData;
 }
 
 /**
- * Manager Options
+ * Defines the options for configuring the Lavacord Manager.
  */
 export interface ManagerOptions {
     /**
-     * User id of the bot
+     * The user ID of the bot.
+     * It's recommended to set this when the bot client is ready.
      */
     user?: string;
     /**
-     * The Player class that the manager uses to create Players, so users can modify this
+     * The Player class to be used by the manager for creating new player instances.
+     * Allows for extending the base Player functionality.
      */
     player?: typeof Player;
     /**
-     * The send function for end users to implement for their specific library
+     * The function used to send gateway voice packets to Discord.
+     * This needs to be implemented by the end-user based on their Discord library.
+     * @param packet The Discord packet to send.
      */
-    send?: (packet: DiscordPacket) => unknown;
+    send?: (packet: GatewayVoiceStateUpdate) => unknown;
 }
 
 /**
- * Manager Join Data
+ * Defines the data required to join a voice channel.
  */
 export interface JoinData {
     /**
-     * The guild id of the guild the voice channel is in, that you want to join
+     * The ID of the guild where the voice channel is located.
      */
     guild: string;
     /**
-     * The voice channel you want to join
+     * The ID of the voice channel to join.
      */
     channel: string;
     /**
-     * The LavalinkNode ID you want to use
+     * The ID of the LavalinkNode to use for this connection.
      */
     node: string;
 }
 
 /**
- * Manager Join Options
+ * Defines the options for joining a voice channel.
  */
 export interface JoinOptions {
     /**
-     * Whether or not the bot will be self muted when it joins the voice channel
+     * Whether the bot should be self-muted upon joining the voice channel.
+     * @defaultValue false
      */
     selfmute?: boolean;
     /**
-     * Whether or not the bot will be self deafen when it joins the voice channel
+     * Whether the bot should be self-deafened upon joining the voice channel.
+     * @defaultValue false
      */
     selfdeaf?: boolean;
 }
 
 /**
- * Voice Server Update
- */
-export interface VoiceServerUpdate {
-    /**
-     * The token for the session
-     */
-    token: string;
-    /**
-     * Guild if of the voice connection
-     */
-    guild_id: string;
-    /**
-     * The endpoint lavalink will connect to
-     */
-    endpoint: string;
-}
-
-/**
- * Voice State Update
+ * Represents the data received from Discord's VOICE_STATE_UPDATE event.
  */
 export interface VoiceStateUpdate {
     /**
-     * Guild id
+     * The ID of the guild.
      */
     guild_id: string;
     /**
-     * channel id
+     * The ID of the voice channel the user is in.
+     * Will be null if the user is leaving the voice channel.
      */
-    channel_id?: string;
+    channel_id?: string | null;
     /**
-     * User id
+     * The ID of the user whose voice state updated.
      */
     user_id: string;
     /**
-     * Session id
+     * The session ID for this voice state.
      */
     session_id: string;
     /**
-     * Whether the user is deafened or not
+     * Whether the user is deafened by the server.
      */
     deaf?: boolean;
     /**
-     * Whether the user is muted or not
+     * Whether the user is muted by the server.
      */
     mute?: boolean;
     /**
-     * Whether the user is self-deafened or not
+     * Whether the user has self-deafened.
      */
     self_deaf?: boolean;
     /**
-     * Whether the user is self-muted or not
+     * Whether the user has self-muted.
      */
     self_mute?: boolean;
     /**
-     * Whether the user is suppressed
+     * Whether the user is suppressed (priority speaker).
      */
     suppress?: boolean;
+    // Add other relevant fields from Discord's VoiceState object if needed, e.g., member, request_to_speak_timestamp
 }
 
-/**
- * Discord Packet
- */
-export interface DiscordPacket {
-    /**
-     * opcode for the payload
-     */
-    op: number;
-    /**
-     * event data
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    d: any;
-    /**
-     * sequence number, used for resuming sessions and heartbeats
-     */
-    s?: number;
-    /**
-     * the event name for this payload
-     */
-    t?: string;
-}
 
 /**
- * Lavalink Node Options
+ * Defines the options for configuring a LavalinkNode.
  */
 export interface LavalinkNodeOptions {
     /**
-     * The id of the LavalinkNode so Nodes are better organized
+     * A unique identifier for this LavalinkNode, used for organization.
      */
     id: string;
     /**
-     * The host of the LavalinkNode, this could be a ip or domain.
+     * The hostname or IP address of the Lavalink server.
+     * @defaultValue "localhost"
      */
     host: string;
     /**
-     * The port of the LavalinkNode
+     * The port number of the Lavalink server.
+     * @defaultValue 2333
      */
     port?: number | string;
     /**
-     * The password of the lavalink node
+     * The password for authenticating with the Lavalink server.
+     * @defaultValue "youshallnotpass"
      */
     password?: string;
     /**
-     * The interval that the node will try to reconnect to lavalink at in milliseconds
+     * The interval (in milliseconds) at which the node will attempt to reconnect if the connection is lost.
+     * @defaultValue 10000 (10 seconds)
      */
     reconnectInterval?: number;
     /**
-     * The previous sessionId to send to the LavalinkNode so you can resume properly
+     * A previous session ID to attempt to resume a connection with the Lavalink server.
      */
     sessionId?: string;
     /**
-     * If the node should attempt to resume if the sessionId is present on WS open/node ready
+     * Whether the node should attempt to resume the session if a `sessionId` is present when the WebSocket connection opens or the node becomes ready.
+     * @defaultValue false
      */
     resuming?: boolean;
     /**
-     * Resume timeout
+     * The timeout (in seconds) for resuming a session.
+     * @defaultValue 120 (2 minutes)
      */
     resumeTimeout?: number;
     /**
-     * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
+     * Arbitrary state data that can be attached to the node for user-specific purposes.
+     * This data is not sent to Lavalink.
      */
     state?: unknown;
-}
-
-export interface LavalinkStats {
-            op?: number;
-
-            players?: number;
-            
-            playingPlayers?: number;
-
-            uptime: number;
-
-            memory?: {
-                free?: number;
-                used?: number;
-                allocated?: number;
-                reservable?: number;
-            };
-
-            cpu?: {
-                cores?: number;
-                systemLoad?: number;
-                lavalinkLoad?: number;
-            };
-
-            frameStats?: {
-                sent?: number;
-                nulled?: number;
-                deficit?: number;
-            };
 }

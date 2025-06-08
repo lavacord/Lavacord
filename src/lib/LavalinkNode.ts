@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import { Rest } from "./Rest";
 
 import type { Manager } from "./Manager";
-import type { LavalinkNodeOptions, LavalinkStats } from "./Types";
+import type { LavalinkNodeOptions } from "./Types";
 import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
 
 // This is a placeholder for the version of the library, which should be injected during build time
@@ -64,7 +64,6 @@ export class LavalinkNode {
 
     /**
      * The reconnect timeout
-     * @private
      */
     private _reconnect?: NodeJS.Timeout;
 
@@ -72,8 +71,8 @@ export class LavalinkNode {
 
     /**
      * The base of the connection to lavalink
-     * @param manager The manager that created the LavalinkNode
-     * @param options The options of the LavalinkNode {@link LavalinkNodeOptions}
+     * @param manager - The manager that created the LavalinkNode
+     * @param options - The options of the LavalinkNode {@link LavalinkNodeOptions}
      */
     public constructor(public manager: Manager, options: LavalinkNodeOptions) {
         this.id = options.id;
@@ -210,16 +209,21 @@ export class LavalinkNode {
                 }
                 break;
 
-            case "stats":
-                this.stats = { ...msg };
-                delete (this.stats as LavalinkStats).op;
+            case "stats": {
+                // Assign all properties except 'op' to stats
+                const stats = msg as Stats;
+                delete (stats as { op?: number }).op;
+                this.stats = stats;
                 break;
+            }
 
             case "event":
-            case "playerUpdate":
-                if (!this.manager.players.has(msg.guildId)) break;
-                this.manager.players.get(msg.guildId)?.emit(msg.op, msg as never);
+            case "playerUpdate": {
+                const player = this.manager.players.get(msg.guildId);
+                if (!player) break;
+                player.emit(msg.op, msg as never);
                 break;
+            }
 
             default: break;
         }

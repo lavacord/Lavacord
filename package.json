@@ -72,6 +72,7 @@
   },
   "homepage": "https://github.com/MrJacz/lavacord#readme",
   "dependencies": {
+    "discord-api-types": "^0.38.11",
     "lavalink-types": "^2.1.1",
     "ws": "^8.18.1"
   },
@@ -88,6 +89,7 @@
     "eslint": "^9.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-tsdoc": "^0.4.0",
     "globals": "^16.1.0",
     "tsup": "^8.0.0",
     "typedoc": "^0.28.4",
