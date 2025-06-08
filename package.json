@@ -45,6 +45,7 @@
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . -c eslint.config.mjs --fix",
     "test": "eslint . -c eslint.config.mjs",
     "docs": "typedoc --plugin typedoc-github-theme",
@@ -91,6 +92,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-tsdoc": "^0.4.0",
     "globals": "^16.1.0",
+    "prettier": "^3.5.3",
     "tsup": "^8.0.0",
     "typedoc": "^0.28.4",
     "typedoc-github-theme": "^0.3.0",
