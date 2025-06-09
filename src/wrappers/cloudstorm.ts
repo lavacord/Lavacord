@@ -19,7 +19,6 @@ export class Manager extends BaseManager {
 				if (!this.client.options.totalShards) return false;
 
 				const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
-
 				const s = Object.entries(this.client.shardManager.shards).find((e) => String(e[0]) === String(shardID))?.[1];
 
 				if (s) return s.connector.sendMessage(packet);
