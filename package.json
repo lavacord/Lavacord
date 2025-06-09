@@ -71,7 +71,7 @@
 	"bugs": {
 		"url": "https://github.com/lavacord/lavacord/issues"
 	},
-	"homepage": "https://github.com/MrJacz/lavacord#readme",
+	"homepage": "https://github.com/lavacord/lavacord#readme",
 	"dependencies": {
 		"discord-api-types": "^0.38.11",
 		"lavalink-types": "^2.1.1",
