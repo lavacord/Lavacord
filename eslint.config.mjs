@@ -2,7 +2,6 @@
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import tsdocPlugin from "eslint-plugin-tsdoc";
 import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
@@ -27,12 +26,6 @@ export default tseslint.config(
 					allowStaticOnly: true
 				}
 			]
-		}
-	},
-	{
-		plugins: { tsdoc: tsdocPlugin },
-		rules: {
-			"tsdoc/syntax": "warn"
 		}
 	}
 );
