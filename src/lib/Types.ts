@@ -175,11 +175,13 @@ export interface LavalinkNodeOptions {
 	 * @defaultValue 120 (2 minutes)
 	 */
 	resumeTimeout?: number;
+
 	/**
 	 * Arbitrary state data that can be attached to the node for user-specific purposes.
 	 *
 	 * @remarks
 	 * This data is not sent to Lavalink and is only used internally.
 	 */
-	state?: unknown;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	state?: any;
 }
