@@ -1605,10 +1605,10 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-lavalink-types@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/lavalink-types/-/lavalink-types-2.1.1.tgz#30e90cdc897b5b62d1215b4b8df00a6daed0f895"
-  integrity sha512-dfu7U0aFCc75qUTyz855bkTvmi58sn6iZk5wHyMeGKqLtIhJJKrLG5ukYcGOGbuIqEYXAO5xqyyExGscFZ4r0Q==
+lavalink-types@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lavalink-types/-/lavalink-types-3.0.0.tgz#c30cf2e6ed4a34a2a740f86a0228cb46389edaa8"
+  integrity sha512-ajIfZsMOljSa5+4Hz18/70Wpnae0vYf4t6IO8GZf5E5Czzuope+KPi6FxUwr8Cv2imeloOH/rmcMccPAeKUg3A==
 
 levn@^0.4.1:
   version "0.4.1"

@@ -74,7 +74,7 @@
 	"homepage": "https://github.com/lavacord/lavacord#readme",
 	"dependencies": {
 		"discord-api-types": "^0.38.11",
-		"lavalink-types": "^2.1.1",
+		"lavalink-types": "^3.0.0",
 		"ws": "^8.18.1"
 	},
 	"devDependencies": {
