@@ -60,7 +60,7 @@ export class Rest {
 	 * // Instead, use the public methods like Rest.load(), Rest.decode(), etc.
 	 * ```
 	 */
-	private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: ("version" | "sessionId")[]): Promise<T> {
+	private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: "sessionId"[]): Promise<T> {
 		if (requires && !requires.every((r) => !!node[r]))
 			throw new RestError({
 				timestamp: Date.now(),
@@ -121,7 +121,7 @@ export class Rest {
 		const params = new URLSearchParams();
 		params.append("identifier", identifer);
 
-		return Rest.baseRequest(node, `/v${node.version}/loadtracks?${params}`, undefined, ["version"]);
+		return Rest.baseRequest(node, `/v4/loadtracks?${params}`, undefined);
 	}
 
 	/**
@@ -186,20 +186,15 @@ export class Rest {
 	static decode(node: LavalinkNode, tracks: string[]): Promise<DecodeTracksResult>;
 	static decode(node: LavalinkNode, tracks: string | string[]): Promise<DecodeTrackResult | DecodeTracksResult> {
 		if (Array.isArray(tracks)) {
-			return Rest.baseRequest(
-				node,
-				`/v${node.version}/decodetracks`,
-				{
-					method: "POST",
-					body: JSON.stringify(tracks),
-					headers: { "Content-Type": "application/json" }
-				},
-				["version"]
-			);
+			return Rest.baseRequest(node, `/v4/decodetracks`, {
+				method: "POST",
+				body: JSON.stringify(tracks),
+				headers: { "Content-Type": "application/json" }
+			});
 		} else {
 			const params = new URLSearchParams();
 			params.append("track", tracks);
-			return Rest.baseRequest(node, `/v${node.version}/decodetrack?${params}`, undefined, ["version"]);
+			return Rest.baseRequest(node, `/v4/decodetrack?${params}`, undefined);
 		}
 	}
 
@@ -264,7 +259,7 @@ export class Rest {
 	static updateSession(node: LavalinkNode): Promise<UpdateSessionResult> {
 		return Rest.baseRequest(
 			node,
-			`/v${node.version}/sessions/${node.sessionId}`,
+			`/v4/sessions/${node.sessionId}`,
 			{
 				method: "PATCH",
 				body: JSON.stringify({
@@ -273,7 +268,7 @@ export class Rest {
 				} as UpdateSessionData),
 				headers: { "Content-Type": "application/json" }
 			},
-			["version", "sessionId"]
+			["sessionId"]
 		);
 	}
 
@@ -339,13 +334,13 @@ export class Rest {
 	static updatePlayer(node: LavalinkNode, guildId: string, data: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
 		return Rest.baseRequest(
 			node,
-			`/v${node.version}/sessions/${node.sessionId}/players/${guildId}${noReplace ? `?noReplace=${noReplace}` : ""}`,
+			`/v4/sessions/${node.sessionId}/players/${guildId}${noReplace ? `?noReplace=${noReplace}` : ""}`,
 			{
 				method: "PATCH",
 				body: JSON.stringify(data),
 				headers: { "Content-Type": "application/json" }
 			},
-			["version", "sessionId"]
+			["sessionId"]
 		);
 	}
 
@@ -377,9 +372,6 @@ export class Rest {
 	 * @public
 	 */
 	static destroyPlayer(node: LavalinkNode, guildId: string): Promise<DestroyPlayerResult> {
-		return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, [
-			"version",
-			"sessionId"
-		]);
+		return Rest.baseRequest(node, `/v4/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, ["sessionId"]);
 	}
 }
