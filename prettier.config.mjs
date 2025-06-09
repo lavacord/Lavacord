@@ -1,13 +1,12 @@
-
 const config = {
-	endOfLine: 'lf',
+	endOfLine: "lf",
 	printWidth: 150,
-	quoteProps: 'as-needed',
+	quoteProps: "as-needed",
 	semi: true,
 	singleQuote: false,
 	tabWidth: 4,
-	trailingComma: 'none',
+	trailingComma: "none",
 	useTabs: true
-}
+};
 
 export default config;

@@ -1,113 +1,113 @@
 {
-  "name": "lavacord",
-  "version": "3.0.0",
-  "description": "A simple by design lavalink wrapper made for any discord library.",
-  "main": "./dist/cjs/index.cjs",
-  "module": "./dist/esm/index.mjs",
-  "types": "./dist/cjs/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/cjs/index.d.ts",
-      "require": "./dist/cjs/index.cjs",
-      "import": "./dist/esm/index.mjs"
-    },
-    "./cloudstorm": {
-      "types": "./dist/cjs/wrappers/cloudstorm.d.ts",
-      "require": "./dist/cjs/wrappers/cloudstorm.cjs",
-      "import": "./dist/esm/wrappers/cloudstorm.mjs"
-    },
-    "./detritus": {
-      "types": "./dist/cjs/wrappers/detritus.d.ts",
-      "require": "./dist/cjs/wrappers/detritus.cjs",
-      "import": "./dist/esm/wrappers/detritus.mjs"
-    },
-    "./discord.js": {
-      "types": "./dist/cjs/wrappers/discord.js.d.ts",
-      "require": "./dist/cjs/wrappers/discord.js.cjs",
-      "import": "./dist/esm/wrappers/discord.js.mjs"
-    },
-    "./eris": {
-      "types": "./dist/cjs/wrappers/eris.d.ts",
-      "require": "./dist/cjs/wrappers/eris.cjs",
-      "import": "./dist/esm/wrappers/eris.mjs"
-    },
-    "./oceanic": {
-      "types": "./dist/cjs/wrappers/oceanic.d.ts",
-      "require": "./dist/cjs/wrappers/oceanic.cjs",
-      "import": "./dist/esm/wrappers/oceanic.mjs"
-    }
-  },
-  "files": [
-    "dist",
-    "LICENSE",
-    "README"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "watch": "tsup --watch",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint . -c eslint.config.mjs --fix",
-    "test": "eslint . -c eslint.config.mjs",
-    "docs": "typedoc --plugin typedoc-github-theme",
-    "prepublishOnly": "yarn build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lavacord/lavacord.git"
-  },
-  "keywords": [
-    "bot",
-    "music",
-    "discord",
-    "api",
-    "lava",
-    "link",
-    "lavalink",
-    "discord.js",
-    "eris"
-  ],
-  "author": "Jack Nagle",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/lavacord/lavacord/issues"
-  },
-  "homepage": "https://github.com/MrJacz/lavacord#readme",
-  "dependencies": {
-    "discord-api-types": "^0.38.11",
-    "lavalink-types": "^2.1.1",
-    "ws": "^8.18.1"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.26.0",
-    "@swc/core": "^1.11.31",
-    "@types/node": "^22.13.10",
-    "@types/ws": "^8.18.0",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
-    "@typescript-eslint/parser": "^8.26.1",
-    "esbuild-plugin-file-path-extensions": "^2.1.4",
-    "esbuild-plugin-version-injector": "^1.2.1",
-    "eslint": "^9.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-tsdoc": "^0.4.0",
-    "globals": "^16.1.0",
-    "prettier": "^3.5.3",
-    "tsup": "^8.0.0",
-    "typedoc": "^0.28.4",
-    "typedoc-github-theme": "^0.3.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1"
-  },
-  "optionalDependencies": {
-    "cloudstorm": "0.13.2",
-    "detritus-client": "0.16.x",
-    "discord.js": "14.x",
-    "eris": "0.18.x",
-    "oceanic.js": "1.12.0"
-  },
-  "engines": {
-    "node": ">=18",
-    "npm": ">=8"
-  }
+	"name": "lavacord",
+	"version": "3.0.0",
+	"description": "A simple by design lavalink wrapper made for any discord library.",
+	"main": "./dist/cjs/index.cjs",
+	"module": "./dist/esm/index.mjs",
+	"types": "./dist/cjs/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/cjs/index.d.ts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
+		},
+		"./cloudstorm": {
+			"types": "./dist/cjs/wrappers/cloudstorm.d.ts",
+			"require": "./dist/cjs/wrappers/cloudstorm.cjs",
+			"import": "./dist/esm/wrappers/cloudstorm.mjs"
+		},
+		"./detritus": {
+			"types": "./dist/cjs/wrappers/detritus.d.ts",
+			"require": "./dist/cjs/wrappers/detritus.cjs",
+			"import": "./dist/esm/wrappers/detritus.mjs"
+		},
+		"./discord.js": {
+			"types": "./dist/cjs/wrappers/discord.js.d.ts",
+			"require": "./dist/cjs/wrappers/discord.js.cjs",
+			"import": "./dist/esm/wrappers/discord.js.mjs"
+		},
+		"./eris": {
+			"types": "./dist/cjs/wrappers/eris.d.ts",
+			"require": "./dist/cjs/wrappers/eris.cjs",
+			"import": "./dist/esm/wrappers/eris.mjs"
+		},
+		"./oceanic": {
+			"types": "./dist/cjs/wrappers/oceanic.d.ts",
+			"require": "./dist/cjs/wrappers/oceanic.cjs",
+			"import": "./dist/esm/wrappers/oceanic.mjs"
+		}
+	},
+	"files": [
+		"dist",
+		"LICENSE",
+		"README"
+	],
+	"scripts": {
+		"build": "tsup",
+		"watch": "tsup --watch",
+		"format": "prettier --write \"src/**/*.ts\"",
+		"lint": "eslint . -c eslint.config.mjs --fix",
+		"test": "eslint . -c eslint.config.mjs",
+		"docs": "typedoc --plugin typedoc-github-theme",
+		"prepublishOnly": "yarn build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lavacord/lavacord.git"
+	},
+	"keywords": [
+		"bot",
+		"music",
+		"discord",
+		"api",
+		"lava",
+		"link",
+		"lavalink",
+		"discord.js",
+		"eris"
+	],
+	"author": "Jack Nagle",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/lavacord/lavacord/issues"
+	},
+	"homepage": "https://github.com/MrJacz/lavacord#readme",
+	"dependencies": {
+		"discord-api-types": "^0.38.11",
+		"lavalink-types": "^2.1.1",
+		"ws": "^8.18.1"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.3.1",
+		"@eslint/js": "^9.26.0",
+		"@swc/core": "^1.11.31",
+		"@types/node": "^22.13.10",
+		"@types/ws": "^8.18.0",
+		"@typescript-eslint/eslint-plugin": "^8.26.1",
+		"@typescript-eslint/parser": "^8.26.1",
+		"esbuild-plugin-file-path-extensions": "^2.1.4",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.26.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^7.2.1",
+		"eslint-plugin-tsdoc": "^0.4.0",
+		"globals": "^16.1.0",
+		"prettier": "^3.5.3",
+		"tsup": "^8.0.0",
+		"typedoc": "^0.28.4",
+		"typedoc-github-theme": "^0.3.0",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.33.1"
+	},
+	"optionalDependencies": {
+		"cloudstorm": "0.13.2",
+		"detritus-client": "0.16.x",
+		"discord.js": "14.x",
+		"eris": "0.18.x",
+		"oceanic.js": "1.12.0"
+	},
+	"engines": {
+		"node": ">=18",
+		"npm": ">=8"
+	}
 }

@@ -1,6 +1,6 @@
 # Contributing to Lavacord
 
-Thank you for your interest in contributing to **Lavacord**! 🚀  
+Thank you for your interest in contributing to **Lavacord**! 🚀
 We welcome all help, whether it's bug reports, feature requests, code contributions, or documentation improvements.
 
 ---
@@ -27,49 +27,54 @@ We welcome all help, whether it's bug reports, feature requests, code contributi
 
 ## How to Contribute
 
-1. **Fork the Repository**  
+1. **Fork the Repository**
    Click the "Fork" button on [GitHub](https://github.com/lavacord/Lavacord).
 
 2. **Clone Your Fork**
-   ```sh
-   git clone https://github.com/<your-username>/Lavacord.git
-   cd Lavacord
-   ```
 
-3. **Create a New Branch**  
+    ```sh
+    git clone https://github.com/<your-username>/Lavacord.git
+    cd Lavacord
+    ```
+
+3. **Create a New Branch**
    Branches should be descriptive and relate to your change:
-   ```sh
-   git checkout -b fix/your-branch-name
-   ```
+
+    ```sh
+    git checkout -b fix/your-branch-name
+    ```
 
 4. **Install Dependencies**
-   ```sh
-   npm install
-   # or
-   yarn install
-   ```
 
-5. **Make Your Changes**  
+    ```sh
+    npm install
+    # or
+    yarn install
+    ```
+
+5. **Make Your Changes**
    Write code, tests, and/or documentation as needed.
 
-6. **Test Your Changes**  
+6. **Test Your Changes**
    Ensure the code passes all tests and builds:
-   ```sh
-   npm test
-   # or
-   yarn test
-   ```
+
+    ```sh
+    npm test
+    # or
+    yarn test
+    ```
 
 7. **Commit and Push**
-   ```sh
-   git add .
-   git commit -m "feat: Add amazing feature"
-   git push origin fix/your-branch-name
-   ```
+
+    ```sh
+    git add .
+    git commit -m "feat: Add amazing feature"
+    git push origin fix/your-branch-name
+    ```
 
 8. **Submit a Pull Request**
-   - Go to your fork on GitHub and click "Compare & pull request".
-   - Fill out the PR template and describe your changes.
+    - Go to your fork on GitHub and click "Compare & pull request".
+    - Fill out the PR template and describe your changes.
 
 ---
 

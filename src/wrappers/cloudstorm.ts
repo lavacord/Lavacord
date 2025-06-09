@@ -7,37 +7,46 @@ import { Client } from "cloudstorm";
 export * from "../index";
 
 export class Manager extends BaseManager {
-    public constructor(public readonly client: Client, nodes: LavalinkNodeOptions[], options: ManagerOptions) {
-        super(nodes, options);
+	public constructor(
+		public readonly client: Client,
+		nodes: LavalinkNodeOptions[],
+		options: ManagerOptions
+	) {
+		super(nodes, options);
 
-        if (!this.send) {
-            this.send = async packet => {
-                if (!this.client.options.totalShards) return false;
-                 
-                const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
+		if (!this.send) {
+			this.send = async (packet) => {
+				if (!this.client.options.totalShards) return false;
 
-                const s = Object.entries(this.client.shardManager.shards).find(e => String(e[0]) === String(shardID))?.[1];
+				const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
 
-                if (s) return s.connector.sendMessage(packet);
-            };
-        }
+				const s = Object.entries(this.client.shardManager.shards).find((e) => String(e[0]) === String(shardID))?.[1];
 
-        client.on("event", packet => {
-            switch (packet.t) {
-                case "VOICE_SERVER_UPDATE":
-                    this.voiceServerUpdate(packet.d as GatewayVoiceServerUpdateDispatchData);
-                    break;
+				if (s) return s.connector.sendMessage(packet);
+			};
+		}
 
-                case "VOICE_STATE_UPDATE":
-                    this.voiceStateUpdate(packet.d as GatewayVoiceStateUpdateDispatchData);
-                    break;
+		client.on("event", (packet) => {
+			switch (packet.t) {
+				case "VOICE_SERVER_UPDATE":
+					this.voiceServerUpdate(packet.d as GatewayVoiceServerUpdateDispatchData);
+					break;
 
-                case "GUILD_CREATE":
-                    for (const state of packet.d.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: packet.d.id } as GatewayVoiceStateUpdateDispatchData);
-                    break;
+				case "VOICE_STATE_UPDATE":
+					this.voiceStateUpdate(packet.d as GatewayVoiceStateUpdateDispatchData);
+					break;
 
-                default: break;
-            }
-        });
-    }
+				case "GUILD_CREATE":
+					for (const state of packet.d.voice_states ?? [])
+						this.voiceStateUpdate({
+							...state,
+							guild_id: packet.d.id
+						} as GatewayVoiceStateUpdateDispatchData);
+					break;
+
+				default:
+					break;
+			}
+		});
+	}
 }
