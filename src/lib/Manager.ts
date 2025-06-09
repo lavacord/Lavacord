@@ -310,7 +310,7 @@ export class Manager extends EventEmitter {
 			filters: state.filters,
 			voice: {
 				token: voiceUpdateState.event.token,
-				endpoint: voiceUpdateState.event.endpoint,
+				endpoint: voiceUpdateState.event.endpoint!,
 				sessionId: voiceUpdateState.sessionId
 			}
 		});

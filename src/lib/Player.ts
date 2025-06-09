@@ -534,7 +534,7 @@ export class Player extends EventEmitter {
 		return this.update({
 			voice: {
 				token: data.event.token,
-				endpoint: data.event.endpoint,
+				endpoint: data.event.endpoint!,
 				sessionId: data.sessionId
 			}
 		});
