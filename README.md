@@ -1,19 +1,89 @@
-[![Discord](https://discordapp.com/api/guilds/323779330033319941/embed.png)](https://discord.gg/wXrjZmV)
+<div align="center" style="padding-top: 2rem; padding-bottom: 1rem">
+
+<img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="300">
+
+Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lavalink-devs/Lavalink) wrapper for Node.js, supporting multiple Discord libraries. It provides a consistent API for managing music playback, voice connections, and node management, making it easy for both beginners and advanced users to integrate high-performance audio into their Discord bots.
+
 [![npm (scoped)](https://img.shields.io/npm/v/lavacord?label=npm%20version)](https://www.npmjs.com/package/lavacord)
 [![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?label=total%20downloads)](https://www.npmjs.com/package/lavacord)
 [![GitHub](https://img.shields.io/github/license/lavacord/lavacord)](https://github.com/lavacord/lavacord/)
 [![Depfu](https://badges.depfu.com/badges/70051aad57dddc0c44a990d26b1f6e23/overview.svg)](https://depfu.com/github/lavacord/Lavacord?project_id=11810)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/lavacord/lavacord)
 
-# LavaCord
-A simple and easy to use lavalink wrapper.
+[![Discord](https://discordapp.com/api/guilds/690521477514264577/embed.png?style=banner2)](https://discord.gg/wXrjZmV)
 
-## Documentation
-[**lavacord.github.io/lavacord**](https://lavacord.github.io/Lavacord/)
+[**Click here for the documentation**](https://lavacord.github.io/Lavacord/)
 
-## Installation
+</div>
 
-**For stable**
+## Table of Contents
+
+- [Features](#features)
+- [Supported Discord Libraries](#supported-discord-libraries)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Lavalink Setup](#️lavalink-setup)
+- [Usage Examples](#usage-examples)
+    - [Basic Usage](#basic-usage)
+    - [Wrapper Example](#wrapper-example)
+    - [Resolving Tracks](#resolving-tracks)
+    - [Joining and Leaving Voice Channels](#joining-and-leaving-voice-channels)
+    - [Advanced Usage](#advanced-usage)
+- [TypeScript, CommonJS, and ESM Support](#typescript-commonjs-and-esm-support)
+- [API Reference](#api-reference)
+- [Donate](#donate)
+- [Contributors](#contributors)
+
+---
+
+## Features
+
+- 🚀 **Simple API** — Minimal boilerplate and a clear structure for controlling Lavalink.
+- 📦 **Modular Design** — Manager, Player, and Node layers for easy customization and extension.
+- 🔄 **Manual Node Switching** — Easily move a player from one Lavalink node to another using a single function, enabling custom failover or migration logic in your application.
+- 🌀 **REST Helpers** — Convenient utilities for all Lavalink REST API endpoints.
+- 💡 **TypeScript First** — Full typings for a modern codebase, with seamless CommonJS and ESM support.
+- 🧩 **Multi-Library Support** — Works out-of-the-box with Discord.js, Oceanic.js, Eris, Cloudstorm, Detritus, and more.
+- 🎚️ **Full Lavalink Player Controls** — Exposes all advanced player controls (pause, resume, seek, filters, etc.) provided by Lavalink, making them easy to use in your bot code.
+- 🛠️ **Extensible** — Ready for custom logic, plugins, and integrations.
+- 🔗 **Community Driven** — Open source with an active community, welcoming contributions and suggestions for new features or libraries.
+
+---
+
+## Supported Discord Libraries
+
+Lavacord provides wrappers for popular Discord libraries:
+
+Each wrapper automatically wires up voice events and exports a `Manager` class tailored for that library.
+See the [wrappers directory](src/wrappers/) for details and usage examples.
+
+| Library    | Import Path           |
+| ---------- | --------------------- |
+| discord.js | `lavacord/discord.js` |
+| eris       | `lavacord/eris`       |
+| oceanic.js | `lavacord/oceanic`    |
+| cloudstorm | `lavacord/cloudstorm` |
+| detritus   | `lavacord/detritus`   |
+
+> Want support for another Discord API library?
+> [Open an issue or discussion](https://github.com/lavacord/lavacord/issues) to suggest it!
+
+---
+
+## Requirements
+
+- **Node.js** v18 or newer recommended
+- **Lavalink** server (Java 11+ required)
+- A Discord bot token
+
+---
+
+## 🚀 Installation
+
+Lavacord supports **TypeScript**, **CommonJS**, and **ESM** out of the box.
+
+### Stable
+
 ```bash
 # Using yarn
 yarn add lavacord
@@ -22,7 +92,10 @@ yarn add lavacord
 npm install lavacord
 ```
 
-**For Development**
+### Development
+
+Will install the latest development version directly from the GitHub repository.
+
 ```bash
 # Using yarn
 yarn add lavacord/lavacord
@@ -31,86 +104,247 @@ yarn add lavacord/lavacord
 npm install lavacord/lavacord
 ```
 
-## LavaLink configuration
-Download Lavalink from [their GitHub releases](https://github.com/lavalink-devs/Lavalink/releases)
+---
 
-Put an `application.yml` file in your working directory. [Example](https://github.com/lavalink-devs/Lavalink/blob/master/LavalinkServer/application.yml.example)
+## Getting Started
 
-Run with `java -jar Lavalink.jar`
+> **Documentation:** [lavacord.github.io/lavacord](https://lavacord.github.io/Lavacord/)
 
-## The issue tracker is for issues only
-If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/wXrjZmV)
+Lavacord is designed to wrap [Lavalink](https://github.com/lavalink-devs/Lavalink) for seamless integration within your Discord bot.
 
-# Implementation
-Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id.
+---
 
-```javascript
-// import the Manager class from lavacord
+## ⚙️ Lavalink Setup
+
+1. **Download Lavalink**
+   Get the latest Lavalink release from [here](https://github.com/lavalink-devs/Lavalink/releases).
+
+2. **Configure application.yml**
+   Place an `application.yml` file in your working directory.
+   See the [example config](https://github.com/lavalink-devs/Lavalink/blob/master/LavalinkServer/application.yml.example).
+
+3. **Run Lavalink**
+    ```sh
+    java -jar Lavalink.jar
+    ```
+
+---
+
+## 🛠️ Usage Examples
+
+### Basic Usage
+
+```js
+// Import the Lavacord Manager class (works with CommonJS, ESM, and TypeScript)
 const { Manager } = require("lavacord");
 
-// Define the nodes array as an example
-const nodes = [
-    { id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }
-];
+// Define your Lavalink nodes
+const nodes = [{ id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }];
 
-// Initilize the Manager with all the data it needs
+// Create the manager with your bot's user ID and a send function
 const manager = new Manager(nodes, {
-    user: client.user.id, // Client id
-    send: (packet) => {
-        // this needs to send the provided packet to discord's WS using the method from your library.
-        // use the bindings for the discord library you use if you don't understand this
-    }
+	user: client.user.id, // Your bot's user ID
+	send: (packet) => {
+		// Send the packet to Discord's WebSocket using your library's method
+	}
 });
 
-// Connects all the LavalinkNode WebSockets
+// Connect to all Lavalink nodes (asynchronous)
 await manager.connect();
 
-// The error event, which you should handle otherwise your application will crash when an error is emitted
+// Listen for errors from any node
 manager.on("error", (error, node) => {
-    error, // is the error
-    node // is the node which the error is from
+	console.error("Lavalink error:", error, "Node:", node.id);
 });
 ```
 
-Resolving tracks using LavaLink REST API
+_This example shows how to set up Lavacord with your bot and connect to Lavalink nodes._
 
-```javascript
+---
+
+### Wrapper Example
+
+```js
+// Import the Manager class from lavacord's discord.js wrapper.
+// This manages Lavalink nodes and music playback for Discord.js bots.
+const { Manager } = require("lavacord/discord.js");
+
+// Import the main Discord.js Client class to interact with the Discord API.
+const { Client } = require("discord.js");
+
+// Create a new Discord client instance.
+const client = new Client();
+
+// Wait for the bot to be ready before creating the manager
+client.once("ready", async () => {
+	// Create a new Lavacord Manager instance with your Lavalink nodes and bot user ID
+	const manager = new Manager({
+		nodes: [{ id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }],
+		user: client.user.id
+	});
+
+	// Connect the manager to the Lavalink node(s)
+	await manager.connect();
+});
+
+// Log in to Discord with your bot token.
+client.login("your-bot-token");
+```
+
+_This example shows how to use the Discord.js wrapper for seamless integration._
+
+---
+
+### Resolving Tracks
+
+```js
+// Import the REST helper from Lavacord
 const { Rest } = require("lavacord");
 
+// Function to resolve tracks using Lavalink's REST API
 async function getSongs(search) {
-    // This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.
-    const node = manager.idealNodes[0];
-
-    return Rest.load(node, search)
-        .catch(err => {
-            console.error(err);
-            return null;
-        });
+	const node = manager.idealNodes[0]; // Pick the best available node
+	return Rest.load(node, search).catch((err) => {
+		console.error(err);
+		return null;
+	});
 }
 
-getSongs("ytsearch:30 second song").then(songs => {
-    // handle loading of the tracks somehow ¯\_(ツ)_/¯
+// Example usage: search YouTube for a track
+getSongs("ytsearch:30 second song").then((songs) => {
+	// handle tracks
 });
 ```
 
-Joining and Leaving channels
+_This example demonstrates how to search for tracks using Lavalink's REST API via Lavacord._
 
-```javascript
-// Join
+---
+
+### Joining and Leaving Voice Channels
+
+```js
+// Join a voice channel and create a player
 const player = await manager.join({
-    guild: guildId, // Guild id
-    channel: channelId, // Channel id
-    node: "1" // lavalink node id, based on array of nodes
+	guild: guildId, // Discord guild/server ID
+	channel: channelId, // Discord voice channel ID
+	node: "1" // Lavalink node ID
 });
 
-await player.play(track); // Track is a base64 string we get from Lavalink REST API
+// Play a track (track is a base64 string from Lavalink REST)
+await player.play(track);
 
-player.once("error", error => console.error(error));
-player.once("end", data => {
-    if (data.type === "TrackEndEvent" && data.reason === "replaced") return; // Ignore replaced reason to prevent skip loops
-    // Play next song
+// Listen for player events
+player.once("error", (error) => console.error(error));
+player.once("end", (data) => {
+	if (data.type === "TrackEndEvent" && data.reason === "replaced") return;
+	// Play next song or handle end of queue
 });
 
-// Leave voice channel and destroy Player
-await manager.leave(guildId); // Player ID aka guild id
+// Leave the voice channel
+await manager.leave(guildId);
 ```
+
+_This example shows how to join a voice channel, play a track, and handle player events._
+
+---
+
+## 🎛️ Advanced Usage
+
+### Player Controls
+
+```js
+// Pause playback
+await player.pause(true);
+
+// Resume playback
+await player.resume();
+
+// Seek to 1 minute in the track
+await player.seek(60000);
+
+// Set volume to 50%
+await player.volume(0.5);
+
+// Apply filters (e.g., timescale)
+await player.filters({ timescale: { speed: 1.2, pitch: 1.1, rate: 1.0 } });
+
+// Apply equalizer settings
+await player.equalizer([{ band: 0, gain: 0.25 }]);
+```
+
+_All advanced player controls are exposed from Lavalink via Lavacord's Player API._
+
+### Node Management
+
+```js
+// Add a new Lavalink node at runtime
+manager.createNode({ id: "2", host: "otherhost", port: 2333, password: "pass" });
+
+// Remove a node by ID
+manager.removeNode("2");
+
+// Switch a player to another node (for failover or load balancing)
+await manager.switch(player, manager.nodes.get("2"));
+```
+
+_Lavacord lets you manage Lavalink nodes and take advantage of Lavalink's built-in failover and load balancing._
+
+---
+
+## 📝 TypeScript, CommonJS, and ESM Support
+
+Lavacord is written in TypeScript and ships with full type definitions.
+You can use all features with type safety and IDE autocompletion.
+
+**TypeScript Example:**
+
+```ts
+import { Manager } from "lavacord/discord.js";
+import { Client } from "discord.js";
+
+const client = new Client();
+
+client.once("ready", async () => {
+	const manager = new Manager({
+		nodes: [{ id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }],
+		user: client.user!.id
+	});
+	await manager.connect();
+});
+
+client.login("your-bot-token");
+```
+
+_This example demonstrates usage with TypeScript and Discord.js._
+
+---
+
+## 🧩 API Reference
+
+- `Manager`: Handles nodes, players, and voice state.
+- `Player`: Controls playback, filters, and events.
+- `Rest`: Lavalink REST API helpers.
+- `Types`: Type definitions for options, packets, and more.
+
+---
+
+## 💖 Donate
+
+If you find Lavacord useful and want to support its development, you can sponsor the main maintainers directly:
+
+- [MrJacz](https://github.com/sponsors/MrJacz)
+- [AmandaDiscord](https://github.com/sponsors/AmandaDiscord)
+
+Thank you for your support!
+
+---
+
+### Contributors
+
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
+
+Thank you to everyone who has contributed to Lavacord!
+
+<a href="https://github.com/lavacord/Lavacord/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=lavacord/Lavacord" />
+</a>
