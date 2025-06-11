@@ -1,4 +1,4 @@
-<div align="center">
+<div align="center" style="padding-top: 2rem; padding-bottom: 1rem">
 
 <img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="300">
 
@@ -11,9 +11,9 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 
 [![Discord](https://discordapp.com/api/guilds/690521477514264577/embed.png?style=banner2)](https://discord.gg/wXrjZmV)
 
-</div>
+[**Click here for the documentation**](https://lavacord.github.io/Lavacord/)
 
----
+</div>
 
 ## Table of Contents
 
@@ -25,17 +25,14 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 - [Lavalink Setup](#️lavalink-setup)
 - [Usage Examples](#usage-examples)
     - [Basic Usage](#basic-usage)
+    - [Wrapper Example](#wrapper-example)
     - [Resolving Tracks](#resolving-tracks)
     - [Joining and Leaving Voice Channels](#joining-and-leaving-voice-channels)
     - [Advanced Usage](#advanced-usage)
-- [Library Wrappers](#library-wrappers)
-    - [Wrapper Example](#wrapper-example)
 - [TypeScript, CommonJS, and ESM Support](#typescript-commonjs-and-esm-support)
 - [API Reference](#api-reference)
-- [Community & Support](#community-support)
-- [License](#license)
-- [Contributing](#contributing)
-    - [Contributors](#contributors)
+- [Donate](#donate)
+- [Contributors](#contributors)
 
 ---
 
@@ -57,6 +54,9 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 
 Lavacord provides wrappers for popular Discord libraries:
 
+Each wrapper automatically wires up voice events and exports a `Manager` class tailored for that library.
+See the [wrappers directory](src/wrappers/) for details and usage examples.
+
 | Library    | Import Path           |
 | ---------- | --------------------- |
 | discord.js | `lavacord/discord.js` |
@@ -75,12 +75,6 @@ Lavacord provides wrappers for popular Discord libraries:
 - **Node.js** v18 or newer recommended
 - **Lavalink** server (Java 11+ required)
 - A Discord bot token
-
----
-
-## 📚 Documentation
-
-- [Lavacord Documentation](https://lavacord.github.io/Lavacord/)
 
 ---
 
@@ -165,6 +159,39 @@ manager.on("error", (error, node) => {
 ```
 
 _This example shows how to set up Lavacord with your bot and connect to Lavalink nodes._
+
+---
+
+### Wrapper Example
+
+```js
+// Import the Manager class from lavacord's discord.js wrapper.
+// This manages Lavalink nodes and music playback for Discord.js bots.
+const { Manager } = require("lavacord/discord.js");
+
+// Import the main Discord.js Client class to interact with the Discord API.
+const { Client } = require("discord.js");
+
+// Create a new Discord client instance.
+const client = new Client();
+
+// Wait for the bot to be ready before creating the manager
+client.once("ready", async () => {
+	// Create a new Lavacord Manager instance with your Lavalink nodes and bot user ID
+	const manager = new Manager({
+		nodes: [{ id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }],
+		user: client.user.id
+	});
+
+	// Connect the manager to the Lavalink node(s)
+	await manager.connect();
+});
+
+// Log in to Discord with your bot token.
+client.login("your-bot-token");
+```
+
+_This example shows how to use the Discord.js wrapper for seamless integration._
 
 ---
 
@@ -264,55 +291,6 @@ _Lavacord lets you manage Lavalink nodes and take advantage of Lavalink's built-
 
 ---
 
-## 🤖 Library Wrappers
-
-Lavacord supports multiple Discord libraries via wrappers.
-You can use these by importing from `lavacord/wrappername`:
-
-- `lavacord/discord.js`
-- `lavacord/eris`
-- `lavacord/oceanic`
-- `lavacord/cloudstorm`
-- `lavacord/detritus`
-
-Each wrapper automatically wires up voice events and exports a `Manager` class tailored for that library.
-See the [wrappers directory](src/wrappers/) for details and usage examples.
-
----
-
-### Wrapper Example
-
-```js
-// Import the Manager class from lavacord's discord.js wrapper.
-// This manages Lavalink nodes and music playback for Discord.js bots.
-const { Manager } = require("lavacord/discord.js");
-
-// Import the main Discord.js Client class to interact with the Discord API.
-const { Client } = require("discord.js");
-
-// Create a new Discord client instance.
-const client = new Client();
-
-// Wait for the bot to be ready before creating the manager
-client.once("ready", async () => {
-	// Create a new Lavacord Manager instance with your Lavalink nodes and bot user ID
-	const manager = new Manager({
-		nodes: [{ id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }],
-		user: client.user.id
-	});
-
-	// Connect the manager to the Lavalink node(s)
-	await manager.connect();
-});
-
-// Log in to Discord with your bot token.
-client.login("your-bot-token");
-```
-
-_This example shows how to use the Discord.js wrapper for seamless integration._
-
----
-
 ## 📝 TypeScript, CommonJS, and ESM Support
 
 Lavacord is written in TypeScript and ships with full type definitions.
@@ -350,13 +328,6 @@ _This example demonstrates usage with TypeScript and Discord.js._
 
 ---
 
-## Community & Support
-
-- [Lavacord Discord Server](https://discord.gg/wXrjZmV) — Ask questions, get help, and chat with the community.
-- [GitHub Issues](https://github.com/lavacord/lavacord/issues) — For bug reports, feature requests, and library suggestions.
-
----
-
 ## 💖 Donate
 
 If you find Lavacord useful and want to support its development, you can sponsor the main maintainers directly:
@@ -368,20 +339,9 @@ Thank you for your support!
 
 ---
 
-## License
-
-Lavacord is licensed under the [Apache-2.0 License](LICENSE).
-
----
-
-## Contributing
-
-Contributions are welcome!
-If you'd like to suggest support for a new Discord API library, [open an issue or discussion](https://github.com/lavacord/lavacord/issues).
-
-See [CONTRIBUTING.md](https://github.com/lavacord/lavacord/blob/master/CONTRIBUTING.md) for guidelines.
-
 ### Contributors
+
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
 
 Thank you to everyone who has contributed to Lavacord!
 
