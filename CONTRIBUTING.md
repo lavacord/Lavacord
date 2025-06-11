@@ -113,7 +113,7 @@ We welcome all help, whether it's bug reports, feature requests, code contributi
 
 ## License
 
-By contributing, you agree your contributions will be licensed under the [Apache License 2.0](./LICENSE).
+By contributing, you agree your contributions will be licensed under the [MIT License](./LICENSE).
 
 ---
 

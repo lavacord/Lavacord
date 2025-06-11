@@ -66,8 +66,8 @@
 		"discord.js",
 		"eris"
 	],
-	"author": "Jack Nagle",
-	"license": "Apache-2.0",
+	"author": "lavacord",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/lavacord/lavacord/issues"
 	},
