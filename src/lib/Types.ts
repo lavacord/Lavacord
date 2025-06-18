@@ -177,6 +177,17 @@ export interface LavalinkNodeOptions {
 	resumeTimeout?: number;
 
 	/**
+	 * Whether to use secure connections (HTTPS/WSS) instead of HTTP/WS.
+	 *
+	 * @remarks
+	 * When true, WebSocket connections will use WSS and REST requests will use HTTPS.
+	 * This is required when connecting to Lavalink servers behind SSL/TLS.
+	 *
+	 * @defaultValue false
+	 */
+	secure?: boolean;
+
+	/**
 	 * Arbitrary state data that can be attached to the node for user-specific purposes.
 	 *
 	 * @remarks
@@ -184,4 +195,11 @@ export interface LavalinkNodeOptions {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	state?: any;
+}
+
+export enum LavalinkOPTypes {
+	Ready = "ready",
+	PlayerUpdate = "playerUpdate",
+	Stats = "stats",
+	Event = "event"
 }
