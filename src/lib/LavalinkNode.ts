@@ -3,9 +3,7 @@ import { Rest } from "./Rest";
 import type { Manager } from "./Manager";
 import type { LavalinkNodeOptions } from "./Types";
 import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
-
-// This is a placeholder for the version of the library, which should be injected during build time
-const version = "[VI]{{inject}}[/VI]";
+import { VERSION } from "index";
 
 /**
  * The LavalinkNode class handles the connection and communication with a Lavalink server.
@@ -282,7 +280,7 @@ export class LavalinkNode {
 			const headers: OutboundHandshakeHeaders = {
 				Authorization: this.password,
 				"User-Id": this.manager.user,
-				"Client-Name": `Lavacord/${version}`
+				"Client-Name": `Lavacord/${VERSION}}`
 			};
 
 			if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
