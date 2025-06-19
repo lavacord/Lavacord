@@ -10,25 +10,22 @@ import type {
 	ErrorResponse,
 	UpdatePlayerData,
 	UpdatePlayerResult,
-	DestroyPlayerResult
+	DestroyPlayerResult,
+	GetLavalinkInfoResult
 } from "lavalink-types/v4";
+import { VERSION } from "../index";
 
 /**
  * Error class for Lavalink REST API errors.
- *
  * @remarks
  * Contains the full error response from the Lavalink server.
- *
+ * See {@link https://lavalink.dev/api/rest#error-responses}
  * @public
  */
 export class RestError extends Error {
-	/**
-	 * Creates a new RestError instance.
-	 *
-	 * @param json - The error response object from Lavalink.
-	 */
-	constructor(public json: ErrorResponse) {
-		super(json.message);
+	constructor(public error: ErrorResponse) {
+		super(error.message);
+		this.name = "RestError";
 	}
 }
 
@@ -50,35 +47,50 @@ export class Rest {
 	 * @param node - The Lavalink node to send the request to.
 	 * @param path - The API route path, starting with /.
 	 * @param init - Optional request initialization options.
-	 * @param requires - Optional array of properties the Lavalink node must have for this request.
+	 * @param requiresSessionId - Whether the request requires a valid session ID.
 	 * @returns A promise resolving to the response data.
 	 * @throws {@link RestError} If Lavalink returns an error response.
-	 *
-	 * @example
-	 * ```typescript
-	 * // This is an internal method, not meant to be called directly
-	 * // Instead, use the public methods like Rest.load(), Rest.decode(), etc.
-	 * ```
 	 */
-	private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: "sessionId"[]): Promise<T> {
-		if (requires && !requires.every((r) => !!node[r]))
+	private static async baseRequest<T>(node: LavalinkNode, path: string, init?: BaseRequestInit, requiresSessionId?: boolean): Promise<T> {
+		if (requiresSessionId && !node.sessionId) {
 			throw new RestError({
 				timestamp: Date.now(),
 				status: 400,
 				error: "Bad Request",
-				message: `Node ${requires.join(", ")} is required for this route. Did you forget to connect?`,
+				message: `Node ${node.id} requires a session ID for this route. Did you forget to connect?`,
 				path
 			});
-		if (!init) init = {};
-		if (!init.headers) init.headers = {};
-		Object.assign(init.headers, { Authorization: node.password });
-		const res = await fetch(`http://${node.host}:${node.port}${path}`, init);
-		let body;
-		if (res.status !== 204 && res.headers.get("content-type") === "application/json") body = await res.json();
-		else if (res.status !== 204) body = await res.text();
-		else body = undefined;
+		}
 
-		if (body && (body as ErrorResponse).error) throw new RestError(body as ErrorResponse);
+		if (init?.query) path += `?${new URLSearchParams(init.query)}`;
+
+		const headers = new Headers(init?.headers);
+		headers.set("Authorization", node.password);
+		headers.set("User-Agent", `Lavacord/${VERSION}`);
+
+		const fetchConfig: RequestInit = {
+			method: init?.method ?? "GET",
+			headers,
+			body: init?.body
+		};
+
+		const response = await fetch(node.restURL + path, fetchConfig).catch((error) => {
+			throw new RestError({
+				timestamp: Date.now(),
+				status: 503,
+				error: "Network Error",
+				message: `Failed to connect to ${node.id}: ${error.message}`,
+				path
+			});
+		});
+
+		if (response.status === 204) return undefined as T;
+
+		const contentType = response.headers.get("content-type");
+		const body = await (contentType?.includes("application/json") ? response.json() : response.text());
+
+		if (!response.ok || (body as ErrorResponse)?.error) throw new RestError(body as ErrorResponse);
+
 		return body as T;
 	}
 
@@ -90,38 +102,10 @@ export class Rest {
 	 * @returns A promise resolving to the track loading result.
 	 * @throws {@link RestError} If Lavalink encounters an error.
 	 *
-	 * @example
-	 * ```typescript
-	 * // Load a track from YouTube URL
-	 * const node = manager.nodes.get("main");
-	 * try {
-	 *   // Load a track from direct URL
-	 *   const result = await Rest.load(node, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-	 *   console.log(`Loaded track: ${result.tracks[0].info.title}`);
-	 *
-	 *   // Search for tracks on YouTube
-	 *   const searchResult = await Rest.load(node, "ytsearch:never gonna give you up");
-	 *   console.log(`Found ${searchResult.tracks.length} tracks`);
-	 *
-	 *   // Load a playlist
-	 *   const playlist = await Rest.load(node, "https://www.youtube.com/playlist?list=PLnJbmwUO2g4w2333G0MdAGGnzCuDRBPEj");
-	 *   console.log(`Loaded playlist: ${playlist.playlistInfo.name} with ${playlist.tracks.length} tracks`);
-	 * } catch (error) {
-	 *   if (error instanceof RestError) {
-	 *     console.error(`Lavalink error: ${error.message}`);
-	 *   } else {
-	 *     console.error(`Error: ${error.message}`);
-	 *   }
-	 * }
-	 * ```
-	 *
 	 * @public
 	 */
 	static load(node: LavalinkNode, identifer: string): Promise<TrackLoadingResult> {
-		const params = new URLSearchParams();
-		params.append("identifier", identifer);
-
-		return Rest.baseRequest(node, `/v4/loadtracks?${params}`, undefined);
+		return Rest.baseRequest(node, `/v4/loadtracks`, { query: { identifier: identifer } });
 	}
 
 	/**
@@ -131,25 +115,7 @@ export class Rest {
 	 * @param track - A single track to decode.
 	 * @returns A promise resolving to the decoded track information.
 	 * @throws {@link RestError} If Lavalink encounters an error.
-	 *
-	 * @example
-	 * ```typescript
-	 * // Decode a single track to view its metadata
-	 * const node = manager.nodes.get("main");
-	 * try {
-	 *   const encodedTrack = "QAAAjQIAJVJpY2sgQXN0bGV5IC0gTmV2ZXIgR29ubmEgR2l2ZSBZb3UgVXAAD1JpY2tBc3RsZXlWRVZPAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9ZFF3NHc5V2dYY1EAB3lvdXR1YmUAAAAAAAAAAA==";
-	 *   const trackInfo = await Rest.decode(node, encodedTrack);
-	 *
-	 *   console.log(`Track: ${trackInfo.title}`);
-	 *   console.log(`Author: ${trackInfo.author}`);
-	 *   console.log(`Duration: ${trackInfo.length}ms`);
-	 *   console.log(`Source: ${trackInfo.sourceName}`);
-	 *   console.log(`URI: ${trackInfo.uri}`);
-	 * } catch (error) {
-	 *   console.error(`Error decoding track: ${error.message}`);
-	 * }
-	 * ```
-	 *
+
 	 * @public
 	 */
 	static decode(node: LavalinkNode, track: string): Promise<DecodeTrackResult>;
@@ -161,66 +127,24 @@ export class Rest {
 	 * @returns A promise resolving to an array of decoded track information.
 	 * @throws {@link RestError} If Lavalink encounters an error.
 	 *
-	 * @example
-	 * ```typescript
-	 * // Decode multiple tracks at once
-	 * const node = manager.nodes.get("main");
-	 * try {
-	 *   const encodedTracks = [
-	 *     "QAAAjQIAJVJpY2sgQXN0bGV5IC0gTmV2ZXIgR29ubmEgR2l2ZSBZb3UgVXAAD1JpY2tBc3RsZXlWRVZPAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9ZFF3NHc5V2dYY1EAB3lvdXR1YmUAAAAAAAAAAA==",
-	 *     "QAAAjgIAJFJpY2sgQXN0bGV5IC0gVG9nZXRoZXIgRm9yZXZlciAoT2ZmaWNpYWwgTXVzaWMgVmlkZW8pAA9SaWNrQXN0bGV5VkVWTwABADJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXlQTHQ1UXB3eTAwABd5b3V0dWJlOiBSaWNrIEFzdGxleQAAAAAAAAAA"
-	 *   ];
-	 *
-	 *   const tracksInfo = await Rest.decode(node, encodedTracks);
-	 *
-	 *   tracksInfo.forEach((track, index) => {
-	 *     console.log(`Track ${index + 1}: ${track.title} by ${track.author} (${track.length}ms)`);
-	 *   });
-	 * } catch (error) {
-	 *   console.error(`Error decoding tracks: ${error.message}`);
-	 * }
-	 * ```
-	 *
 	 * @public
 	 */
 	static decode(node: LavalinkNode, tracks: string[]): Promise<DecodeTracksResult>;
 	static decode(node: LavalinkNode, tracks: string | string[]): Promise<DecodeTrackResult | DecodeTracksResult> {
-		if (Array.isArray(tracks)) {
-			return Rest.baseRequest(node, `/v4/decodetracks`, {
-				method: "POST",
-				body: JSON.stringify(tracks),
-				headers: { "Content-Type": "application/json" }
-			});
-		} else {
-			const params = new URLSearchParams();
-			params.append("track", tracks);
-			return Rest.baseRequest(node, `/v4/decodetrack?${params}`, undefined);
-		}
+		if (!Array.isArray(tracks)) return Rest.baseRequest(node, `/v4/decodetrack`, { query: { track: tracks } });
+		return Rest.baseRequest(node, `/v4/decodetracks`, {
+			method: "POST",
+			body: JSON.stringify(tracks),
+			headers: { "Content-Type": "application/json" }
+		});
 	}
 
 	/**
-	 * Retrieves the version information of the Lavalink server.
+	 * Retrieves the version from the Lavalink server.
 	 *
 	 * @param node - The Lavalink node to query.
-	 * @returns A promise resolving to the version information.
+	 * @returns A promise resolving to the version of lavalink.
 	 * @throws {@link RestError} If Lavalink encounters an error.
-	 *
-	 * @example
-	 * ```typescript
-	 * // Get version information from a Lavalink server
-	 * const node = manager.nodes.get("main");
-	 * try {
-	 *   const version = await Rest.version(node);
-	 *
-	 *   console.log(`Lavalink Version: ${version.semver}`);
-	 *   console.log(`Major Version: ${version.major}`);
-	 *   console.log(`Minor Version: ${version.minor}`);
-	 *   console.log(`Patch Version: ${version.patch}`);
-	 *   console.log(`Git Commit: ${version.commit}`);
-	 * } catch (error) {
-	 *   console.error(`Failed to get version: ${error.message}`);
-	 * }
-	 * ```
 	 *
 	 * @public
 	 */
@@ -229,30 +153,24 @@ export class Rest {
 	}
 
 	/**
+	 * Retrieves the information of the Lavalink server.
+	 *
+	 * @param node - The Lavalink node to query.
+	 * @returns A promise resolving to the information of lavalink.
+	 * @throws {@link RestError} If Lavalink encounters an error.
+	 *
+	 * @public
+	 */
+	static info(node: LavalinkNode): Promise<GetLavalinkInfoResult> {
+		return Rest.baseRequest(node, `/v4/info`);
+	}
+
+	/**
 	 * Updates the session properties of a Lavalink node.
 	 *
 	 * @param node - The Lavalink node to update.
 	 * @returns A promise resolving to the update session result.
 	 * @throws {@link RestError} If Lavalink encounters an error.
-	 *
-	 * @example
-	 * ```typescript
-	 * // Update a node's session properties (typically called internally by LavalinkNode)
-	 * const node = manager.nodes.get("main");
-	 * try {
-	 *   // Enable session resuming with a 60-second timeout
-	 *   node.resuming = true;
-	 *   node.resumeTimeout = 60;
-	 *
-	 *   const result = await Rest.updateSession(node);
-	 *
-	 *   console.log(`Session updated successfully`);
-	 *   console.log(`Resuming enabled: ${result.resuming}`);
-	 *   console.log(`Resume timeout: ${result.timeout} seconds`);
-	 * } catch (error) {
-	 *   console.error(`Failed to update session: ${error.message}`);
-	 * }
-	 * ```
 	 *
 	 * @public
 	 */
@@ -268,7 +186,7 @@ export class Rest {
 				} as UpdateSessionData),
 				headers: { "Content-Type": "application/json" }
 			},
-			["sessionId"]
+			true
 		);
 	}
 
@@ -281,66 +199,20 @@ export class Rest {
 	 * @param noReplace - If true, the event will be dropped if there's a currently playing track.
 	 * @returns A promise resolving to the updated player information.
 	 * @throws {@link RestError} If Lavalink encounters an error.
-	 *
-	 * @example
-	 * ```typescript
-	 * // Various ways to update a player
-	 * const node = manager.nodes.get("main");
-	 * const guildId = "123456789012345678";
-	 *
-	 * try {
-	 *   // Play a track
-	 *   await Rest.updatePlayer(node, guildId, {
-	 *     track: {
-	 *       encoded: "QAAAjQIAJVJpY2sgQXN0bGV5IC0gTmV2ZXIgR29ubmEgR2l2ZSBZb3UgVXAAD1JpY2tBc3RsZXlWRVZPAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9ZFF3NHc5V2dYY1EAB3lvdXR1YmUAAAAAAAAAAA=="
-	 *     }
-	 *   });
-	 *
-	 *   // Update volume to 50%
-	 *   await Rest.updatePlayer(node, guildId, { volume: 50 });
-	 *
-	 *   // Pause playback
-	 *   await Rest.updatePlayer(node, guildId, { paused: true });
-	 *
-	 *   // Apply complex filters
-	 *   await Rest.updatePlayer(node, guildId, {
-	 *     filters: {
-	 *       equalizer: [
-	 *         { band: 0, gain: 0.3 },
-	 *         { band: 1, gain: 0.2 }
-	 *       ],
-	 *       timescale: {
-	 *         speed: 1.1,  // 10% faster
-	 *         pitch: 1.0,
-	 *         rate: 1.0
-	 *       },
-	 *       volume: 0.8
-	 *     }
-	 *   });
-	 *
-	 *   // Don't replace current track if one is playing
-	 *   const trackToQueue = "QAAAjgIAJFJpY2sgQXN0bGV5IC0gVG9nZXRoZXIgRm9yZXZlciAoT2ZmaWNpYWwgTXVzaWMgVmlkZW8pAA9SaWNrQXN0bGV5VkVWTwABADJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXlQTHQ1UXB3eTAwABd5b3V0dWJlOiBSaWNrIEFzdGxleQAAAAAAAAAA";
-	 *   await Rest.updatePlayer(node, guildId, {
-	 *     track: { encoded: trackToQueue }
-	 *   }, true);
-	 *
-	 * } catch (error) {
-	 *   console.error(`Player update failed: ${error.message}`);
-	 * }
-	 * ```
-	 *
+
 	 * @public
 	 */
 	static updatePlayer(node: LavalinkNode, guildId: string, data: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
 		return Rest.baseRequest(
 			node,
-			`/v4/sessions/${node.sessionId}/players/${guildId}${noReplace ? `?noReplace=${noReplace}` : ""}`,
+			`/v4/sessions/${node.sessionId}/players/${guildId}`,
 			{
 				method: "PATCH",
 				body: JSON.stringify(data),
-				headers: { "Content-Type": "application/json" }
+				headers: { "Content-Type": "application/json" },
+				query: noReplace ? { noReplace: "true" } : undefined
 			},
-			["sessionId"]
+			true
 		);
 	}
 
@@ -352,26 +224,13 @@ export class Rest {
 	 * @returns A promise resolving to the destroy player result.
 	 * @throws {@link RestError} If Lavalink encounters an error.
 	 *
-	 * @example
-	 * ```typescript
-	 * // Destroy a player when you no longer need it
-	 * const node = manager.nodes.get("main");
-	 * const guildId = "123456789012345678";
-	 *
-	 * try {
-	 *   await Rest.destroyPlayer(node, guildId);
-	 *   console.log(`Player for guild ${guildId} destroyed successfully`);
-	 *
-	 *   // Note: This only removes the player from Lavalink
-	 *   // You should also call manager.leave(guildId) to disconnect from the voice channel
-	 * } catch (error) {
-	 *   console.error(`Failed to destroy player: ${error.message}`);
-	 * }
-	 * ```
-	 *
 	 * @public
 	 */
 	static destroyPlayer(node: LavalinkNode, guildId: string): Promise<DestroyPlayerResult> {
-		return Rest.baseRequest(node, `/v4/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, ["sessionId"]);
+		return Rest.baseRequest(node, `/v4/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, true);
 	}
+}
+
+export interface BaseRequestInit extends RequestInit {
+	query?: string | URLSearchParams | Record<string, string | string[]> | Iterable<[string, string]> | [string, string][];
 }
