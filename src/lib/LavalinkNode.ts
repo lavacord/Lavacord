@@ -1,9 +1,9 @@
 import WebSocket from "ws";
 import { Rest } from "./Rest";
 import type { Manager } from "./Manager";
-import type { LavalinkNodeOptions } from "./Types";
+import { LavalinkOPTypes, type LavalinkNodeOptions } from "./Types";
 import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
-import { VERSION } from "index";
+import { VERSION } from "../index";
 
 /**
  * The LavalinkNode class handles the connection and communication with a Lavalink server.
@@ -82,6 +82,19 @@ export class LavalinkNode {
 	 * @since 1.0.0
 	 */
 	public readonly password = "youshallnotpass";
+
+	/**
+	 * Whether to use secure connections (HTTPS/WSS) instead of HTTP/WS.
+	 *
+	 * @summary Secure connection flag for SSL/TLS
+	 * @remarks
+	 * When true, WebSocket connections will use WSS and REST requests will use HTTPS.
+	 * This is required when connecting to Lavalink servers behind SSL/TLS.
+	 *
+	 * @defaultValue false
+	 * @since 1.0.0
+	 */
+	public readonly secure = false;
 
 	/**
 	 * The WebSocket instance used for communication with the Lavalink server.
@@ -169,6 +182,19 @@ export class LavalinkNode {
 	 * @since 1.0.0
 	 */
 	public sessionId?: string;
+	/**
+	 * The version of the Lavalink protocol this node is using.
+	 *
+	 * @summary Lavalink protocol version
+	 * @remarks
+	 * This is set automatically when connecting to the Lavalink server.
+	 * It indicates which version of the Lavalink protocol this node supports.
+	 * The default value is "4", which corresponds to the latest stable version.
+	 *
+	 * @defaultValue "4"
+	 * @since 3.0.0
+	 */
+	public version = "4";
 
 	/**
 	 * Timeout reference used for the reconnection mechanism.
@@ -216,6 +242,7 @@ export class LavalinkNode {
 		if (options.host) Object.defineProperty(this, "host", { value: options.host });
 		if (options.port) Object.defineProperty(this, "port", { value: options.port });
 		if (options.password) Object.defineProperty(this, "password", { value: options.password });
+		if (options.secure !== undefined) Object.defineProperty(this, "secure", { value: options.secure });
 		if (options.reconnectInterval) this.reconnectInterval = options.reconnectInterval;
 		if (options.sessionId) this.sessionId = options.sessionId;
 		if (options.resuming !== undefined) this.resuming = options.resuming;
@@ -273,37 +300,26 @@ export class LavalinkNode {
 	 *
 	 * @since 1.0.0
 	 */
-	public async connect(): Promise<WebSocket> {
-		return new Promise<WebSocket>((resolve, reject) => {
-			if (this.connected) this.ws?.close();
+	public async connect(): Promise<void> {
+		if (this.connected) this.ws?.close();
 
-			const headers: OutboundHandshakeHeaders = {
-				Authorization: this.password,
-				"User-Id": this.manager.user,
-				"Client-Name": `Lavacord/${VERSION}}`
-			};
+		this.version = await Rest.version(this)
+			.then((str) => str.split(".")[0])
+			.catch(() => "4");
+		// Prepare headers for the WebSocket connection
+		const headers: OutboundHandshakeHeaders = {
+			Authorization: this.password,
+			"User-Id": this.manager.user,
+			"Client-Name": `Lavacord/${VERSION}`
+		};
 
-			if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
+		if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
 
-			const ws = new WebSocket(`ws://${this.host}:${this.port}/v4/websocket`, { headers });
-
-			const onEvent = (event: unknown): void => {
-				ws.removeAllListeners();
-				reject(event instanceof Error ? event : new Error("Premature close"));
-			};
-
-			const onOpen = (): void => {
-				this.ws = ws;
-				this.onOpen();
-				ws.removeListener("open", onOpen)
-					.removeListener("error", onEvent)
-					.removeListener("close", onEvent)
-					.on("error", this.onError.bind(this))
-					.on("close", this.onClose.bind(this));
-				resolve(ws);
-			};
-			ws.on("message", this.onMessage.bind(this)).once("open", onOpen).once("error", onEvent).once("close", onEvent);
-		});
+		this.ws = new WebSocket(this.socketURL, { headers })
+			.on("open", this.onOpen.bind(this))
+			.on("error", this.onError.bind(this))
+			.on("close", this.onClose.bind(this))
+			.on("message", this.onMessage.bind(this));
 	}
 
 	/**
@@ -317,24 +333,19 @@ export class LavalinkNode {
 	 * Users typically should not call this method directly as the Manager handles
 	 * node disconnections automatically.
 	 *
-	 * @returns `true` if the connection was closed, `false` if there was no active connection
+	 * @returns void
 	 *
 	 * @example
 	 * ```typescript
 	 * // This is typically handled by the Manager class
-	 * if (node.destroy()) {
-	 *   console.log(`Successfully disconnected from Lavalink node: ${node.id}`);
-	 * } else {
-	 *   console.log(`Node ${node.id} was not connected`);
-	 * }
+	 * node.destroy();
 	 * ```
 	 *
 	 * @since 1.0.0
 	 */
-	public destroy(): boolean {
-		if (!this.connected) return false;
-		this.ws?.close(1000, "destroy");
-		return true;
+	public destroy(): void {
+		if (!this.connected) return;
+		this.ws!.close(1000, "destroy");
 	}
 
 	/**
@@ -364,9 +375,60 @@ export class LavalinkNode {
 	 */
 	public get connected(): boolean {
 		if (!this.ws) return false;
-		return this.ws?.readyState === WebSocket.OPEN;
+		return this.ws.readyState === WebSocket.OPEN;
 	}
 
+	/**
+	 * Gets the WebSocket URL for connecting to the Lavalink server.
+	 *
+	 * @summary WebSocket connection URL
+	 * @remarks
+	 * Returns either a secure (wss://) or insecure (ws://) WebSocket URL
+	 * based on the {@link secure} property configuration.
+	 *
+	 * @returns The complete WebSocket URL including protocol, host, port, and path
+	 *
+	 * @example
+	 * ```typescript
+	 * // For secure connection
+	 * console.log(node.socketURL); // "wss://lavalink.example.com:443/v4/websocket"
+	 *
+	 * // For insecure connection
+	 * console.log(node.socketURL); // "ws://localhost:2333/v4/websocket"
+	 * ```
+	 *
+	 * @since 1.0.0
+	 */
+	public get socketURL(): string {
+		const protocol = this.secure ? "wss" : "ws";
+		return `${protocol}://${this.host}:${this.port}/v${this.version}/websocket`;
+	}
+
+	/**
+	 * Gets the REST API base URL for the Lavalink server.
+	 *
+	 * @summary REST API base URL
+	 * @remarks
+	 * Returns either a secure (https://) or insecure (http://) REST URL
+	 * based on the {@link secure} property configuration.
+	 *
+	 * @returns The complete REST API base URL including protocol, host, port, and path
+	 *
+	 * @example
+	 * ```typescript
+	 * // For secure connection
+	 * console.log(node.restURL); // "https://lavalink.example.com:443"
+	 *
+	 * // For insecure connection
+	 * console.log(node.restURL); // "http://localhost:2333"
+	 * ```
+	 *
+	 * @since 1.0.0
+	 */
+	public get restURL(): string {
+		const protocol = this.secure ? "https" : "http";
+		return `${protocol}://${this.host}:${this.port}`;
+	}
 	/**
 	 * Handles the WebSocket 'open' event when a connection is established.
 	 *
@@ -400,17 +462,11 @@ export class LavalinkNode {
 	 *
 	 * @since 1.0.0
 	 */
-	private onMessage(data: WebSocket.Data): void {
-		const str = Array.isArray(data)
-			? Buffer.concat(data).toString()
-			: data instanceof ArrayBuffer
-				? Buffer.from(data).toString()
-				: data.toString();
-
-		const msg: WebsocketMessage = JSON.parse(str);
+	private onMessage(data: WebSocket.RawData): void {
+		const msg: WebsocketMessage = JSON.parse(data.toString());
 
 		switch (msg.op) {
-			case "ready":
+			case LavalinkOPTypes.Ready:
 				if (msg.sessionId) this.sessionId = msg.sessionId;
 				if (!this._sessionUpdated) {
 					this._sessionUpdated = true;
@@ -418,7 +474,7 @@ export class LavalinkNode {
 				}
 				break;
 
-			case "stats": {
+			case LavalinkOPTypes.Stats: {
 				// Assign all properties except 'op' to stats
 				const stats = { ...msg } as Stats;
 				delete (stats as { op?: number }).op;
@@ -426,11 +482,16 @@ export class LavalinkNode {
 				break;
 			}
 
-			case "event":
-			case "playerUpdate": {
+			case LavalinkOPTypes.Event: {
 				const player = this.manager.players.get(msg.guildId);
 				if (!player) break;
-				player.emit(msg.op, msg as never);
+				player.emit("event", msg);
+				break;
+			}
+			case LavalinkOPTypes.PlayerUpdate: {
+				const player = this.manager.players.get(msg.guildId);
+				if (!player) break;
+				player.emit("playerUpdate", msg);
 				break;
 			}
 
@@ -475,7 +536,12 @@ export class LavalinkNode {
 	private onClose(code: number, reason: Buffer): void {
 		this._sessionUpdated = false;
 		this.manager.emit("disconnect", code, reason.toString(), this);
-		if (code !== 1000 || reason.toString() !== "destroy") return this.reconnect();
+		if (code === 1000 && reason.toString() === "destroy") {
+			this.ws?.removeAllListeners();
+			this.ws = null;
+			return clearTimeout(this._reconnect);
+		}
+		return this.reconnect();
 	}
 
 	/**
@@ -491,12 +557,12 @@ export class LavalinkNode {
 	 * @since 1.0.0
 	 */
 	private reconnect(): void {
-		this._reconnect = setTimeout(() => {
+		this._reconnect = setTimeout(async () => {
 			this.ws?.removeAllListeners();
 			this.ws = null;
 
 			this.manager.emit("reconnecting", this);
-			this.connect();
+			await this.connect();
 		}, this.reconnectInterval);
 	}
 }

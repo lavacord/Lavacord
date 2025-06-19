@@ -1,7 +1,6 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
-import WebSocket from "ws";
 import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
 import { WebsocketMessage } from "lavalink-types/v4";
 import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
@@ -114,14 +113,14 @@ export class Manager extends EventEmitter {
 	 *   .catch(error => console.error('Failed to connect nodes:', error));
 	 * ```
 	 */
-	public connect(): Promise<WebSocket[]> {
+	public async connect(): Promise<void> {
 		if (!this.user)
 			throw new Error(
 				"Lavacord requires a client user ID before connecting.\
 				Set the user ID when constructing the Manager or after your Discord client is ready."
 			);
 
-		return Promise.all(Array.from(this.nodes.values()).map((node) => node.connect()));
+		for await (const node of this.nodes.values()) await node.connect();
 	}
 
 	/**
@@ -137,11 +136,9 @@ export class Manager extends EventEmitter {
 	 *   .catch(error => console.error('Error during disconnection:', error));
 	 * ```
 	 */
-	public disconnect(): Promise<boolean[]> {
-		const promises = [];
-		for (const id of Array.from(this.players.keys())) promises.push(this.leave(id));
-		for (const node of Array.from(this.nodes.values())) node.destroy();
-		return Promise.all(promises);
+	public async disconnect(): Promise<void> {
+		for await (const player of this.players.keys()) await this.leave(player);
+		for (const node of this.nodes.values()) node.destroy();
 	}
 
 	/**
@@ -188,7 +185,8 @@ export class Manager extends EventEmitter {
 	public removeNode(id: string): boolean {
 		const node = this.nodes.get(id);
 		if (!node) return false;
-		return node.destroy() && this.nodes.delete(id);
+		node.destroy();
+		return this.nodes.delete(id);
 	}
 
 	/**
