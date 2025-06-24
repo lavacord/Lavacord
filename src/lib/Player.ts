@@ -11,7 +11,6 @@ import type {
 	UpdatePlayerData,
 	UpdatePlayerResult,
 	DestroyPlayerResult,
-	Player as APIPlayer,
 	Track,
 	VoiceState
 } from "lavalink-types/v4";
@@ -146,7 +145,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 *
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public stop(): Promise<APIPlayer> {
+	public stop(): Promise<UpdatePlayerResult> {
 		return this.update({ track: { encoded: null } });
 	}
 
@@ -156,7 +155,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param pause - Whether to pause (true) or resume (false) playback.
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public async pause(pause: boolean): Promise<APIPlayer> {
+	public async pause(pause: boolean): Promise<UpdatePlayerResult> {
 		const d = await this.update({ paused: pause });
 		if (this.listenerCount("pause")) this.emit("pause", pause);
 		if (this.manager.listenerCount("playerPause")) this.manager.emit("playerPause", this, pause);
@@ -169,7 +168,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param volume - The volume level as a number between 0 and 1000
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public async setVolume(volume: number): Promise<APIPlayer> {
+	public async setVolume(volume: number): Promise<UpdatePlayerResult> {
 		const d = await this.update({ volume });
 		if (this.listenerCount("volume")) this.emit("volume", volume);
 		if (this.manager.listenerCount("playerVolume")) this.manager.emit("playerVolume", this, volume);
@@ -182,7 +181,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param position - The position to seek to in milliseconds.
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public async seek(position: number): Promise<APIPlayer> {
+	public async seek(position: number): Promise<UpdatePlayerResult> {
 		const d = await this.update({ position });
 		if (this.listenerCount("seek")) this.emit("seek", position);
 		if (this.manager.listenerCount("playerSeek")) this.manager.emit("playerSeek", this, position);
@@ -195,7 +194,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param options - The filter options to apply.
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public async setFilters(options: Filters): Promise<APIPlayer> {
+	public async setFilters(options: Filters): Promise<UpdatePlayerResult> {
 		const d = await this.update({ filters: options });
 		if (this.listenerCount("filters")) this.emit("filters", options);
 		return d;
@@ -210,7 +209,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @remarks
 	 * Each band is an object with 'band' (0-14) and 'gain' (-0.25 to 1.0) properties.
 	 */
-	public async setEqualizer(bands: Equalizer[]): Promise<APIPlayer> {
+	public async setEqualizer(bands: Equalizer[]): Promise<UpdatePlayerResult> {
 		return this.setFilters({ equalizer: bands });
 	}
 
@@ -233,7 +232,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param data - The voice update state containing session ID and voice server information.
 	 * @returns A promise resolving to the updated player information.
 	 */
-	public connect(data: PlayerUpdateVoiceState): Promise<APIPlayer> {
+	public connect(data: PlayerUpdateVoiceState): Promise<UpdatePlayerResult> {
 		return this.update({
 			voice: {
 				token: data.event.token,
