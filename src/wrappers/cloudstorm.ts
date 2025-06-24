@@ -14,16 +14,14 @@ export class Manager extends BaseManager {
 	) {
 		super(nodes, options);
 
-		if (!this.send) {
-			this.send = async (packet) => {
-				if (!this.client.options.totalShards) return false;
+		this.send = async (packet) => {
+			if (!this.client.options.totalShards) return false;
 
-				const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
-				const s = Object.entries(this.client.shardManager.shards).find((e) => String(e[0]) === String(shardID))?.[1];
+			const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
+			const s = Object.entries(this.client.shardManager.shards).find((e) => String(e[0]) === String(shardID))?.[1];
 
-				if (s) return s.connector.sendMessage(packet);
-			};
-		}
+			if (s) return s.connector.sendMessage(packet);
+		};
 
 		client.on("event", (packet) => {
 			switch (packet.t) {
