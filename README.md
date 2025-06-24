@@ -22,7 +22,7 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
-- [Lavalink Setup](#️lavalink-setup)
+- [Lavalink Setup](#lavalink-setup)
 - [Usage Examples](#usage-examples)
     - [Basic Usage](#basic-usage)
     - [Wrapper Example](#wrapper-example)
