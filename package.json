@@ -79,28 +79,26 @@
 	},
 	"homepage": "https://github.com/lavacord/lavacord#readme",
 	"dependencies": {
-		"discord-api-types": "^0.38.11",
+		"discord-api-types": "^0.38.13",
 		"lavalink-types": "^3.0.0",
-		"ws": "^8.18.1"
+		"ws": "^8.18.2"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.26.0",
-		"@types/node": "^22.13.10",
-		"@types/ws": "^8.18.0",
-		"@typescript-eslint/eslint-plugin": "^8.26.1",
-		"@typescript-eslint/parser": "^8.26.1",
+		"@eslint/js": "^9.29.0",
+		"@types/node": "^24.0.3",
+		"@types/ws": "^8.18.1",
 		"esbuild-plugin-file-path-extensions": "^2.1.4",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^9.26.0",
-		"prettier": "^3.5.3",
-		"tsup": "^8.0.0",
-		"typedoc": "^0.28.4",
+		"eslint": "^9.29.0",
+		"prettier": "^3.6.0",
+		"tsup": "^8.5.0",
+		"typedoc": "^0.28.5",
 		"typedoc-github-theme": "^0.3.0",
 		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.33.1"
+		"typescript-eslint": "^8.35.0"
 	},
 	"optionalDependencies": {
-		"cloudstorm": "0.13.2",
+		"cloudstorm": "0.14.0",
 		"detritus-client": "0.16.x",
 		"discord.js": "14.x",
 		"eris": "0.18.x",
