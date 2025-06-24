@@ -1,6 +1,6 @@
 # Contributing to Lavacord
 
-Thank you for your interest in contributing to **Lavacord**! 🚀
+Thank you for your interest in contributing to **Lavacord**!
 We welcome all help, whether it's bug reports, feature requests, code contributions, or documentation improvements.
 
 ---
@@ -66,4 +66,4 @@ By contributing, you agree your contributions will be licensed under the [MIT Li
 
 ---
 
-Happy coding! 💙
+Happy coding
