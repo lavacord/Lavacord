@@ -8,7 +8,6 @@ We welcome all help, whether it's bug reports, feature requests, code contributi
 ## Table of Contents
 
 - [Workflow](#workflow)
-- [How to Contribute](#how-to-contribute)
 - [Code Style](#code-style)
 - [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
