@@ -7,7 +7,6 @@ import { globalIgnores } from "eslint/config";
 export default tseslint.config(
 	globalIgnores(["docs", "dist", "node_modules"]),
 	eslint.configs.recommended,
-	tseslint.configs.recommended,
 	tseslint.configs.strict,
 	tseslint.configs.stylistic,
 	{
