@@ -54,6 +54,7 @@
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint . -c eslint.config.mjs --fix",
 		"test": "eslint . -c eslint.config.mjs",
+		"typecheck": "tsc -p tsconfig.json",
 		"docs": "typedoc --plugin typedoc-github-theme",
 		"prepublishOnly": "yarn build"
 	},
