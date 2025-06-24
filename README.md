@@ -72,7 +72,7 @@ See the [wrappers directory](src/wrappers/) for details and usage examples.
 
 ## Requirements
 
-- **Node.js** v18 or newer recommended
+- **Node.js** v20 or newer recommended
 - **Lavalink** server (Java 11+ required)
 - A Discord bot token
 
