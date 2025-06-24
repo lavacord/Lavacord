@@ -204,8 +204,7 @@ export interface LavalinkNodeOptions {
 	 * @remarks
 	 * This data is not sent to Lavalink and is only used internally.
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	state?: any;
+	state?: unknown;
 }
 
 /**
