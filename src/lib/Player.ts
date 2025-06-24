@@ -158,7 +158,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 */
 	public async pause(pause: boolean): Promise<APIPlayer> {
 		const d = await this.update({ paused: pause });
-		this.emit("pause", pause);
+		if (this.listenerCount("pause")) this.emit("pause", pause);
 		if (this.manager.listenerCount("playerPause")) this.manager.emit("playerPause", this, pause);
 		return d;
 	}
@@ -171,7 +171,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 */
 	public async setVolume(volume: number): Promise<APIPlayer> {
 		const d = await this.update({ volume });
-		this.emit("volume", volume);
+		if (this.listenerCount("volume")) this.emit("volume", volume);
 		if (this.manager.listenerCount("playerVolume")) this.manager.emit("playerVolume", this, volume);
 		return d;
 	}
@@ -184,7 +184,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 */
 	public async seek(position: number): Promise<APIPlayer> {
 		const d = await this.update({ position });
-		this.emit("seek", position);
+		if (this.listenerCount("seek")) this.emit("seek", position);
 		if (this.manager.listenerCount("playerSeek")) this.manager.emit("playerSeek", this, position);
 		return d;
 	}
@@ -197,7 +197,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 */
 	public async setFilters(options: Filters): Promise<APIPlayer> {
 		const d = await this.update({ filters: options });
-		this.emit("filters", options);
+		if (this.listenerCount("filters")) this.emit("filters", options);
 		return d;
 	}
 
