@@ -346,5 +346,5 @@ Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making
 Thank you to everyone who has contributed to Lavacord!
 
 <a href="https://github.com/lavacord/Lavacord/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=lavacord/Lavacord" />
+  <img src="https://contrib.rocks/image?repo=lavacord/Lavacord" alt="Contributors to Lavacord" />
 </a>
