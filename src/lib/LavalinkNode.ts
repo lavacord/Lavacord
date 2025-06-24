@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import { Rest } from "./Rest";
 import type { Manager } from "./Manager";
 import { LavalinkOPTypes, type LavalinkNodeOptions } from "./Types";
-import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, EventOP } from "lavalink-types/v4";
+import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, EventOP, StatsOP } from "lavalink-types/v4";
 import { VERSION } from "../index";
 
 /**
@@ -366,8 +366,8 @@ export class LavalinkNode {
 				break;
 
 			case LavalinkOPTypes.Stats: {
-				const stats = { ...msg } as Stats;
-				delete (stats as { op?: number }).op;
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const { op, ...stats } = msg as StatsOP;
 				this.stats = stats;
 				break;
 			}
