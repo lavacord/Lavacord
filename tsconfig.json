@@ -27,7 +27,7 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
-		"noEmit": true,
+		"noEmit": false,
 		"incremental": false,
 		"skipLibCheck": true,
 		"target": "ES2020",
@@ -37,7 +37,7 @@
 		"baseUrl": "./src",
 		"rootDir": "src",
 		"paths": {
-			"lavacord/*": ["./dist/*"]
+			"lavacord/*": ["../dist/*"]
 		}
 	},
 	"include": ["src"],
