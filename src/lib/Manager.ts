@@ -1,8 +1,7 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
-import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
-import { WebsocketMessage } from "lavalink-types/v4";
+import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions, ManagerEvents } from "./Types";
 import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
 
 /**
@@ -12,7 +11,7 @@ import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate, GatewayV
  * The Manager acts as the central hub for Lavacord, managing connections to Lavalink nodes,
  * handling voice state updates, and providing a unified interface for player operations.
  */
-export class Manager extends EventEmitter {
+export class Manager extends EventEmitter<ManagerEvents> {
 	/**
 	 * A Map of Lavalink Nodes indexed by their IDs.
 	 */
@@ -240,33 +239,7 @@ export class Manager extends EventEmitter {
 		await this.sendWS(guild, null);
 		const player = this.players.get(guild);
 		if (!player) return false;
-		if (player.listenerCount("end") && player.playing) {
-			player.emit("end", {
-				track: {
-					encoded: player.track!,
-					info: {
-						identifier: "PLACEHOLDER",
-						isSeekable: false,
-						author: "PLACEHOLDER",
-						length: 0,
-						isStream: false,
-						position: 0,
-						title: "PLACEHOLDER",
-						uri: "PLACEHOLDER",
-						artworkUrl: null,
-						isrc: null,
-						sourceName: "PLACEHOLDER"
-					},
-					pluginInfo: {},
-					userData: {}
-				},
-				op: "event",
-				type: "TrackEndEvent",
-				reason: "cleanup",
-				guildId: guild
-			});
-		}
-		player.removeAllListeners();
+
 		await player.destroy();
 		return this.players.delete(guild);
 	}
@@ -291,26 +264,19 @@ export class Manager extends EventEmitter {
 	 * ```
 	 */
 	public async switch(player: Player, node: LavalinkNode): Promise<Player> {
-		const { track, state, voiceUpdateState } = { ...player };
-		const position = (state.position ?? 0) + 2000;
-		if (!voiceUpdateState) {
-			player.node = node;
-			return player;
-		}
-
-		await player.destroy();
-
 		player.node = node;
 
-		await player.play(track!, {
-			position,
-			volume: state.filters.volume ?? 1.0,
-			filters: state.filters,
-			voice: {
-				token: voiceUpdateState.event.token,
-				endpoint: voiceUpdateState.event.endpoint,
-				sessionId: voiceUpdateState.sessionId
-			}
+		if (!player.voice) return player;
+		await player.destroy();
+		if (!player.track) return player;
+
+		await player.play(player.track.encoded, {
+			position: player.state.position,
+			volume: player.volume,
+			filters: player.filters,
+			voice: player.voice,
+			paused: player.paused,
+			userData: player.track.userData
 		});
 
 		return player;
@@ -456,49 +422,4 @@ export class Manager extends EventEmitter {
 		this.players.set(data.guild, player);
 		return player;
 	}
-}
-
-/**
- * Type definition for Manager events.
- */
-export interface ManagerEvents {
-	/**
-	 * Emitted when a node becomes ready.
-	 */
-	ready: [LavalinkNode];
-	/**
-	 * Emitted for all raw messages from Lavalink.
-	 */
-	raw: [WebsocketMessage, LavalinkNode];
-	/**
-	 * Emitted when a node encounters an error.
-	 */
-	error: [unknown, LavalinkNode];
-	/**
-	 * Emitted when a node disconnects.
-	 */
-	disconnect: [number, string, LavalinkNode];
-	/**
-	 * Emitted when a node is attempting to reconnect.
-	 */
-	reconnecting: [LavalinkNode];
-}
-
-/**
- * Type declaration merging to properly type the event emitter methods.
- */
-export interface Manager extends EventEmitter {
-	addListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	emit<E extends keyof ManagerEvents>(event: E, ...args: ManagerEvents[E]): boolean;
-	eventNames(): (keyof ManagerEvents)[];
-	listenerCount(event: keyof ManagerEvents): number;
-	listeners(event: keyof ManagerEvents): ((...args: unknown[]) => unknown)[];
-	off<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	on<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	once<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	prependListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	prependOnceListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
-	rawListeners(event: keyof ManagerEvents): ((...args: unknown[]) => unknown)[];
-	removeAllListeners(event?: keyof ManagerEvents): this;
-	removeListener<E extends keyof ManagerEvents>(event: E, listener: (...args: ManagerEvents[E]) => unknown): this;
 }

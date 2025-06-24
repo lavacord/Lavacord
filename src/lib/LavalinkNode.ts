@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import { Rest } from "./Rest";
 import type { Manager } from "./Manager";
 import { LavalinkOPTypes, type LavalinkNodeOptions } from "./Types";
-import type { Stats, OutboundHandshakeHeaders, WebsocketMessage } from "lavalink-types/v4";
+import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, EventOP } from "lavalink-types/v4";
 import { VERSION } from "../index";
 
 /**
@@ -17,8 +17,6 @@ import { VERSION } from "../index";
  * LavalinkNode instances are typically created and managed by the {@link Manager} class,
  * which handles load balancing across multiple nodes and routing player actions
  * to the appropriate node.
- *
- * @since 1.0.0
  */
 export class LavalinkNode {
 	/**
@@ -28,8 +26,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * This is a required property that must be unique across all nodes in your application.
 	 * It's used for identifying this node in logs and when selecting nodes for new players.
-	 *
-	 * @since 1.0.0
 	 */
 	public id: string;
 
@@ -39,9 +35,6 @@ export class LavalinkNode {
 	 * @summary Server hostname or IP address
 	 * @remarks
 	 * This can be a domain name, IPv4, or IPv6 address pointing to your Lavalink server.
-	 *
-	 * @defaultValue "localhost"
-	 * @since 1.0.0
 	 */
 	public readonly host = "localhost";
 
@@ -51,9 +44,6 @@ export class LavalinkNode {
 	 * @summary Server port number
 	 * @remarks
 	 * This should match the port configured in your Lavalink server's application.yml.
-	 *
-	 * @defaultValue 2333
-	 * @since 1.0.0
 	 */
 	public readonly port: number | string = 2333;
 
@@ -64,9 +54,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * Lower values will attempt reconnections more quickly, but might
 	 * cause excessive connection attempts during prolonged server outages.
-	 *
-	 * @defaultValue 10000
-	 * @since 1.0.0
 	 */
 	public reconnectInterval = 10000;
 
@@ -77,9 +64,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * This password must match the one configured in your Lavalink server's application.yml.
 	 * It's used in the Authorization header when establishing the WebSocket connection.
-	 *
-	 * @defaultValue "youshallnotpass"
-	 * @since 1.0.0
 	 */
 	public readonly password = "youshallnotpass";
 
@@ -90,9 +74,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * When true, WebSocket connections will use WSS and REST requests will use HTTPS.
 	 * This is required when connecting to Lavalink servers behind SSL/TLS.
-	 *
-	 * @defaultValue false
-	 * @since 1.0.0
 	 */
 	public readonly secure = false;
 
@@ -103,8 +84,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * When not connected to Lavalink, this property will be null.
 	 * You can check the {@link connected} property to determine connection status.
-	 *
-	 * @since 1.0.0
 	 */
 	public ws: WebSocket | null = null;
 
@@ -116,10 +95,28 @@ export class LavalinkNode {
 	 * Contains information about system resource usage, player counts, and audio frame statistics.
 	 * This is updated whenever the Lavalink server sends a stats update (typically every minute).
 	 * You can use these stats to implement node selection strategies in your application.
-	 *
-	 * @since 1.0.0
 	 */
-	public stats: Stats;
+	public stats: Stats = {
+		players: 0,
+		playingPlayers: 0,
+		uptime: 0,
+		memory: {
+			used: 0,
+			free: 0,
+			allocated: 0,
+			reservable: 0
+		},
+		cpu: {
+			cores: 0,
+			systemLoad: 0,
+			lavalinkLoad: 0
+		},
+		frameStats: {
+			sent: 0,
+			nulled: 0,
+			deficit: 0
+		}
+	};
 
 	/**
 	 * Whether this node should attempt to resume the session when reconnecting.
@@ -129,10 +126,6 @@ export class LavalinkNode {
 	 * When true, the node will try to resume the previous session after a disconnect,
 	 * preserving player states and connections. This helps maintain playback during
 	 * brief disconnections or node restarts.
-	 *
-	 * @see {@link resumeTimeout}
-	 * @defaultValue false
-	 * @since 1.0.0
 	 */
 	public resuming = false;
 
@@ -144,12 +137,8 @@ export class LavalinkNode {
 	 * This value is sent to the Lavalink server when configuring session resuming.
 	 * After this many seconds of disconnection, the session will be fully closed
 	 * and cannot be resumed.
-	 *
-	 * @see {@link resuming}
-	 * @defaultValue 120
-	 * @since 1.0.0
 	 */
-	public resumeTimeout = 120;
+	public resumeTimeout = 60;
 
 	/**
 	 * Custom data that can be attached to the node instance.
@@ -159,14 +148,6 @@ export class LavalinkNode {
 	 * Not used internally by Lavacord, available for application-specific needs.
 	 * You can use this property to store any data relevant to your implementation,
 	 * such as region information, feature flags, or custom metrics.
-	 *
-	 * @example
-	 * ```typescript
-	 * // Store custom region data with the node
-	 * node.state = { region: 'us-west', tier: 'premium' };
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public state?: any;
@@ -178,8 +159,6 @@ export class LavalinkNode {
 	 * @remarks
 	 * This ID is used for resuming sessions and in certain REST API calls.
 	 * It's automatically assigned when connecting to the Lavalink server.
-	 *
-	 * @since 1.0.0
 	 */
 	public sessionId?: string;
 	/**
@@ -192,23 +171,23 @@ export class LavalinkNode {
 	 * The default value is "4", which corresponds to the latest stable version.
 	 *
 	 * @defaultValue "4"
-	 * @since 3.0.0
 	 */
 	public version = "4";
 
 	/**
 	 * Timeout reference used for the reconnection mechanism.
 	 * This holds the NodeJS.Timeout instance used to schedule reconnection attempts.
-	 *
-	 * @since 1.0.0
 	 */
 	private _reconnect?: NodeJS.Timeout;
 
 	/**
+	 * Current reconnection attempt count for exponential backoff.
+	 */
+	private _reconnectAttempts = 0;
+
+	/**
 	 * Tracks whether the session has been updated with the Lavalink server.
 	 * Used internally to avoid redundant session update requests.
-	 *
-	 * @since 1.0.0
 	 */
 	private _sessionUpdated = false;
 
@@ -218,20 +197,6 @@ export class LavalinkNode {
 	 * @summary Initializes a new Lavalink node connection
 	 * @param manager - The {@link Manager} instance that controls this node
 	 * @param options - Configuration options for this Lavalink node as defined in {@link LavalinkNodeOptions}
-	 *
-	 * @example
-	 * ```typescript
-	 * const node = new LavalinkNode(manager, {
-	 *   id: 'main-node',
-	 *   host: 'lavalink.example.com',
-	 *   port: 2333,
-	 *   password: 'your-password',
-	 *   resuming: true,
-	 *   resumeTimeout: 60
-	 * });
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
 	public constructor(
 		public manager: Manager,
@@ -248,28 +213,6 @@ export class LavalinkNode {
 		if (options.resuming !== undefined) this.resuming = options.resuming;
 		if (options.resumeTimeout) this.resumeTimeout = options.resumeTimeout;
 		if (options.state) this.state = options.state;
-
-		this.stats = {
-			players: 0,
-			playingPlayers: 0,
-			uptime: 0,
-			memory: {
-				free: 0,
-				used: 0,
-				allocated: 0,
-				reservable: 0
-			},
-			cpu: {
-				cores: 0,
-				systemLoad: 0,
-				lavalinkLoad: 0
-			},
-			frameStats: {
-				sent: 0,
-				nulled: 0,
-				deficit: 0
-			}
-		};
 	}
 
 	/**
@@ -284,42 +227,50 @@ export class LavalinkNode {
 	 * Users typically should not call this method directly as the Manager handles
 	 * node connections automatically.
 	 *
-	 * @returns A promise that resolves with the WebSocket instance when connected
+	 * @returns A promise that resolves when connected or rejects if connection fails
 	 * @throws {@link Error} If the connection fails due to network issues, authentication problems, or other errors
-	 *
-	 * @example
-	 * ```typescript
-	 * // This is typically handled by the Manager class
-	 * try {
-	 *   await node.connect();
-	 *   console.log(`Connected to Lavalink node: ${node.id}`);
-	 * } catch (error) {
-	 *   console.error(`Failed to connect to Lavalink: ${error.message}`);
-	 * }
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
-	public async connect(): Promise<void> {
-		if (this.connected) this.ws?.close();
+	public async connect(): Promise<WebSocket> {
+		if (this.connected) this.ws?.close(1000, "reconnecting");
 
 		this.version = await Rest.version(this)
 			.then((str) => str.split(".")[0])
 			.catch(() => "4");
-		// Prepare headers for the WebSocket connection
-		const headers: OutboundHandshakeHeaders = {
-			Authorization: this.password,
-			"User-Id": this.manager.user,
-			"Client-Name": `Lavacord/${VERSION}`
-		};
 
-		if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
+		return new Promise((resolve, reject) => {
+			let isResolved = false;
 
-		this.ws = new WebSocket(this.socketURL, { headers })
-			.on("open", this.onOpen.bind(this))
-			.on("error", this.onError.bind(this))
-			.on("close", this.onClose.bind(this))
-			.on("message", this.onMessage.bind(this));
+			// Prepare headers for the WebSocket connection
+			const headers: OutboundHandshakeHeaders = {
+				Authorization: this.password,
+				"User-Id": this.manager.user,
+				"Client-Name": `Lavacord/${VERSION}`
+			};
+
+			if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
+
+			this.ws = new WebSocket(this.socketURL, { headers })
+				.on("open", () => {
+					isResolved = true;
+					this.onOpen();
+					resolve(this.ws!);
+				})
+				.on("error", (error) => {
+					if (!isResolved) {
+						isResolved = true;
+						reject(error);
+					}
+					this.onError(error);
+				})
+				.on("close", (code, reason) => {
+					if (!isResolved) {
+						isResolved = true;
+						reject(new Error(`WebSocket closed during connection: ${code} ${reason.toString()}`));
+					}
+					this.onClose(code, reason);
+				})
+				.on("message", this.onMessage.bind(this));
+		});
 	}
 
 	/**
@@ -334,14 +285,6 @@ export class LavalinkNode {
 	 * node disconnections automatically.
 	 *
 	 * @returns void
-	 *
-	 * @example
-	 * ```typescript
-	 * // This is typically handled by the Manager class
-	 * node.destroy();
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
 	public destroy(): void {
 		if (!this.connected) return;
@@ -358,20 +301,6 @@ export class LavalinkNode {
 	 * or implementing node selection strategies.
 	 *
 	 * @returns `true` if connected, `false` otherwise
-	 *
-	 * @example
-	 * ```typescript
-	 * // Check if the node is connected before attempting operations
-	 * if (node.connected) {
-	 *   console.log(`Node ${node.id} is ready to use`);
-	 * } else {
-	 *   console.log(`Node ${node.id} is disconnected`);
-	 * }
-	 * ```
-	 *
-	 * @see {@link connect}
-	 * @see {@link destroy}
-	 * @since 1.0.0
 	 */
 	public get connected(): boolean {
 		if (!this.ws) return false;
@@ -387,17 +316,6 @@ export class LavalinkNode {
 	 * based on the {@link secure} property configuration.
 	 *
 	 * @returns The complete WebSocket URL including protocol, host, port, and path
-	 *
-	 * @example
-	 * ```typescript
-	 * // For secure connection
-	 * console.log(node.socketURL); // "wss://lavalink.example.com:443/v4/websocket"
-	 *
-	 * // For insecure connection
-	 * console.log(node.socketURL); // "ws://localhost:2333/v4/websocket"
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
 	public get socketURL(): string {
 		const protocol = this.secure ? "wss" : "ws";
@@ -413,17 +331,6 @@ export class LavalinkNode {
 	 * based on the {@link secure} property configuration.
 	 *
 	 * @returns The complete REST API base URL including protocol, host, port, and path
-	 *
-	 * @example
-	 * ```typescript
-	 * // For secure connection
-	 * console.log(node.restURL); // "https://lavalink.example.com:443"
-	 *
-	 * // For insecure connection
-	 * console.log(node.restURL); // "http://localhost:2333"
-	 * ```
-	 *
-	 * @since 1.0.0
 	 */
 	public get restURL(): string {
 		const protocol = this.secure ? "https" : "http";
@@ -431,16 +338,10 @@ export class LavalinkNode {
 	}
 	/**
 	 * Handles the WebSocket 'open' event when a connection is established.
-	 *
-	 * When the connection opens successfully, this method:
-	 * 1. Clears any pending reconnection timeouts
-	 * 2. Emits the 'ready' event through the manager
-	 * 3. Updates the session with Lavalink if needed
-	 *
-	 * @since 1.0.0
 	 */
 	private onOpen(): void {
 		if (this._reconnect) clearTimeout(this._reconnect);
+		this._reconnectAttempts = 0;
 		this.manager.emit("ready", this);
 		if (!this._sessionUpdated && this.sessionId) {
 			this._sessionUpdated = true;
@@ -450,17 +351,7 @@ export class LavalinkNode {
 
 	/**
 	 * Processes incoming WebSocket messages from the Lavalink server.
-	 *
-	 * This method handles various operation types from Lavalink:
-	 * - 'ready': Processes session information
-	 * - 'stats': Updates node statistics
-	 * - 'event' and 'playerUpdate': Routes events to the appropriate player
-	 *
-	 * All raw messages are also emitted through the manager for custom handling.
-	 *
 	 * @param data - The raw data received from the WebSocket
-	 *
-	 * @since 1.0.0
 	 */
 	private onMessage(data: WebSocket.RawData): void {
 		const msg: WebsocketMessage = JSON.parse(data.toString());
@@ -475,23 +366,21 @@ export class LavalinkNode {
 				break;
 
 			case LavalinkOPTypes.Stats: {
-				// Assign all properties except 'op' to stats
 				const stats = { ...msg } as Stats;
 				delete (stats as { op?: number }).op;
 				this.stats = stats;
 				break;
 			}
 
-			case LavalinkOPTypes.Event: {
-				const player = this.manager.players.get(msg.guildId);
-				if (!player) break;
-				player.emit("event", msg);
+			case LavalinkOPTypes.Event:
+				this._handleEvent(msg);
 				break;
-			}
 			case LavalinkOPTypes.PlayerUpdate: {
 				const player = this.manager.players.get(msg.guildId);
 				if (!player) break;
-				player.emit("playerUpdate", msg);
+				player.state = msg.state;
+				if (player.listenerCount("state")) player.emit("state", msg.state);
+				if (this.manager.listenerCount("playerState")) this.manager.emit("playerState", player, msg.state);
 				break;
 			}
 
@@ -499,19 +388,12 @@ export class LavalinkNode {
 				break;
 		}
 
-		this.manager.emit("raw", msg, this);
+		this.manager.emit("nodeRaw", msg, this);
 	}
 
 	/**
 	 * Handles WebSocket errors.
-	 *
-	 * When a WebSocket error occurs, this method:
-	 * 1. Emits the error through the manager
-	 * 2. Initiates a reconnection attempt
-	 *
 	 * @param error - The error received from the WebSocket
-	 *
-	 * @since 1.0.0
 	 */
 	private onError(error: Error): void {
 		if (!error) return;
@@ -523,46 +405,85 @@ export class LavalinkNode {
 	/**
 	 * Handles WebSocket closure.
 	 *
-	 * When the WebSocket connection closes, this method:
-	 * 1. Resets the session update flag
-	 * 2. Emits a disconnect event with the close code and reason
-	 * 3. Initiates reconnection unless the closure was intentional (code 1000, reason "destroy")
-	 *
-	 * @param code - The WebSocket close code (see WebSocket standards for code meanings)
+	 * @param code - The WebSocket close code (see Lavalink API for code meanings)
 	 * @param reason - The reason why the WebSocket was closed
-	 *
-	 * @since 1.0.0
 	 */
 	private onClose(code: number, reason: Buffer): void {
 		this._sessionUpdated = false;
 		this.manager.emit("disconnect", code, reason.toString(), this);
-		if (code === 1000 && reason.toString() === "destroy") {
-			this.ws?.removeAllListeners();
-			this.ws = null;
-			return clearTimeout(this._reconnect);
+
+		this.ws?.removeAllListeners();
+		this.ws = null;
+
+		switch (code) {
+			case 1000:
+				if (reason.toString() === "destroy") return clearTimeout(this._reconnect);
+				break;
+
+			case 4001:
+			case 4002:
+			case 4003:
+			case 4004:
+			case 4005:
+				this.manager.emit("error", new Error(`Lavalink authentication error: ${code} ${reason.toString()}`), this);
+				return;
+			default:
+				break;
 		}
-		return this.reconnect();
+
+		// Attempt reconnection for recoverable errors
+		this.reconnect();
 	}
 
 	/**
-	 * Initiates a reconnection attempt after a delay.
-	 *
-	 * This method:
-	 * 1. Sets a timeout for reconnection based on the `reconnectInterval` property
-	 * 2. Cleans up existing WebSocket listeners
-	 * 3. Nullifies the WebSocket reference
-	 * 4. Emits the 'reconnecting' event
-	 * 5. Attempts to establish a new connection
-	 *
-	 * @since 1.0.0
+	 * Initiates a reconnection attempt after a delay with exponential backoff.
 	 */
 	private reconnect(): void {
-		this._reconnect = setTimeout(async () => {
-			this.ws?.removeAllListeners();
-			this.ws = null;
+		this._reconnectAttempts++;
+		const delay = Math.min(this.reconnectInterval * Math.pow(2, this._reconnectAttempts - 1), 60000);
 
+		this._reconnect = setTimeout(async () => {
 			this.manager.emit("reconnecting", this);
-			await this.connect();
-		}, this.reconnectInterval);
+			await this.connect().catch((error) => this.manager.emit("error", error, this));
+		}, delay);
+	}
+
+	private _handleEvent(data: EventOP) {
+		const player = this.manager.players.get(data.guildId);
+		if (!player) return;
+
+		switch (data.type) {
+			case "TrackStartEvent":
+				player.track = data.track;
+				player.timestamp = Date.now();
+				if (player.listenerCount("trackStart")) player.emit("trackStart", data);
+				if (this.manager.listenerCount("playerTrackStart")) this.manager.emit("playerTrackStart", player, data);
+				break;
+			case "TrackEndEvent":
+				if (data.reason !== "replaced") {
+					player.track = null;
+					player.timestamp = null;
+				}
+				if (player.listenerCount("trackEnd")) player.emit("trackEnd", data);
+				if (this.manager.listenerCount("playerTrackEnd")) this.manager.emit("playerTrackEnd", player, data);
+				break;
+			case "TrackExceptionEvent":
+				if (player.listenerCount("trackException")) player.emit("trackException", data);
+				if (this.manager.listenerCount("playerTrackException")) this.manager.emit("playerTrackException", player, data);
+				break;
+			case "TrackStuckEvent":
+				if (player.listenerCount("trackStuck")) player.emit("trackStuck", data);
+				if (this.manager.listenerCount("playerTrackStuck")) this.manager.emit("playerTrackStuck", player, data);
+				break;
+			case "WebSocketClosedEvent":
+				player.track = null;
+				player.timestamp = null;
+				if (player.listenerCount("webSocketClosed")) player.emit("webSocketClosed", data);
+				if (this.manager.listenerCount("playerWebSocketClosed")) this.manager.emit("playerWebSocketClosed", player, data);
+				break;
+			default:
+				this.manager.emit("warn", `Unexpected event type: ${(data as { type: string }).type}`);
+				break;
+		}
 	}
 }

@@ -1,5 +1,16 @@
 import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate } from "discord-api-types/v10";
 import type { Player } from "./Player";
+import { LavalinkNode } from "./LavalinkNode";
+import type {
+	TrackEndEvent,
+	TrackExceptionEvent,
+	TrackStartEvent,
+	TrackStuckEvent,
+	WebSocketClosedEvent,
+	WebsocketMessage,
+	Filters,
+	PlayerState
+} from "lavalink-types/v4";
 
 /**
  * Represents the voice state required for a player update, typically used when switching nodes or resuming.
@@ -195,6 +206,89 @@ export interface LavalinkNodeOptions {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	state?: any;
+}
+
+/**
+ * Type definition for Manager events.
+ */
+export interface ManagerEvents {
+	/**
+	 * Emitted when a node becomes ready.
+	 */
+	ready: [LavalinkNode];
+	/**
+	 * Emitted for all raw messages from Lavalink.
+	 */
+	raw: [WebsocketMessage, LavalinkNode];
+	/**
+	 * Emitted for all raw WebSocket messages from nodes.
+	 */
+	nodeRaw: [WebsocketMessage, LavalinkNode];
+	/**
+	 * Emitted when a node encounters an error.
+	 */
+	error: [unknown, LavalinkNode];
+	/**
+	 * Emitted when a node disconnects.
+	 */
+	disconnect: [number, string, LavalinkNode];
+	/**
+	 * Emitted when a node is attempting to reconnect.
+	 */
+	reconnecting: [LavalinkNode];
+	/**
+	 * Emitted when a player is updated.
+	 */
+	playerState: [Player, PlayerState];
+	/**
+	 * Emitted when a track starts playing.
+	 */
+	playerTrackStart: [Player, TrackStartEvent];
+	/**
+	 * Emitted when a track ends.
+	 */
+	playerTrackEnd: [Player, TrackEndEvent];
+	/**
+	 * Emitted when a track encounters an exception.
+	 */
+	playerTrackException: [Player, TrackExceptionEvent];
+	/**
+	 * Emitted when a track gets stuck.
+	 */
+	playerTrackStuck: [Player, TrackStuckEvent];
+	/**
+	 * Emitted when the voice WebSocket is closed.
+	 */
+	playerWebSocketClosed: [Player, WebSocketClosedEvent];
+	/**
+	 * Emitted for warnings.
+	 */
+	warn: [string];
+	/**
+	 * Emitted when a player is paused or resumed.
+	 */
+	playerPause: [Player, boolean];
+	/**
+	 * Emitted when a player's volume changes.
+	 */
+	playerVolume: [Player, number];
+	/**
+	 * Emitted when a player seeks to a position.
+	 */
+	playerSeek: [Player, number];
+}
+
+export interface PlayerEvents {
+	state: [PlayerState];
+	trackStart: [TrackStartEvent];
+	trackEnd: [TrackEndEvent];
+	trackException: [TrackExceptionEvent];
+	trackStuck: [TrackStuckEvent];
+	webSocketClosed: [WebSocketClosedEvent];
+	pause: [boolean];
+	seek: [number];
+	volume: [number];
+	filters: [Filters];
 }
 
 export enum LavalinkOPTypes {

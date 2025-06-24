@@ -11,7 +11,8 @@ import type {
 	UpdatePlayerData,
 	UpdatePlayerResult,
 	DestroyPlayerResult,
-	GetLavalinkInfoResult
+	GetLavalinkInfoResult,
+	GetLavalinkStatsResult
 } from "lavalink-types/v4";
 import { VERSION } from "../index";
 
@@ -163,6 +164,19 @@ export class Rest {
 	 */
 	static info(node: LavalinkNode): Promise<GetLavalinkInfoResult> {
 		return Rest.baseRequest(node, `/v4/info`);
+	}
+
+	/**
+	 * Retrieves the statistics of the Lavalink node.
+	 *
+	 * @param node - The Lavalink node to query.
+	 * @returns A promise resolving to the statistics of lavalink.
+	 * @throws {@link RestError} If Lavalink encounters an error.
+	 *
+	 * @public
+	 */
+	static stats(node: LavalinkNode): Promise<GetLavalinkStatsResult> {
+		return Rest.baseRequest(node, `/v4/stats`);
 	}
 
 	/**
