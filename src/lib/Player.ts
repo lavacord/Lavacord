@@ -245,7 +245,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	 * @param options - Options for joining the channel (selfMute, selfDeaf).
 	 * @returns Does not return anything, but sends a WebSocket message to the Lavalink node.
 	 */
-	public switchChannel(channel: string, options: JoinOptions = {}): any {
+	public switchChannel(channel: string, options: JoinOptions = {}): unknown {
 		return this.manager.sendWS(this.guildId, channel, options);
 	}
 
