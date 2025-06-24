@@ -2,7 +2,7 @@
 
 <img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="300">
 
-Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lavalink-devs/Lavalink) wrapper for Node.js, supporting multiple Discord libraries. It provides a consistent API for managing music playback, voice connections, and node management, making it easy for both beginners and advanced users to integrate high-performance audio into their Discord bots.
+Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lavalink-devs/Lavalink) client for Node.js, supporting multiple Discord libraries. It provides a consistent API for managing music playback, voice connections, and node management, making it easy for both beginners and advanced users to integrate high-performance audio into their Discord bots.
 
 [![npm (scoped)](https://img.shields.io/npm/v/lavacord?label=npm%20version)](https://www.npmjs.com/package/lavacord)
 [![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?label=total%20downloads)](https://www.npmjs.com/package/lavacord)
@@ -110,7 +110,7 @@ npm install lavacord/lavacord
 
 > **Documentation:** [lavacord.github.io/lavacord](https://lavacord.github.io/Lavacord/)
 
-Lavacord is designed to wrap [Lavalink](https://github.com/lavalink-devs/Lavalink) for seamless integration within your Discord bot.
+Lavacord is designed to connect to [Lavalink](https://github.com/lavalink-devs/Lavalink) for seamless integration within your Discord bot.
 
 ---
 
