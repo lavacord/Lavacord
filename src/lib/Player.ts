@@ -125,13 +125,9 @@ export class Player extends EventEmitter<PlayerEvents> {
 			userData?: Record<any, any>;
 		}
 	): Promise<UpdatePlayerResult> {
-		const noReplace = options?.noReplace ?? false;
-		const userData = options?.userData;
-		if (options) {
-			options.noReplace = undefined;
-			options.userData = undefined;
-		}
-		const d = await this.update(Object.assign({ track: { encoded: track, userData } } as UpdatePlayerData, options), noReplace);
+		const { userData, noReplace, ...opts } = options || {};
+
+		const d = await this.update({ track: { encoded: track, userData }, ...opts }, noReplace ?? false);
 		this.timestamp = Date.now();
 
 		return d;
