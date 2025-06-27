@@ -68,7 +68,6 @@ pnpm add lavacord
 
 To get started with using Lavacord, first ensure you have a Lavalink server running. You can find instructions on how to set up a Lavalink server on the [Lavalink Getting Started page](https://lavalink.dev/getting-started/).
 
-Once you have your Lavalink server running, you will want to install Lavacord in your project as shown above
 Once you have Lavacord installed, you will want to import the `Manager` class from Lavacord or one of the library wrappers, depending on which Discord library you are using, then initialise it with your Lavalink nodes and bot user ID and send function if not using a wrapper.
 
 **Also keep in mind that while all the examples below use CommonJS syntax, Lavacord supports TypeScript, ESM, and CJS. You can import the `Manager` class using either `require` or `import` syntax, depending on your project setup.**
@@ -249,7 +248,7 @@ await player.stop(); // Stop current track
 await player.seek(30000); // Seek to 30 seconds
 await player.setVolume(50); // Set volume to 50% (0-1000 range)
 
-// All these functions use player.update(UpdatePlayerData) which all return Promise<UpdatePlayerResult>
+// All of these helpers call player.update(UpdatePlayerData), each of which returns a Promise<UpdatePlayerResult>
 // You can see more here https://lavalink.dev/api/rest.html#update-player
 // For example to set the volume using player.update:
 await player.update({
@@ -420,7 +419,7 @@ manager.on("playerWebSocketClosed", (player, event) => {
   console.log(`Player ${player.guildId} WebSocket closed: ${event.reason} (${event.code}) by ${event.byRemote ? "discord" : "local"}`);
 });
 
-// These events arent apart of the Lavalink API are emitted by Lavacord when using specific methods
+// These events aren’t part of the Lavalink API; they are emitted by Lavacord when you invoke specific methods
 
 // for example pause is emitted when calling player.pause(true) or player.pause(false);
 manager.on("playerPause", (player, state) => {
@@ -484,7 +483,7 @@ player.on("webSocketClosed", (event) => {
   console.log(`WebSocket closed: ${event.reason} (${event.code}) by ${event.byRemote ? "discord" : "local"}`);
 });
 
-// These events arent apart of the Lavalink API are emitted by Lavacord when using specific methods
+// These events aren’t part of the Lavalink API; they are emitted by Lavacord when you invoke specific methods
 
 // for example pause is emitted when calling player.pause(true) or player.pause(false);
 player.on("pause", (state) => {
