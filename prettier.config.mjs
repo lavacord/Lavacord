@@ -12,15 +12,6 @@ const config = {
 	useTabs: true,
 	overrides: [
 		{
-			files: ["*.json", "*.json5"],
-			options: {
-				useTabs: false,
-				tabWidth: 2,
-				singleQuote: true,
-				trailingComma: "all"
-			}
-		},
-		{
 			files: ["*.md"],
 			options: {
 				useTabs: false,

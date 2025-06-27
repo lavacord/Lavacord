@@ -9,7 +9,7 @@ const baseOptions: Options = {
 	minify: false,
 	skipNodeModulesBundle: true,
 	sourcemap: true,
-	target: "es2022",
+	target: "node20",
 	keepNames: true,
 	treeshake: true,
 	esbuildPlugins: [esbuildPluginFilePathExtensions(), esbuildPluginVersionInjector()]
