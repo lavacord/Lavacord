@@ -69,7 +69,7 @@ pnpm add lavacord
 To get started with using Lavacord, first ensure you have a Lavalink server running. You can find instructions on how to set up a Lavalink server on the [Lavalink Getting Started page](https://lavalink.dev/getting-started/).
 
 Once you have your Lavalink server running, you will want to install Lavacord in your project as shown above
-Once you have Lavacord installed, you will want to import the `Manager` class from Lavacord or one of the library wrappers, depending on which Discord library you are using, then initialize it with your Lavalink nodes and bot user ID and send function if not using a wrapper.
+Once you have Lavacord installed, you will want to import the `Manager` class from Lavacord or one of the library wrappers, depending on which Discord library you are using, then initialise it with your Lavalink nodes and bot user ID and send function if not using a wrapper.
 
 **Also keep in mind that while all the examples below use CommonJS syntax, Lavacord supports TypeScript, ESM, and CJS. You can import the `Manager` class using either `require` or `import` syntax, depending on your project setup.**
 
@@ -218,7 +218,7 @@ player.on("trackEnd", (track, reason) => {
 ## Search Examples
 
 You can also search for tracks instead of using direct URLs:
-See [Track Loading](https://lavalink.dev/api/rest.html#track-loading) for more information on loadtracks endpoint.
+See [Track Loading](https://lavalink.dev/api/rest.html#track-loading) for more information on the loadtracks endpoint.
 
 ```javascript
 // Search YouTube
