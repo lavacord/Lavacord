@@ -74,7 +74,7 @@ Once you have Lavacord installed, you will want to import the `Manager` class fr
 
 To connect to a Lavalink server, you need to configure the Lavalink nodes. Each node should have a unique identifier, host, port, password, and an optional secure flag if using SSL/TLS.
 
-We are going to use this nodes array throughtout all the examples in this readme, so make sure to define it before using the examples.
+We are going to use this node's array throughout all the examples in this readme, so make sure to define it before using the examples.
 
 See [LavalinkNodeOptions](https://lavacord.js.org/interfaces/LavalinkNodeOptions.html) for more details on the available options.
 

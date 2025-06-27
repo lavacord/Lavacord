@@ -292,7 +292,7 @@ export interface PlayerEvents {
 	 */
 	state: [PlayerState];
 	/**
-	 * Emiited when a track starts playing.
+	 * Emitted when a track starts playing.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackstartevent}
 	 */
 	trackStart: [TrackStartEvent];
