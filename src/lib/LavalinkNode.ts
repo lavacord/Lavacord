@@ -228,7 +228,7 @@ export class LavalinkNode {
 	 * node connections automatically.
 	 *
 	 * @returns A promise that resolves when connected or rejects if connection fails
-	 * @throws {@link Error} If the connection fails due to network issues, authentication problems, or other errors
+	 * @throws {Error} If the connection fails due to network issues, authentication problems, or other errors
 	 */
 	public async connect(): Promise<WebSocket> {
 		if (this.connected) this.ws?.close(1000, "reconnecting");
@@ -296,7 +296,7 @@ export class LavalinkNode {
 	 *
 	 * @summary Connection status check
 	 * @remarks
-	 * Checks if the {@link ws} instance exists and if its ready state is {@link WebSocket.OPEN}.
+	 * Checks if the {@link ws} instance exists and if its ready state is 1.
 	 * This property is useful for verifying connection status before attempting operations
 	 * or implementing node selection strategies.
 	 *
@@ -388,7 +388,7 @@ export class LavalinkNode {
 				break;
 		}
 
-		this.manager.emit("nodeRaw", msg, this);
+		this.manager.emit("raw", msg, this);
 	}
 
 	/**
@@ -431,7 +431,6 @@ export class LavalinkNode {
 				break;
 		}
 
-		// Attempt reconnection for recoverable errors
 		this.reconnect();
 	}
 
