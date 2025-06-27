@@ -17,8 +17,7 @@ const config = {
 				useTabs: false,
 				tabWidth: 2,
 				singleQuote: true,
-				trailingComma: "all",
-				quoteProps: "as-needed"
+				trailingComma: "all"
 			}
 		},
 		{
@@ -26,8 +25,7 @@ const config = {
 			options: {
 				useTabs: false,
 				tabWidth: 2,
-				singleQuote: false,
-				trailingComma: "none"
+				singleQuote: false
 			}
 		}
 	]
