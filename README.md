@@ -2,12 +2,12 @@
 
 <img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="200">
 
-Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lavalink-devs/Lavalink) client for Node.js, supporting multiple Discord libraries. It provides a consistent API for managing music playback, voice connections, and node management, making it easy for both beginners and advanced users to integrate high-performance audio into their Discord bots.
+<p>Lightweight and efficient Lavalink client for Node.js built with TypeScript</p>
 
-[![npm (scoped)](https://img.shields.io/npm/v/lavacord?label=npm%20version)](https://www.npmjs.com/package/lavacord)
-[![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?label=total%20downloads)](https://www.npmjs.com/package/lavacord)
-[![GitHub](https://img.shields.io/github/license/lavacord/lavacord)](https://github.com/lavacord/lavacord/)
-[![Depfu](https://badges.depfu.com/badges/70051aad57dddc0c44a990d26b1f6e23/overview.svg)](https://depfu.com/github/lavacord/Lavacord?project_id=11810)
+[![npm version](https://img.shields.io/npm/v/lavacord)](https://npmjs.com/package/lavacord)
+[![npm downloads](https://img.shields.io/npm/dt/lavacord)](https://npmjs.com/package/lavacord)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/github/license/lavacord/lavacord)](LICENSE)
 
 [![Discord](https://discordapp.com/api/guilds/690521477514264577/embed.png?style=banner2)](https://discord.gg/wXrjZmV)
 
@@ -15,13 +15,17 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 
 </div>
 
-# Table of Contents
+<details>
+<summary>Table of Contents</summary>
 
 - [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Supported Discord Libraries](#supported-discord-libraries)
+  - [Lavalink Node Configuration](#lavalink-node-configuration)
+  - [Supported Discord Libraries](#supported-discord-libraries)
+  - [Wrapper Example](#wrapper-example)
 - [Basic Usage](#basic-usage)
+  - [Search Examples](#search-examples)
 - [Advanced Usage](#advanced-usage)
   - [Player Controls](#player-controls)
   - [Audio Filters](#audio-filters)
@@ -31,17 +35,16 @@ Lavacord is a simple, flexible, and efficient [Lavalink](https://github.com/lava
 - [Donate](#donate)
 - [Contributors](#contributors)
 
+</details>
+
 <br>
 
 # Features
 
-- **TypeScript-first**: Built with TypeScript for type safety and better developer experience.
-- **Multi-library support**: Works with popular Discord libraries like discord.js, eris, oceanic.js, cloudstorm, and detritus.
-- **Modular architecture**: Easily extendable and customizable with a clear separation of concerns.
-- **Event-driven**: Uses Node.js's EventEmitter for handling events, making it easy to listen for and respond to changes in playback state.
-- **Lavalink integration**: Seamlessly connects to Lavalink servers for high-performance audio playback.
-- **REST API support**: Provides a comprehensive REST API for managing tracks, players, and nodes.
-- **Voice state management**: Automatically handles Discord voice state updates and manages voice connections.
+- Supports **Lavalink v4**
+- Built with **TypeScript** with **ES Modules** and **CommonJS** support
+- Multiple Discord library wrappers available
+- Follows the **Lavalink API** closely and provides a consistent way to interact with Lavalink
 
 # Installation
 
