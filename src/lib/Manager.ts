@@ -93,10 +93,13 @@ export class Manager extends EventEmitter<ManagerEvents> {
 		if (options.player) this.Player = options.player;
 		if (options.send) this.send = options.send;
 
+		if (!this.send)
+			throw new Error(
+				"Lavacord requires a send function to be defined in the Manager options.\
+				This function should send voice state updates to Discord."
+			);
+
 		for (const node of nodes) this.createNode(node);
-		setImmediate(() => {
-			if (!this.send) this.send = () => undefined;
-		});
 	}
 
 	/**
@@ -112,14 +115,13 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 *   .catch(error => console.error('Failed to connect nodes:', error));
 	 * ```
 	 */
-	public async connect(): Promise<void> {
+	public async connect(): Promise<LavalinkNode[]> {
 		if (!this.user)
 			throw new Error(
 				"Lavacord requires a client user ID before connecting.\
 				Set the user ID when constructing the Manager or after your Discord client is ready."
 			);
-
-		for await (const node of this.nodes.values()) await node.connect();
+		return Promise.all(this.nodes.values().map((node) => node.connect().then(() => node)));
 	}
 
 	/**
