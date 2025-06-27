@@ -193,6 +193,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 	public async setFilters(options: Filters): Promise<UpdatePlayerResult> {
 		const d = await this.update({ filters: options });
 		if (this.listenerCount("filters")) this.emit("filters", options);
+		if (this.manager.listenerCount("playerFilters")) this.manager.emit("playerFilters", this, options);
 		return d;
 	}
 
