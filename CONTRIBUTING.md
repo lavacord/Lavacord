@@ -30,7 +30,6 @@ We welcome all help, whether it's bug reports, feature requests, code contributi
 
 - Use [Prettier](https://prettier.io/) for code formatting.
 - Write clear, concise, and descriptive code.
-- Prefer TypeScript, but ensure JavaScript compatibility.
 - Include [TSDoc](https://tsdoc.org/) comments for public APIs.
 
 ---
