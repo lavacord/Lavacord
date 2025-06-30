@@ -243,7 +243,7 @@ export class LavalinkNode {
 			// Prepare headers for the WebSocket connection
 			const headers: OutboundHandshakeHeaders = {
 				Authorization: this.password,
-				"User-Id": this.manager.user,
+				"User-Id": this.manager.userId,
 				"Client-Name": `Lavacord/${VERSION}`
 			};
 

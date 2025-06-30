@@ -50,7 +50,7 @@ export interface ManagerOptions {
 	 * @remarks
 	 * It's recommended to set this when the bot client is ready.
 	 */
-	user?: string;
+	userId?: string;
 	/**
 	 * The Player class to be used by the manager for creating new player instances.
 	 *

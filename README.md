@@ -129,10 +129,7 @@ const client = new Client({
 });
 
 // When using library wrappers, pass the client instance as the first parameter
-// The user ID must be provided since client.user.id isn't available until the client is ready
-const manager = new Manager(client, nodes, {
-  user: "123456789012345678" // Your bot's user ID as a string
-});
+const manager = new Manager(client, nodes);
 
 client.once("ready", async () => {
   console.log(`${client.user.tag} is ready!`);
@@ -159,7 +156,7 @@ const { Manager, Rest } = require("lavacord");
 
 // Create a new Manager instance with Lavalink nodes
 const manager = new Manager(nodes, {
-  user: "123456789012345678", // Your bot's user ID
+  userId: "123456789012345678", // Your bot's user ID
   send: (packet) => {
     // Send voice packets to Discord's gateway
     // Implementation depends on your Discord library

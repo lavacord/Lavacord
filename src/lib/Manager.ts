@@ -35,15 +35,17 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	/**
 	 * The user ID of the bot this Manager is managing.
 	 */
-	public user!: string;
+	public userId!: string;
 
 	/**
 	 * Function to send voice state update packets to Discord.
 	 *
 	 * @remarks
-	 * This must be implemented by the user based on their Discord library.
+	 * This can be implemented by the user in two ways:
+	 * 1. Via constructor options: `new Manager(nodes, { send: fn })`
+	 * 2. Via class extension: `class MyManager extends Manager { send(packet) { ... } }`
 	 */
-	public send?: (packet: GatewayVoiceStateUpdate) => unknown;
+	private _send?: (packet: GatewayVoiceStateUpdate) => unknown;
 
 	/**
 	 * The Player class constructor used when creating new players.
@@ -68,7 +70,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 *
 	 * @example
 	 * ```typescript
-	 * // Create a manager with one node
+	 * // Method 1: Define send function via options
 	 * const manager = new Manager([
 	 *   {
 	 *     id: "main",
@@ -77,27 +79,31 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 *     password: "youshallnotpass"
 	 *   }
 	 * ], {
-	 *   user: "bot_user_id", // Your bot's user ID
+	 *   userId: "bot_user_id",
 	 *   send: (packet) => {
-	 *     // Implementation depends on your Discord library
 	 *     const guild = client.guilds.cache.get(packet.d.guild_id);
 	 *     if (guild) guild.shard.send(packet);
 	 *   }
 	 * });
+	 *
+	 * // Method 2: Extend Manager class
+	 * class MyManager extends Manager {
+	 *   send(packet) {
+	 *     const guild = this.client.guilds.cache.get(packet.d.guild_id);
+	 *     if (guild) guild.shard.send(packet);
+	 *   }
+	 * }
+	 * const manager = new MyManager(nodes, { userId: "bot_user_id" });
 	 * ```
 	 */
-	public constructor(nodes: LavalinkNodeOptions[], options: ManagerOptions) {
+	public constructor(nodes: LavalinkNodeOptions[], options?: ManagerOptions) {
 		super();
+		options ??= {};
 
-		if (options.user) this.user = options.user;
+		if (options.userId) this.userId = options.userId;
 		if (options.player) this.Player = options.player;
-		if (options.send) this.send = options.send;
-
-		if (!this.send)
-			throw new Error(
-				"Lavacord requires a send function to be defined in the Manager options.\
-				This function should send voice state updates to Discord."
-			);
+		// Only set send from options if not already defined by class extension
+		if (options.send && !this._send) this._send = options.send;
 
 		for (const node of nodes) this.createNode(node);
 	}
@@ -116,7 +122,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 * ```
 	 */
 	public async connect(): Promise<LavalinkNode[]> {
-		if (!this.user)
+		if (!this.userId)
 			throw new Error(
 				"Lavacord requires a client user ID before connecting.\
 				Set the user ID when constructing the Manager or after your Discord client is ready."
@@ -318,9 +324,9 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 * });
 	 * ```
 	 */
-	public voiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): Promise<boolean> {
-		if (data.user_id !== this.user) return Promise.resolve(false);
-		if (!data.guild_id) return Promise.resolve(false);
+	public async voiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): Promise<boolean> {
+		if (data.user_id !== this.userId) return false;
+		if (!data.guild_id) return false;
 
 		if (data.channel_id) {
 			this.voiceStates.set(data.guild_id, data);
@@ -330,7 +336,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 		this.voiceServers.delete(data.guild_id);
 		this.voiceStates.delete(data.guild_id);
 
-		return Promise.resolve(false);
+		return false;
 	}
 
 	/**
@@ -351,7 +357,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	 * ```
 	 */
 	public sendWS(guild: string, channel: string | null, { selfmute = false, selfdeaf = false }: JoinOptions = {}): unknown {
-		return this.send!({
+		return this.send({
 			op: 4,
 			d: {
 				guild_id: guild,
@@ -423,5 +429,15 @@ export class Manager extends EventEmitter<ManagerEvents> {
 		const player = new this.Player(node, data.guild);
 		this.players.set(data.guild, player);
 		return player;
+	}
+
+	protected send(packet: GatewayVoiceStateUpdate): unknown {
+		if (typeof this._send !== "function") {
+			throw new Error(
+				"Lavacord requires a send function to be defined in the Manager options.\
+				This function should send voice state updates to Discord."
+			);
+		}
+		return this._send(packet);
 	}
 }
