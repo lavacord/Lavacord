@@ -1,4 +1,4 @@
-import { GatewayGuildCreateDispatchData, GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
+import { GatewayDispatchEvents, GatewayReceivePayload, GatewayVoiceStateUpdate } from "discord-api-types/v10";
 import { Manager as BaseManager } from "../lib/Manager";
 import type { ManagerOptions, LavalinkNodeOptions } from "../lib/Types";
 
@@ -10,39 +10,39 @@ export class Manager extends BaseManager {
 	public constructor(
 		public readonly client: Client,
 		nodes: LavalinkNodeOptions[],
-		options: ManagerOptions = {}
+		options?: ManagerOptions
 	) {
-		options.user ??= client.user?.id;
 		super(nodes, options);
 
-		this.send = (packet) => {
-			const guild = this.client.guilds.get(packet.d.guild_id);
-			if (guild) guild.shard.sendWS(packet.op, packet.d as unknown as Record<string, unknown>);
-		};
+		client.once("ready", () => {
+			if (!this.userId) this.userId = client.user.id;
+		});
 
-		client.on("rawWS", (packet) => {
+		client.on("rawWS", (packet: GatewayReceivePayload) => {
 			switch (packet.t) {
-				case "VOICE_SERVER_UPDATE":
-					this.voiceServerUpdate(packet.d as GatewayVoiceServerUpdateDispatchData);
+				case GatewayDispatchEvents.VoiceServerUpdate:
+					this.voiceServerUpdate(packet.d);
 					break;
 
-				case "VOICE_STATE_UPDATE":
-					this.voiceStateUpdate(packet.d as GatewayVoiceStateUpdateDispatchData);
+				case GatewayDispatchEvents.VoiceStateUpdate:
+					this.voiceStateUpdate(packet.d);
 					break;
 
-				case "GUILD_CREATE": {
-					const guildData = packet.d as GatewayGuildCreateDispatchData;
-					for (const state of guildData.voice_states ?? [])
+				case GatewayDispatchEvents.GuildCreate:
+					for (const state of packet.d.voice_states ?? [])
 						this.voiceStateUpdate({
 							...state,
-							guild_id: guildData.id
-						} as GatewayVoiceStateUpdateDispatchData);
+							guild_id: packet.d.id
+						});
 					break;
-				}
-
 				default:
 					break;
 			}
 		});
+	}
+
+	protected override send(packet: GatewayVoiceStateUpdate) {
+		const guild = this.client.guilds.get(packet.d.guild_id);
+		if (guild) guild.shard.sendWS(packet.op, packet.d as unknown as Record<string, unknown>);
 	}
 }
