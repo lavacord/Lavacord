@@ -213,73 +213,89 @@ export interface LavalinkNodeOptions {
 export interface ManagerEvents {
 	/**
 	 * Emitted when a node becomes ready.
+	 * @event
 	 */
 	ready: [LavalinkNode];
 	/**
 	 * Emitted for all raw messages from Lavalink.
+	 * @event
 	 */
 	raw: [WebsocketMessage, LavalinkNode];
 	/**
 	 * Emitted when a node encounters an error.
+	 * @event
 	 */
 	error: [unknown, LavalinkNode];
 	/**
 	 * Emitted when a node disconnects.
+	 * @event
 	 */
 	disconnect: [number, string, LavalinkNode];
 	/**
 	 * Emitted when a node is attempting to reconnect.
+	 * @event
 	 */
 	reconnecting: [LavalinkNode];
 	/**
 	 * Represents Lavalink's playerUpdate event.
 	 * emits every x time as defined by the lavalink server.
 	 * @see {@link https://lavalink.dev/api/websocket.html#player-update-op}
+	 * @event
 	 */
 	playerState: [Player, PlayerState];
 	/**
 	 * Emitted when a track starts playing.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackstartevent}
+	 * @event
 	 */
 	playerTrackStart: [Player, TrackStartEvent];
 	/**
 	 * Emitted when a track ends.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackendevent}
+	 * @event
 	 */
 	playerTrackEnd: [Player, TrackEndEvent];
 	/**
 	 * Emitted when a track encounters an exception.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackexceptionevent}
+	 * @event
 	 */
 	playerTrackException: [Player, TrackExceptionEvent];
 	/**
 	 * Emitted when a track gets stuck.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackstuckevent}
+	 * @event
 	 */
 	playerTrackStuck: [Player, TrackStuckEvent];
 	/**
 	 * Emitted when the voice WebSocket is closed.
 	 * @see {@link https://lavalink.dev/api/websocket.html#websocketclosedevent}
+	 * @event
 	 */
 	playerWebSocketClosed: [Player, WebSocketClosedEvent];
 	/**
 	 * Emitted for warnings.
+	 * @event
 	 */
 	warn: [string];
 	/**
 	 * Emitted when a player is paused or resumed.
+	 * @event
 	 */
 	playerPause: [Player, boolean];
 	/**
 	 * Emitted when a player's volume changes.
+	 * @event
 	 */
 	playerVolume: [Player, number];
 	/**
 	 * Emitted when a player seeks to a position.
+	 * @event
 	 */
 	playerSeek: [Player, number];
 	/**
 	 * Emitted when a player updates its filters.
+	 * @event
 	 */
 	playerFilters: [Player, Filters];
 }
@@ -289,54 +305,57 @@ export interface PlayerEvents {
 	 * Represents Lavalink's playerUpdate event.
 	 * emits every x time as defined by the lavalink server.
 	 * @see {@link https://lavalink.dev/api/websocket.html#player-update-op}
+	 * @event
 	 */
 	state: [PlayerState];
 	/**
 	 * Emitted when a track starts playing.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackstartevent}
+	 * @event
 	 */
 	trackStart: [TrackStartEvent];
 	/**
 	 * Emitted when a track ends.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackendevent}
+	 * @event
 	 */
 	trackEnd: [TrackEndEvent];
 	/**
 	 * Emitted when a track encounters an exception.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackexceptionevent}
+	 * @event
 	 */
 	trackException: [TrackExceptionEvent];
 	/**
 	 * Emitted when a track gets stuck.
 	 * @see {@link https://lavalink.dev/api/websocket.html#trackstuckevent}
+	 * @event
 	 */
 	trackStuck: [TrackStuckEvent];
 	/**
 	 * Emitted when the voice WebSocket is closed.
 	 * @see {@link https://lavalink.dev/api/websocket.html#websocketclosedevent}
+	 * @event
 	 */
 	webSocketClosed: [WebSocketClosedEvent];
 	/**
 	 * Emitted when the player is paused or resumed.
+	 * @event
 	 */
 	pause: [boolean];
 	/**
 	 * Emitted when the player seeks to a position.
+	 * @event
 	 */
 	seek: [number];
 	/**
 	 * Emitted when the player volume changes.
+	 * @event
 	 */
 	volume: [number];
 	/**
 	 * Emitted when the player updates its filters.
+	 * @event
 	 */
 	filters: [Filters];
-}
-
-export enum LavalinkOPTypes {
-	Ready = "ready",
-	PlayerUpdate = "playerUpdate",
-	Stats = "stats",
-	Event = "event"
 }
