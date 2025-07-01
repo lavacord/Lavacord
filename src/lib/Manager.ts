@@ -35,7 +35,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	/**
 	 * The user ID of the bot this Manager is managing.
 	 */
-	public userId!: string;
+	public userId: string | null = null;
 
 	/**
 	 * Function to send voice state update packets to Discord.
@@ -102,7 +102,6 @@ export class Manager extends EventEmitter<ManagerEvents> {
 
 		if (options.userId) this.userId = options.userId;
 		if (options.player) this.Player = options.player;
-		// Only set send from options if not already defined by class extension
 		if (options.send && !this._send) this._send = options.send;
 
 		for (const node of nodes) this.createNode(node);
