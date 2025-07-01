@@ -55,9 +55,10 @@
 		"lint": "eslint . -c eslint.config.mjs --fix",
 		"test": "eslint . -c eslint.config.mjs",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"docs": "typedoc --plugin typedoc-github-theme",
-		"prepack": "yarn build",
-		"prepublishOnly": "yarn build"
+		"docs": "typedoc --options typedoc.json --plugin typedoc-github-theme",
+		"prepack": "yarn build && yarn prepack:cjs && yarn prepack:esm",
+		"prepack:cjs": "rollup-type-bundler -d dist/cjs --output-typings-file-extension .cts",
+		"prepack:esm": "rollup-type-bundler -d dist/esm -t .mts"
 	},
 	"repository": {
 		"type": "git",
@@ -67,9 +68,6 @@
 		"bot",
 		"music",
 		"discord",
-		"api",
-		"lava",
-		"link",
 		"lavalink",
 		"discord.js",
 		"eris"
@@ -87,6 +85,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.29.0",
+		"@favware/rollup-type-bundler": "^4.0.0",
 		"@types/node": "^24.0.3",
 		"@types/ws": "^8.18.1",
 		"esbuild-plugin-file-path-extensions": "^2.1.4",
@@ -107,7 +106,8 @@
 		"oceanic.js": "1.12.0"
 	},
 	"engines": {
-		"node": ">=20",
+		"node": ">=v20",
 		"npm": ">=8"
-	}
+	},
+	"packageManager": "yarn@4.9.2"
 }
