@@ -4,16 +4,17 @@ import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
 import type { PlayerUpdateVoiceState, JoinOptions, PlayerEvents } from "./Types";
-import type {
+import {
 	PlayerState,
-	Equalizer,
+	Track,
+	VoiceState,
 	Filters,
 	UpdatePlayerData,
 	UpdatePlayerResult,
+	Equalizer,
 	DestroyPlayerResult,
-	Track,
-	VoiceState
-} from "lavalink-types/v4";
+	Player as APIPlayer
+} from "lavalink-types";
 
 /**
  * The Player class that handles playback and audio manipulation for a specific guild.
@@ -92,18 +93,19 @@ export class Player extends EventEmitter<PlayerEvents> {
 
 	/**
 	 * Updates the current player on the Lavalink node.
+	 * @see {@link https://lavalink.dev/api/rest#update-player}
 	 *
 	 * @param options - The update options to apply to the player.
 	 * @param noReplace - If true, the event will be dropped if there's a currently playing track.
-	 * @returns A promise resolving to the updated player information.
+	 * @returns {Promise<APIPlayer>} The updated player information from Lavalink.
 	 */
-	public async update(options: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
+	public async update(options: UpdatePlayerData, noReplace = false): Promise<APIPlayer> {
 		const d = await Rest.updatePlayer(this.node, this.guildId, options, noReplace);
 
 		// Update local state with response data
-		if (d.track !== undefined) this.track = d.track;
-		if (d.volume !== undefined) this.volume = d.volume;
-		if (d.paused !== undefined) this.paused = d.paused;
+		if (d.track) this.track = d.track;
+		if (d.volume) this.volume = d.volume;
+		if (d.paused) this.paused = d.paused;
 		if (d.state) this.state = d.state;
 		if (d.filters) this.filters = d.filters;
 		if (d.voice) this.voice = d.voice;
