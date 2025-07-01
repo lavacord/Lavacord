@@ -1,9 +1,9 @@
 import WebSocket from "ws";
 import { Rest } from "./Rest";
 import type { Manager } from "./Manager";
-import { LavalinkOPTypes, type LavalinkNodeOptions } from "./Types";
-import type { Stats, OutboundHandshakeHeaders, WebsocketMessage, EventOP, StatsOP } from "lavalink-types/v4";
+import type { LavalinkNodeOptions } from "./Types";
 import { VERSION } from "../index";
+import { EventOP, OutboundHandshakeHeaders, Stats, StatsOP, WebsocketMessage } from "lavalink-types";
 
 /**
  * The LavalinkNode class handles the connection and communication with a Lavalink server.
@@ -243,7 +243,7 @@ export class LavalinkNode {
 			// Prepare headers for the WebSocket connection
 			const headers: OutboundHandshakeHeaders = {
 				Authorization: this.password,
-				"User-Id": this.manager.userId,
+				"User-Id": this.manager.userId!,
 				"Client-Name": `Lavacord/${VERSION}`
 			};
 
@@ -357,7 +357,7 @@ export class LavalinkNode {
 		const msg: WebsocketMessage = JSON.parse(data.toString());
 
 		switch (msg.op) {
-			case LavalinkOPTypes.Ready:
+			case "ready":
 				if (msg.sessionId) this.sessionId = msg.sessionId;
 				if (!this._sessionUpdated) {
 					this._sessionUpdated = true;
@@ -365,17 +365,17 @@ export class LavalinkNode {
 				}
 				break;
 
-			case LavalinkOPTypes.Stats: {
+			case "stats": {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const { op, ...stats } = msg as StatsOP;
 				this.stats = stats;
 				break;
 			}
 
-			case LavalinkOPTypes.Event:
+			case "event":
 				this._handleEvent(msg);
 				break;
-			case LavalinkOPTypes.PlayerUpdate: {
+			case "playerUpdate": {
 				const player = this.manager.players.get(msg.guildId);
 				if (!player) break;
 				player.state = msg.state;
