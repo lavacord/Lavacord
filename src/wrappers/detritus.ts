@@ -10,7 +10,7 @@ export class Manager extends BaseManager {
 	public constructor(
 		public readonly client: ClusterClient | ShardClient,
 		nodes: LavalinkNodeOptions[],
-		options: ManagerOptions
+		options?: ManagerOptions
 	) {
 		super(nodes, options);
 
