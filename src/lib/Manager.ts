@@ -123,8 +123,8 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	public async connect(): Promise<LavalinkNode[]> {
 		if (!this.userId)
 			throw new Error(
-				"Lavacord requires a client user ID before connecting.\
-				Set the user ID when constructing the Manager or after your Discord client is ready."
+				"Lavacord requires a client user ID before connecting. \n" +
+					"Set the user ID when constructing the Manager or after your Discord client is ready."
 			);
 		return Promise.all(this.nodes.values().map((node) => node.connect().then(() => node)));
 	}
