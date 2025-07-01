@@ -1,0 +1,9 @@
+{
+	"entryPoints": ["src/index.ts", "src/wrappers/*.ts", "node_modules/lavalink-types/v4.d.ts"],
+	"entryPointStrategy": "resolve",
+	"out": "docs",
+	"readme": "./README.md",
+	"name": "Lavacord",
+	"tsconfig": "tsconfig.json",
+	"cleanOutputDir": true
+}

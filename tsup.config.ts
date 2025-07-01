@@ -4,7 +4,7 @@ import { defineConfig, type Options } from "tsup";
 
 const baseOptions: Options = {
 	clean: true,
-	entry: ["src/index.ts", "src/wrappers/*.ts", "src/lib/**/*.ts"],
+	entry: ["src/**/*.ts"],
 	dts: true,
 	minify: false,
 	skipNodeModulesBundle: true,
@@ -12,7 +12,8 @@ const baseOptions: Options = {
 	target: "node20",
 	keepNames: true,
 	treeshake: true,
-	esbuildPlugins: [esbuildPluginFilePathExtensions(), esbuildPluginVersionInjector()]
+	esbuildPlugins: [esbuildPluginFilePathExtensions(), esbuildPluginVersionInjector()],
+	tsconfig: "tsconfig.json"
 };
 
 export default [
