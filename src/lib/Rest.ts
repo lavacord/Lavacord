@@ -1,20 +1,20 @@
 import { URLSearchParams } from "url";
 import type { LavalinkNode } from "./LavalinkNode";
-import type {
+import { VERSION } from "../index";
+import {
+	ErrorResponse,
 	TrackLoadingResult,
 	DecodeTrackResult,
 	DecodeTracksResult,
 	GetLavalinkVersionResult,
+	GetLavalinkInfoResult,
+	GetLavalinkStatsResult,
 	UpdateSessionResult,
 	UpdateSessionData,
-	ErrorResponse,
 	UpdatePlayerData,
 	UpdatePlayerResult,
-	DestroyPlayerResult,
-	GetLavalinkInfoResult,
-	GetLavalinkStatsResult
-} from "lavalink-types/v4";
-import { VERSION } from "../index";
+	DestroyPlayerResult
+} from "lavalink-types";
 
 /**
  * Error class for Lavalink REST API errors.
