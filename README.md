@@ -1,116 +1,520 @@
-[![Discord](https://discordapp.com/api/guilds/323779330033319941/embed.png)](https://discord.gg/wXrjZmV)
-[![npm (scoped)](https://img.shields.io/npm/v/lavacord?label=npm%20version)](https://www.npmjs.com/package/lavacord)
-[![npm downloads](https://img.shields.io/npm/dt/lavacord.svg?label=total%20downloads)](https://www.npmjs.com/package/lavacord)
-[![GitHub](https://img.shields.io/github/license/lavacord/lavacord)](https://github.com/lavacord/lavacord/)
-[![Depfu](https://badges.depfu.com/badges/70051aad57dddc0c44a990d26b1f6e23/overview.svg)](https://depfu.com/github/lavacord/Lavacord?project_id=11810)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b50839d781c24a94a4e1c17342a147bd)](https://www.codacy.com/app/lavacord/lavacord)
+<div align="center" style="padding-bottom: 1rem">
 
-# LavaCord
-A simple and easy to use lavalink wrapper.
+<img src="https://github.com/lavacord/Lavacord/blob/gh-pages/assets/Lavacordlogotransparent.png?raw=true" alt="Lavacord Logo" height="200">
 
-## Documentation
-[**lavacord.github.io/lavacord**](https://lavacord.github.io/Lavacord/)
+<p>Lightweight and efficient Lavalink client for Node.js built with TypeScript</p>
 
-## Installation
+[![npm version](https://img.shields.io/npm/v/lavacord)](https://npmjs.com/package/lavacord)
+[![npm downloads](https://img.shields.io/npm/dt/lavacord)](https://npmjs.com/package/lavacord)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/github/license/lavacord/lavacord)](LICENSE)
 
-**For stable**
+[![Discord](https://discordapp.com/api/guilds/690521477514264577/embed.png?style=banner2)](https://discord.gg/wXrjZmV)
+
+[**Click here for the documentation**](https://lavacord.js.org/)
+
+</div>
+
+<details>
+<summary>Table of Contents</summary>
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [Lavalink Node Configuration](#lavalink-node-configuration)
+  - [Supported Discord Libraries](#supported-discord-libraries)
+  - [Wrapper Example](#wrapper-example)
+- [Basic Usage](#basic-usage)
+  - [Search Examples](#search-examples)
+- [Advanced Usage](#advanced-usage)
+  - [Player Controls](#player-controls)
+  - [Audio Filters](#audio-filters)
+  - [Error Handling](#error-handling)
+  - [Multiple Nodes & Load Balancing](#multiple-nodes--load-balancing)
+- [Events](#events)
+- [Donate](#donate)
+- [Contributors](#contributors)
+
+</details>
+
+<br>
+
+# Features
+
+- Supports **Lavalink v4**
+- Built with **TypeScript** with **ES Modules** and **CommonJS** support
+- Multiple Discord library wrappers available
+- Follows the **Lavalink API** closely and provides a consistent way to interact with Lavalink
+
+# Installation
+
+Install Lavacord using either `yarn`, `npm`, `pnpm` or the package manager of your choice:
+
 ```bash
 # Using yarn
 yarn add lavacord
-
 # Using npm
 npm install lavacord
+# Using pnpm
+pnpm add lavacord
 ```
 
-**For Development**
-```bash
-# Using yarn
-yarn add lavacord/lavacord
+**Requirements:**
 
-# Using npm
-npm install lavacord/lavacord
-```
+- **Node.js** v20 or newer is **required**.
+- A running **Lavalink** server (Java 17+ required).
 
-## LavaLink configuration
-Download Lavalink from [their GitHub releases](https://github.com/lavalink-devs/Lavalink/releases)
+# Quick Start
 
-Put an `application.yml` file in your working directory. [Example](https://github.com/lavalink-devs/Lavalink/blob/master/LavalinkServer/application.yml.example)
+To get started with using Lavacord, first ensure you have a Lavalink server running. You can find instructions on how to set up a Lavalink server on the [Lavalink Getting Started page](https://lavalink.dev/getting-started/).
 
-Run with `java -jar Lavalink.jar`
+Once you have Lavacord installed, you will want to import the `Manager` class from Lavacord or one of the library wrappers, depending on which Discord library you are using, then initialise it with your Lavalink nodes and bot user ID and send function if not using a wrapper.
 
-## The issue tracker is for issues only
-If you're having a problem with the module contact us in the [**Discord Server**](https://discord.gg/wXrjZmV)
+**Also keep in mind that while all the examples below use CommonJS syntax, Lavacord supports TypeScript, ESM, and CJS. You can import the `Manager` class using either `require` or `import` syntax, depending on your project setup.**
 
-# Implementation
-Start by creating a new `Manager` passing an array of nodes and an object with `user` the client's user id.
+## Lavalink Node Configuration
+
+To connect to a Lavalink server, you need to configure the Lavalink nodes. Each node should have a unique identifier, host, port, password, and an optional secure flag if using SSL/TLS.
+
+We are going to use this node's array throughout all the examples in this readme, so make sure to define it before using the examples.
+
+See [LavalinkNodeOptions](https://lavacord.js.org/interfaces/LavalinkNodeOptions.html) for more details on the available options.
+
+You can define your Lavalink nodes in an array like this:
 
 ```javascript
-// import the Manager class from lavacord
-const { Manager } = require("lavacord");
-
-// Define the nodes array as an example
 const nodes = [
-    { id: "1", host: "localhost", port: 2333, password: "youshallnotpass" }
-];
-
-// Initilize the Manager with all the data it needs
-const manager = new Manager(nodes, {
-    user: client.user.id, // Client id
-    send: (packet) => {
-        // this needs to send the provided packet to discord's WS using the method from your library.
-        // use the bindings for the discord library you use if you don't understand this
+  {
+    id: "node1", // Unique identifier for the node
+    host: "localhost", // Lavalink server host
+    port: 2333, // Lavalink server port
+    password: "youshallnotpass", // Lavalink server password
+    secure: false, // Set to true if using SSL/TLS, false by default,
+    reconnectInterval: 10000, // How long the interval should be to reconnect, default is 10000 ms
+    state: {
+      // State is a arbitrary object that can be used to store any data you want, it is not used by Lavacord nor do you have to use it
+      customData: "example" // Example custom data
     }
+  }
+];
+```
+
+## Supported Discord Libraries
+
+Lavacord provides wrappers for popular Discord libraries:
+
+Each wrapper automatically wires up voice events and exports a `Manager` class tailored for that library.
+
+| Library    | Import Path           |
+| ---------- | --------------------- |
+| discord.js | `lavacord/discord.js` |
+| eris       | `lavacord/eris`       |
+| oceanic.js | `lavacord/oceanic`    |
+| cloudstorm | `lavacord/cloudstorm` |
+| detritus   | `lavacord/detritus`   |
+
+> Want support for another Discord API library?
+> [Open an issue or discussion](https://github.com/lavacord/lavacord/issues) to suggest it!
+
+## Wrapper Example
+
+Here's how to use Lavacord with the `discord.js` library wrapper:
+
+```javascript
+const { Manager } = require("lavacord/discord.js");
+const { Client, GatewayIntentBits } = require("discord.js");
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates]
 });
 
-// Connects all the LavalinkNode WebSockets
+// When using library wrappers, pass the client instance as the first parameter
+const manager = new Manager(client, nodes);
+
+client.once("ready", async () => {
+  console.log(`${client.user.tag} is ready!`);
+  // Connect to all Lavalink nodes
+  await manager.connect();
+});
+
+client.login("your-bot-token");
+```
+
+Library wrappers automatically handle:
+
+- **Voice events**: Listens for `VOICE_SERVER_UPDATE` and `VOICE_STATE_UPDATE` events
+- **Send function**: Implements the Discord gateway packet sending for you
+
+This eliminates the need to manually wire up voice events or implement the send function, making integration much simpler compared to using the core library directly.
+
+# Basic Usage
+
+Here's a complete example using the core Lavacord library without wrappers:
+
+```javascript
+const { Manager, Rest } = require("lavacord");
+
+// Create a new Manager instance with Lavalink nodes
+const manager = new Manager(nodes, {
+  userId: "123456789012345678", // Your bot's user ID
+  send: (packet) => {
+    // Send voice packets to Discord's gateway
+    // Implementation depends on your Discord library
+    // Use library wrappers to avoid implementing this manually
+    discordClient.gateway.send(packet);
+  }
+});
+
+// Connect to all Lavalink nodes
 await manager.connect();
 
-// The error event, which you should handle otherwise your application will crash when an error is emitted
-manager.on("error", (error, node) => {
-    error, // is the error
-    node // is the node which the error is from
+// Join a voice channel and create a player
+const player = await manager.join({
+  guild: "987654321098765432", // Guild ID where you want to play music
+  channel: "123456789012345678", // Voice channel ID to join
+  node: "node1" // Lavalink node ID to use (optional, auto-selects if not provided)
 });
-```
 
-Resolving tracks using LavaLink REST API
+// Load a track from various sources
+// see https://lavalink.dev/api/rest.html#track-loading
+const loadResult = await Rest.load(player.node, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
-```javascript
-const { Rest } = require("lavacord");
-
-async function getSongs(search) {
-    // This gets the best node available, what I mean by that is the idealNodes getter will filter all the connected nodes and then sort them from best to least beast.
-    const node = manager.idealNodes[0];
-
-    return Rest.load(node, search)
-        .catch(err => {
-            console.error(err);
-            return null;
-        });
+if (loadResult.loadType === "track") {
+  // Play the loaded track
+  await player.play(loadResult.data.encoded);
+  console.log(`Now playing: ${loadResult.data.info.title}`);
+} else if (loadResult.loadType === "playlist") {
+  // Play first track from playlist
+  const firstTrack = loadResult.data.tracks[0];
+  await player.play(firstTrack.encoded);
+  console.log(`Playing playlist: ${loadResult.data.info.name}`);
+} else if (loadResult.loadType === "search") {
+  // Play first search result
+  if (loadResult.data.length > 0) {
+    await player.play(loadResult.data[0].encoded);
+    console.log(`Now playing: ${loadResult.data[0].info.title}`);
+  } else {
+    console.log("No search results found");
+  }
+} else {
+  console.log("No tracks found");
 }
 
-getSongs("ytsearch:30 second song").then(songs => {
-    // handle loading of the tracks somehow ¯\_(ツ)_/¯
+// Listen for when tracks start playing
+player.on("trackStart", (track) => {
+  console.log(`Started playing: ${track.info.title}`);
+});
+
+// Listen for when tracks end
+player.on("trackEnd", (track, reason) => {
+  console.log(`Track ended: ${track.info.title} (${reason})`);
 });
 ```
 
-Joining and Leaving channels
+## Search Examples
+
+You can also search for tracks instead of using direct URLs:
+See [Track Loading](https://lavalink.dev/api/rest.html#track-loading) for more information on the loadtracks endpoint.
 
 ```javascript
-// Join
-const player = await manager.join({
-    guild: guildId, // Guild id
-    channel: channelId, // Channel id
-    node: "1" // lavalink node id, based on array of nodes
-});
+// Search YouTube
+const searchResult = await Rest.load(player.node, "ytsearch:Never Gonna Give You Up");
 
-await player.play(track); // Track is a base64 string we get from Lavalink REST API
+// Search SoundCloud
+const scResult = await Rest.load(player.node, "scsearch:lofi hip hop");
 
-player.once("error", error => console.error(error));
-player.once("end", data => {
-    if (data.type === "TrackEndEvent" && data.reason === "replaced") return; // Ignore replaced reason to prevent skip loops
-    // Play next song
-});
+// Search Spotify (if enabled on Lavalink server)
+const spotifyResult = await Rest.load(player.node, "spsearch:bohemian rhapsody");
 
-// Leave voice channel and destroy Player
-await manager.leave(guildId); // Player ID aka guild id
+if (searchResult.loadType === "search") {
+  if (searchResult.data.length > 0) {
+    await player.play(searchResult.data[0].encoded); // Play first result
+  }
+}
 ```
+
+# Advanced Usage
+
+## Player Controls
+
+```javascript
+// Basic playback controls
+await player.pause(true); // Pause
+await player.pause(false); // Resume
+await player.stop(); // Stop current track
+await player.seek(30000); // Seek to 30 seconds
+await player.setVolume(50); // Set volume to 50% (0-1000 range)
+
+// All of these helpers call player.update(UpdatePlayerData), each of which returns a Promise<UpdatePlayerResult>
+// You can see more here https://lavalink.dev/api/rest.html#update-player
+// For example to set the volume using player.update:
+await player.update({
+  volume: 50 // Set volume to 50%
+});
+```
+
+## Audio Filters
+
+Lavacord supports Lavalink's audio filters for sound enhancement:
+
+```javascript
+// Apply equalizer (15-band, -0.25 to 1.0 gain per band)
+await player.setEqualizer([
+  { band: 0, gain: 0.2 }, // 25 Hz
+  { band: 1, gain: 0.15 }, // 40 Hz
+  { band: 2, gain: 0.1 } // 63 Hz
+  // ... up to band 14 (16 kHz)
+]);
+
+// Apply multiple filters at once
+await player.setFilters({
+  timescale: {
+    speed: 1.2, // 20% faster
+    pitch: 1.0, // Same pitch
+    rate: 1.0 // Same rate
+  },
+  karaoke: {
+    level: 1.0,
+    monoLevel: 1.0,
+    filterBand: 220.0,
+    filterWidth: 100.0
+  },
+  tremolo: {
+    frequency: 2.0,
+    depth: 0.5
+  }
+});
+
+// Clear all filters
+await player.setFilters({});
+```
+
+## Error Handling
+
+```javascript
+// Handle player errors
+player.on("trackException", (track, exception) => {
+  console.error(`Track failed: ${track.info.title}`, exception);
+});
+
+player.on("trackStuck", (track, thresholdMs) => {
+  console.error(`Track stuck: ${track.info.title} (${thresholdMs}ms)`);
+});
+
+// Handle node errors
+manager.on("error", (error, node) => {
+  console.error(`Node ${node.id} error:`, error);
+});
+
+manager.on("disconnect", (code, reason, node) => {
+  console.warn(`Node ${node.id} disconnected: ${reason} (${code})`);
+  // Players will automatically switch to other available nodes
+});
+```
+
+## Multiple Nodes & Load Balancing
+
+```javascript
+const nodes = [
+  {
+    id: "node1",
+    host: "lavalink1.example.com",
+    port: 2333,
+    password: "youshallnotpass"
+  },
+  {
+    id: "node2",
+    host: "lavalink2.example.com",
+    port: 2333,
+    password: "youshallnotpass"
+  }
+];
+
+const manager = new Manager(nodes, options);
+
+// Lavacord automatically selects the best node based on CPU load
+const player = await manager.join({ guild: "...", channel: "...", node: "node1" });
+console.log(`Using node: ${player.node.id}`);
+
+// Manually switch a player to a different node
+const targetNode = manager.nodes.get("node2");
+await manager.switch(player, targetNode);
+```
+
+# Events
+
+Lavacord emits events at both the `Manager` and `Player` levels, allowing you to handle events globally or per-player. Player events emitted on the `Manager` are prefixed with `player` to avoid conflicts.
+
+## Manager Events
+
+```javascript
+// Fired when a node successfully connects
+manager.on("ready", (node) => {
+  console.log(`Node ${node.id} is ready`);
+});
+
+// Fired when a node encounters an error
+manager.on("error", (error, node) => {
+  console.error(`Node ${node.id} error:`, error);
+});
+
+// Fired when a node disconnects
+manager.on("disconnect", (code, reason, node) => {
+  console.log(`Node ${node.id} disconnected: ${reason} (Code: ${code})`);
+});
+
+// Fired when a node is attempting to reconnect
+manager.on("reconnecting", (node) => {
+  console.log(`Reconnecting to node ${node.id}`);
+});
+
+// Fired for raw WebSocket messages (useful for debugging)
+manager.on("raw", (message, node) => {
+  console.log(`Raw data from ${node.id}:`, message);
+});
+
+// Fired for warning messages
+manager.on("warn", (message, node) => {
+  console.warn(`Warning from ${node.id}: ${message}`);
+});
+```
+
+### Player Events on Manager
+
+```javascript
+// Track events
+
+// https://lavalink.dev/api/websocket.html#trackstartevent
+manager.on("playerTrackStart", (player, event) => {
+  console.log(`Player ${player.guildId} started: ${event.track.info.title}`);
+});
+
+// https://lavalink.dev/api/websocket.html#trackendevent
+manager.on("playerTrackEnd", (player, event) => {
+  console.log(`Player ${player.guildId} ended: ${event.track.info.title} (${event.reason})`);
+});
+
+// https://lavalink.dev/api/websocket.html#trackexceptionevent
+manager.on("playerTrackException", (player, event) => {
+  console.error(`Player ${player.guildId} exception:`, event.exception);
+});
+
+// https://lavalink.dev/api/websocket.html#trackstuckevent
+// Fired when a track is stuck (e.g., no audio received for a long time)
+manager.on("playerTrackStuck", (player, event) => {
+  console.error(`Player ${player.guildId} stuck: ${event.thresholdMs}ms`);
+});
+
+// playerState will emit every x time specified in the Lavalink config
+// See https://lavalink.dev/api/websocket.html#player-update-op
+manager.on("playerState", (player, state) => {
+  console.log(`Player ${player.guildId} state update:`, state);
+});
+
+// https://lavalink.dev/api/websocket.html#websocketclosedevent
+manager.on("playerWebSocketClosed", (player, event) => {
+  console.log(`Player ${player.guildId} WebSocket closed: ${event.reason} (${event.code}) by ${event.byRemote ? "discord" : "local"}`);
+});
+
+// These events aren’t part of the Lavalink API; they are emitted by Lavacord when you invoke specific methods
+
+// for example pause is emitted when calling player.pause(true) or player.pause(false);
+manager.on("playerPause", (player, state) => {
+  console.log(`Player ${player.guildId} pause: ${state}`);
+});
+
+manager.on("playerVolume", (player, volume) => {
+  console.log(`Player ${player.guildId} volume: ${volume}`);
+});
+
+manager.on("playerSeek", (player, position) => {
+  console.log(`Player ${player.guildId} seek: ${position}ms`);
+});
+
+manager.on("playerFilters", (player, filters) => {
+  console.log(`Player ${player.guildId} filters:`, filters);
+});
+```
+
+## Player Events
+
+Handle events on individual player instances:
+
+```javascript
+// Track events - fired when tracks start, end, or encounter issues
+
+// https://lavalink.dev/api/websocket.html#trackstartevent
+player.on("trackStart", (event) => {
+  console.log(`Now playing: ${event.track.info.title} by ${event.track.info.author}`);
+});
+
+// https://lavalink.dev/api/websocket.html#trackendevent
+player.on("trackEnd", (event) => {
+  console.log(`Track ended: ${event.track.info.title} (${event.reason})`);
+  // Reasons: "finished", "loadFailed", "stopped", "replaced", "cleanup"
+});
+// https://lavalink.dev/api/websocket.html#trackexceptionevent
+player.on("trackException", (event) => {
+  console.error(`Track exception: ${event.track.info.title}`, event.exception);
+});
+
+// https://lavalink.dev/api/websocket.html#trackstuckevent
+// Fired when a track is stuck (e.g., no audio received for a long time)
+player.on("trackStuck", (event) => {
+  console.error(`Track stuck: ${event.track.info.title} (${event.thresholdMs}ms)`);
+});
+
+// state will emit every x time specified in the Lavalink config
+// See https://lavalink.dev/api/websocket.html#player-update-op
+player.on("state", (state) => {
+  console.log(`Player state:`, {
+    position: state.position,
+    time: state.time,
+    connected: state.connected,
+    ping: state.ping
+  });
+});
+
+// https://lavalink.dev/api/websocket.html#websocketclosedevent
+player.on("webSocketClosed", (event) => {
+  console.log(`WebSocket closed: ${event.reason} (${event.code}) by ${event.byRemote ? "discord" : "local"}`);
+});
+
+// These events aren’t part of the Lavalink API; they are emitted by Lavacord when you invoke specific methods
+
+// for example pause is emitted when calling player.pause(true) or player.pause(false);
+player.on("pause", (state) => {
+  console.log(`Player ${state ? "paused" : "resumed"}`);
+});
+
+player.on("volume", (volume) => {
+  console.log(`Volume changed to: ${volume}`);
+});
+
+player.on("seek", (position) => {
+  console.log(`Seeked to: ${position}ms`);
+});
+
+player.on("filters", (filters) => {
+  console.log(`Filters applied:`, filters);
+});
+```
+
+# Donate
+
+If you find Lavacord useful and want to support its development, you can sponsor the main maintainers directly:
+
+- [MrJacz](https://github.com/sponsors/MrJacz)
+- [AmandaDiscord](https://github.com/sponsors/AmandaDiscord)
+
+Thank you for your support!
+
+# Contributors
+
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
+
+Thank you to everyone who has contributed to Lavacord!
+
+<a href="https://github.com/lavacord/Lavacord/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=lavacord/Lavacord" alt="Contributors to Lavacord" />
+</a>

@@ -1,230 +1,263 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EventEmitter } from "events";
 import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
-import type { PlayerUpdateVoiceState, JoinOptions } from "./Types";
-import type { EventOP, PlayerState, Equalizer, Filters, PlayerUpdate, UpdatePlayerData, UpdatePlayerResult, DestroyPlayerResult, Player as APIPlayer } from "lavalink-types/v4";
+import type { PlayerUpdateVoiceState, JoinOptions, PlayerEvents } from "./Types";
+import {
+	PlayerState,
+	Track,
+	VoiceState,
+	Filters,
+	UpdatePlayerData,
+	UpdatePlayerResult,
+	Equalizer,
+	DestroyPlayerResult,
+	Player as APIPlayer
+} from "lavalink-types";
 
 /**
- * The Player class, this handles everything to do with the guild sides of things, like playing, stoping, pausing, resuming etc
+ * The Player class that handles playback and audio manipulation for a specific guild.
+ *
+ * @remarks
+ * This class is responsible for audio playback operations, including playing, stopping,
+ * pausing, resuming, and applying audio filters. Each instance represents a player
+ * for a specific guild.
  */
-export class Player extends EventEmitter {
-    /**
-     * The PlayerState of this Player
-     */
-    public state: Partial<PlayerState> & { filters: Filters; } = { filters: {} };
-    /**
-     * Whether or not the player is actually playing anything
-     */
-    public playing = false;
-    /**
-     * When the track started playing
-     */
-    public timestamp: number | null = null;
-    /**
-     * Whether or not the song that is playing is paused or not
-     */
-    public paused = false;
-    /**
-     * The current track in Lavalink's base64 string form
-     */
-    public track: string | null = null;
-    /**
-     * The voiceUpdateState of the player, used for swtiching nodes
-     */
-    public voiceUpdateState: PlayerUpdateVoiceState | null = null;
+export class Player extends EventEmitter<PlayerEvents> {
+	/**
+	 * The current state of this Player
+	 *
+	 * @remarks
+	 * Contains information about the player state from Lavalink, including position, filters, etc.
+	 */
+	public state: PlayerState = {
+		time: 0,
+		position: 0,
+		connected: false,
+		ping: 0
+	};
+	/**
+	 * The timestamp when the current track started playing
+	 *
+	 * @remarks
+	 * This is a client-side timestamp, not synchronized with Lavalink.
+	 * Can be used to calculate approximate playback position.
+	 */
+	public timestamp: number | null = null;
+	/**
+	 * Whether the audio playback is currently paused
+	 */
+	public paused = false;
+	/**
+	 * The current volume level (0-1000)
+	 */
+	public volume = 100;
+	/**
+	 * The current track in Lavalink's base64 string form
+	 *
+	 * @remarks
+	 * This is null when no track is loaded or when playback has ended.
+	 */
+	public track: Track | null = null;
+	/**
+	 * The voice connection state from Lavalink API
+	 */
+	public voice: VoiceState | null = null;
+	/**
+	 * The current audio filters applied to this player
+	 *
+	 * @remarks
+	 * This includes effects like equalizer, karaoke, etc.
+	 */
+	public filters: Filters = {};
 
-    /**
-     * The constructor of the player
-     * @param node The Lavalink of the player
-     * @param id the id of the player, aka the guild id
-     */
-    public constructor(public node: LavalinkNode, public id: string) {
-        super();
+	/**
+	 * Creates a new player instance.
+	 *
+	 * @param node - The Lavalink node this player is connected to.
+	 * @param guildId - The guild ID that this player is associated with.
+	 */
+	public constructor(
+		/**
+		 * The Lavalink node this player is connected to
+		 */
+		public node: LavalinkNode,
+		/**
+		 * The guild ID for this player
+		 */
+		public guildId: string
+	) {
+		super();
+	}
 
-        this.on("event", data => {
-            switch (data.type) {
-                case "TrackStartEvent":
-                    if (this.listenerCount("start")) this.emit("start", data);
-                    break;
-                case "TrackEndEvent":
-                    if (data.reason !== "replaced") this.playing = false;
-                    this.track = null;
-                    this.timestamp = null;
-                    if (this.listenerCount("end")) this.emit("end", data);
-                    break;
-                case "TrackExceptionEvent":
-                    if (this.listenerCount("error")) this.emit("error", data);
-                    break;
-                case "TrackStuckEvent":
-                    this.stop();
-                    if (this.listenerCount("end")) this.emit("end", data);
-                    break;
-                case "WebSocketClosedEvent":
-                    if (this.listenerCount("error")) this.emit("error", data);
-                    break;
-                default:
-                    if (this.listenerCount("warn")) this.emit("warn", `Unexpected event type: ${(data as { type: string; }).type}`);
-                    break;
-            }
-        })
-            .on("playerUpdate", data => {
-                this.state = { filters: this.state.filters, ...data.state };
-            });
-    }
+	/**
+	 * Updates the current player on the Lavalink node.
+	 * @see {@link https://lavalink.dev/api/rest#update-player}
+	 *
+	 * @param options - The update options to apply to the player.
+	 * @param noReplace - If true, the event will be dropped if there's a currently playing track.
+	 * @returns {Promise<APIPlayer>} The updated player information from Lavalink.
+	 */
+	public async update(options: UpdatePlayerData, noReplace = false): Promise<APIPlayer> {
+		const d = await Rest.updatePlayer(this.node, this.guildId, options, noReplace);
 
-    /**
-     * Updates the current player on lavalink
-     * @param options Update options
-     * @param noReplace If the event should be dropped if there's a currently playing track should encodedTrack or identifier be present in options
-     */
-    public async update(options: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
-        const d = await Rest.updatePlayer(this.node, this.id, options, noReplace);
-        if (d.track) this.track = d.track.encoded;
-        return d;
-    }
+		// Update local state with response data
+		if (d.track) this.track = d.track;
+		if (d.volume) this.volume = d.volume;
+		if (d.paused) this.paused = d.paused;
+		if (d.state) this.state = d.state;
+		if (d.filters) this.filters = d.filters;
+		if (d.voice) this.voice = d.voice;
 
-    /**
-     * Plays the specified song using the base64 string from lavalink
-     * @param track The base64 string of the song that you want to play
-     * @param options Play options
-     */
-    public async play(track: string, options?: Omit<UpdatePlayerData, "track"> & { noReplace?: boolean; userData?: Record<any, any>; }): Promise<UpdatePlayerResult> {
-        const noReplace = options?.noReplace ?? false;
-        const userData = options?.userData;
-        if (options) {
-            delete options.noReplace;
-            delete options.userData;
-        }
-        const d = await this.update(Object.assign({ track: { encoded: track, userData } } as UpdatePlayerData, options), noReplace);
-        this.playing = true;
-        this.timestamp = Date.now();
-        return d;
-    }
+		return d;
+	}
 
-    /**
-     * Stops the music, depending on how the end event is handled this will either stop
-     */
-    public async stop(): Promise<APIPlayer> {
-        const d = await this.update({ track: { encoded: null } });
-        this.playing = false;
-        this.timestamp = null;
-        return d;
-    }
+	/**
+	 * Plays a track using its base64 encoded string.
+	 *
+	 * @param track - The base64 encoded track string from Lavalink.
+	 * @param options - Additional options for playback.
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public async play(
+		track: string,
+		options?: Omit<UpdatePlayerData, "track"> & {
+			noReplace?: boolean;
+			userData?: Record<any, any>;
+		}
+	): Promise<UpdatePlayerResult> {
+		const { userData, noReplace, ...opts } = options || {};
 
-    /**
-     * Pauses/Resumes the song depending on what is specified
-     * @param pause Whether or not to pause whats currently playing
-     */
-    public async pause(pause: boolean): Promise<APIPlayer> {
-        const d = await this.update({ paused: pause });
-        this.paused = pause;
-        if (this.listenerCount("pause")) this.emit("pause", pause);
-        return d;
-    }
+		const d = await this.update({ track: { encoded: track, userData }, ...opts }, noReplace ?? false);
+		this.timestamp = Date.now();
 
-    /**
-     * Resumes the current song
-     */
-    public resume(): Promise<APIPlayer> {
-        return this.pause(false);
-    }
+		return d;
+	}
 
-    /**
-     * Changes the volume, only for the current song
-     * @param volume The volume as a float from 0.0 to 10.0. 1.0 is default.
-     */
-    public async volume(volume: number): Promise<APIPlayer> {
-        const d = await this.update({ volume: volume * 100 });
-        if (this.listenerCount("volume")) this.emit("volume", volume);
-        return d;
-    }
+	/**
+	 * Stops the currently playing track.
+	 *
+	 * @remarks
+	 * This will trigger a "TrackEndEvent" with reason "STOPPED".
+	 *
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public stop(): Promise<UpdatePlayerResult> {
+		return this.update({ track: { encoded: null } });
+	}
 
-    /**
-     * Seeks the current song to a certain position
-     * @param position Seeks the song to the position specified in milliseconds, use the duration of the song from lavalink to get the duration
-     */
-    public async seek(position: number): Promise<APIPlayer> {
-        const d = await this.update({ position });
-        if (this.listenerCount("seek")) this.emit("seek", position);
-        return d;
-    }
+	/**
+	 * Pauses or resumes the current track.
+	 *
+	 * @param pause - Whether to pause (true) or resume (false) playback.
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public async pause(pause: boolean): Promise<UpdatePlayerResult> {
+		const d = await this.update({ paused: pause });
+		if (this.listenerCount("pause")) this.emit("pause", pause);
+		if (this.manager.listenerCount("playerPause")) this.manager.emit("playerPause", this, pause);
+		return d;
+	}
 
-    public async filters(options: Filters): Promise<APIPlayer> {
-        const d = await this.update({ filters: options });
-        this.state.filters = options;
-        if (this.listenerCount("filters")) this.emit("filters", options);
-        return d;
-    }
+	/**
+	 * Changes the volume of the current playback.
+	 *
+	 * @param volume - The volume level as a number between 0 and 1000
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public async setVolume(volume: number): Promise<UpdatePlayerResult> {
+		const d = await this.update({ volume });
+		if (this.listenerCount("volume")) this.emit("volume", volume);
+		if (this.manager.listenerCount("playerVolume")) this.manager.emit("playerVolume", this, volume);
+		return d;
+	}
 
-    /**
-     * Sets the equalizer of the current song, if you wanted to do something like bassboost
-     * @param bands The bands that you want lavalink to modify read [IMPLEMENTATION.md](https://github.com/lavalink-devs/Lavalink/blob/master/IMPLEMENTATION.md#equalizer) for more information
-     */
-    public async equalizer(bands: Equalizer[]): Promise<APIPlayer> {
-        const newFilters = Object.assign(this.state.filters, { equalizer: bands });
-        const d = await this.filters(newFilters);
-        return d;
-    }
+	/**
+	 * Seeks to a specific position in the current track.
+	 *
+	 * @param position - The position to seek to in milliseconds.
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public async seek(position: number): Promise<UpdatePlayerResult> {
+		const d = await this.update({ position });
+		if (this.listenerCount("seek")) this.emit("seek", position);
+		if (this.manager.listenerCount("playerSeek")) this.manager.emit("playerSeek", this, position);
+		return d;
+	}
 
-    /**
-     * Sends a destroy signal to lavalink, basically just a cleanup op for lavalink to clean its shit up
-     */
-    public async destroy(): Promise<DestroyPlayerResult> {
-        return Rest.destroyPlayer(this.node, this.id);
-    }
+	/**
+	 * Applies audio filters to the current playback.
+	 *
+	 * @param options - The filter options to apply.
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public async setFilters(options: Filters): Promise<UpdatePlayerResult> {
+		const d = await this.update({ filters: options });
+		if (this.listenerCount("filters")) this.emit("filters", options);
+		if (this.manager.listenerCount("playerFilters")) this.manager.emit("playerFilters", this, options);
+		return d;
+	}
 
-    /**
-     * Sends voiceUpdate information to lavalink so it can connect to discords voice servers properly
-     * @param data The data lavalink needs to connect and recieve data from discord
-     */
-    public connect(data: PlayerUpdateVoiceState): Promise<APIPlayer> {
-        this.voiceUpdateState = data;
-        return this.update({ voice: { token: data.event.token, endpoint: data.event.endpoint, sessionId: data.sessionId } });
-    }
+	/**
+	 * Sets the equalizer effect for the current playback.
+	 *
+	 * @param bands - An array of equalizer bands to adjust.
+	 * @returns A promise resolving to the updated player information.
+	 *
+	 * @remarks
+	 * Each band is an object with 'band' (0-14) and 'gain' (-0.25 to 1.0) properties.
+	 */
+	public async setEqualizer(bands: Equalizer[]): Promise<UpdatePlayerResult> {
+		return this.setFilters({ equalizer: bands });
+	}
 
-    /**
-     * Use this to switch channels
-     * @param channel The channel id of the channel you want to switch to
-     * @param options selfMute and selfDeaf options
-     */
-    public switchChannel(channel: string, options: JoinOptions = {}): any {
-        return this.manager.sendWS(this.id, channel, options);
-    }
+	/**
+	 * Destroys the player on the Lavalink node.
+	 *
+	 * @remarks
+	 * This sends a destroy signal to Lavalink to clean up resources for this guild ID.
+	 * It doesn't affect the Discord voice connection - use {@link Manager.leave} for that.
+	 *
+	 * @returns {Promise<DestroyPlayerResult>} A promise resolving to the destroy result.
+	 */
+	public async destroy(): Promise<DestroyPlayerResult> {
+		return Rest.destroyPlayer(this.node, this.guildId);
+	}
 
-    /**
-     * The manager that created the player
-     */
-    public get manager(): Manager {
-        return this.node.manager;
-    }
-}
+	/**
+	 * Provides voice server update information to Lavalink to establish a connection.
+	 *
+	 * @param data - The voice update state containing session ID and voice server information.
+	 * @returns A promise resolving to the updated player information.
+	 */
+	public connect(data: PlayerUpdateVoiceState): Promise<UpdatePlayerResult> {
+		return this.update({
+			voice: {
+				token: data.event.token,
+				endpoint: data.event.endpoint,
+				sessionId: data.sessionId
+			}
+		});
+	}
 
-export interface PlayerEvents {
-    event: [EventOP];
-    start: [Extract<EventOP, { type: "TrackStartEvent"; }>];
-    end: [Extract<EventOP, { type: "TrackEndEvent" | "TrackStuckEvent"; }>];
-    pause: [boolean];
-    seek: [number];
-    error: [Extract<EventOP, { type: "TrackExceptionEvent" | "WebSocketClosedEvent"; }>];
-    warn: [string];
-    volume: [number];
-    playerUpdate: [PlayerUpdate];
-    filters: [Filters];
-}
+	/**
+	 * Switches the player to a different voice channel.
+	 *
+	 * @param channel - The ID of the voice channel to switch to.
+	 * @param options - Options for joining the channel (selfMute, selfDeaf).
+	 * @returns Does not return anything, but sends a WebSocket message to the Lavalink node.
+	 */
+	public switchChannel(channel: string, options: JoinOptions = {}): unknown {
+		return this.manager.sendWS(this.guildId, channel, options);
+	}
 
-export interface Player {
-    addListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    emit<E extends keyof PlayerEvents>(event: E, ...args: PlayerEvents[E]): boolean;
-    eventNames(): Array<keyof PlayerEvents>;
-    listenerCount(event: keyof PlayerEvents): number;
-    listeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
-    off<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    on<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    once<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    prependListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    prependOnceListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
-    rawListeners(event: keyof PlayerEvents): Array<(...args: Array<any>) => any>;
-    removeAllListeners(event?: keyof PlayerEvents): this;
-    removeListener<E extends keyof PlayerEvents>(event: E, listener: (...args: PlayerEvents[E]) => any): this;
+	/**
+	 * Gets the manager instance that created this player.
+	 *
+	 * @returns {Manager} The manager instance.
+	 */
+	public get manager(): Manager {
+		return this.node.manager;
+	}
 }

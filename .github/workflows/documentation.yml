@@ -1,0 +1,50 @@
+name: "Documentation"
+
+on:
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
+
+jobs:
+    documentation:
+        name: Build & Deploy Documentation
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: yarn
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Build project
+              run: yarn build
+
+            - name: Test documentation build
+              if: github.event_name == 'pull_request'
+              run: yarn docs
+
+            - name: Build and deploy documentation
+              if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+              run: yarn docs
+
+            - name: Deploy to GitHub Pages
+              if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./
+                  user_name: "github-actions[bot]"
+                  user_email: "github-actions[bot]@users.noreply.github.com"
+                  commit_message: "Deploy documentation: ${{ github.sha }}"

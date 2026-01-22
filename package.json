@@ -1,64 +1,111 @@
 {
-  "name": "lavacord",
-  "version": "3.0.0",
-  "description": "A simple by design lavalink wrapper made for any discord library.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "prepublishOnly": "yarn compile",
-    "lint": "eslint . -c eslint.config.js --fix",
-    "test": "eslint . -c eslint.config.js",
-    "compile": "tsc -p .",
-    "watch": "tsc -p . -w",
-    "docs": "typedoc --sort static-first --sort alphabetical"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lavacord/lavacord.git"
-  },
-  "keywords": [
-    "bot",
-    "music",
-    "discord",
-    "api",
-    "lava",
-    "link",
-    "lavalink",
-    "discord.js",
-    "eris"
-  ],
-  "author": "Jacz",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/lavacord/lavacord/issues"
-  },
-  "homepage": "https://github.com/MrJacz/lavacord#readme",
-  "dependencies": {
-    "cloudstorm": "^0.16.x",
-    "lavalink-types": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^25.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.53.1",
-    "@typescript-eslint/parser": "^8.53.1",
-    "eslint": "^9.39.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^7.2.1",
-    "typedoc": "^0.28.16",
-    "typescript": "^5.9.3"
-  },
-  "optionalDependencies": {
-    "detritus-client": "0.16.x",
-    "discord.js": "14.x",
-    "eris": "0.18.x",
-    "oceanic.js": "1.13.x"
-  },
-  "files": [
-    "dist",
-    "LICENSE"
-  ],
-  "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10"
-  }
+	"name": "lavacord",
+	"version": "3.0.0",
+	"description": "A simple by design lavalink wrapper made for any discord library.",
+	"main": "./dist/cjs/index.cjs",
+	"module": "./dist/esm/index.mjs",
+	"types": "./dist/cjs/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/cjs/index.d.ts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs",
+			"default": "./dist/cjs/index.cjs"
+		},
+		"./cloudstorm": {
+			"types": "./dist/cjs/wrappers/cloudstorm.d.ts",
+			"require": "./dist/cjs/wrappers/cloudstorm.cjs",
+			"import": "./dist/esm/wrappers/cloudstorm.mjs",
+			"default": "./dist/cjs/wrappers/cloudstorm.cjs"
+		},
+		"./detritus": {
+			"types": "./dist/cjs/wrappers/detritus.d.ts",
+			"require": "./dist/cjs/wrappers/detritus.cjs",
+			"import": "./dist/esm/wrappers/detritus.mjs",
+			"default": "./dist/cjs/wrappers/detritus.cjs"
+		},
+		"./discord.js": {
+			"types": "./dist/cjs/wrappers/discord.js.d.ts",
+			"require": "./dist/cjs/wrappers/discord.js.cjs",
+			"import": "./dist/esm/wrappers/discord.js.mjs",
+			"default": "./dist/cjs/wrappers/discord.js.cjs"
+		},
+		"./eris": {
+			"types": "./dist/cjs/wrappers/eris.d.ts",
+			"require": "./dist/cjs/wrappers/eris.cjs",
+			"import": "./dist/esm/wrappers/eris.mjs",
+			"default": "./dist/cjs/wrappers/eris.cjs"
+		},
+		"./oceanic": {
+			"types": "./dist/cjs/wrappers/oceanic.d.ts",
+			"require": "./dist/cjs/wrappers/oceanic.cjs",
+			"import": "./dist/esm/wrappers/oceanic.mjs",
+			"default": "./dist/cjs/wrappers/oceanic.cjs"
+		}
+	},
+	"scripts": {
+		"build": "tsup",
+		"watch": "tsup --watch",
+		"format": "prettier --write \"src/**/*.ts\"",
+		"lint": "eslint . -c eslint.config.mjs --fix",
+		"test": "eslint . -c eslint.config.mjs",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"docs": "typedoc --options typedoc.json --plugin typedoc-github-theme",
+		"prepack": "yarn build && yarn prepack:cjs && yarn prepack:esm",
+		"prepack:cjs": "rollup-type-bundler -d dist/cjs --output-typings-file-extension .cts",
+		"prepack:esm": "rollup-type-bundler -d dist/esm -t .mts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lavacord/lavacord.git"
+	},
+	"keywords": [
+		"bot",
+		"music",
+		"discord",
+		"lavalink",
+		"discord.js",
+		"eris"
+	],
+	"engines": {
+		"node": ">=22.0.0",
+		"npm": ">=10"
+	},
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
+	"author": "lavacord",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/lavacord/lavacord/issues"
+	},
+	"homepage": "https://github.com/lavacord/lavacord#readme",
+	"dependencies": {
+		"cloudstorm": "^0.16.x",
+		"discord-api-types": "^0.38.37",
+		"lavalink-types": "^3.0.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.29.2",
+		"@favware/rollup-type-bundler": "^4.0.0",
+		"@types/node": "^25.0.10",
+		"esbuild-plugin-file-path-extensions": "^2.1.4",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.39.2",
+		"prettier": "^3.8.1",
+		"tsup": "^8.5.1",
+		"typedoc": "^0.28.16",
+		"typedoc-github-theme": "^0.3.1",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.53.1"
+	},
+	"optionalDependencies": {
+		"detritus-client": "0.16.x",
+		"discord.js": "14.x",
+		"eris": "0.18.x",
+		"oceanic.js": "1.13.0"
+	},
+	"packageManager": "yarn@4.9.2"
 }

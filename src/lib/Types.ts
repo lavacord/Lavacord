@@ -1,189 +1,361 @@
+import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate } from "discord-api-types/v10";
 import type { Player } from "./Player";
+import { LavalinkNode } from "./LavalinkNode";
+import type {
+	TrackEndEvent,
+	TrackExceptionEvent,
+	TrackStartEvent,
+	TrackStuckEvent,
+	WebSocketClosedEvent,
+	WebsocketMessage,
+	Filters,
+	PlayerState
+} from "lavalink-types/v4";
 
 /**
- * Player Update Voice State
+ * Represents the voice state required for a player update, typically used when switching nodes or resuming.
+ *
+ * @remarks
+ * This interface contains the session ID and event data needed to establish a voice connection.
+ *
+ * @public
  */
 export interface PlayerUpdateVoiceState {
-    /**
-     * The session id of the voice connection
-     */
-    sessionId: string;
-    /**
-     * Event data
-     */
-    event: VoiceServerUpdate;
+	/**
+	 * The session ID of the voice connection.
+	 *
+	 * @readonly
+	 */
+	sessionId: string;
+	/**
+	 * The voice server update event data from Discord.
+	 *
+	 * @readonly
+	 */
+	event: GatewayVoiceServerUpdateDispatchData;
 }
 
 /**
- * Manager Options
+ * Defines the options for configuring the Lavacord Manager.
+ *
+ * @remarks
+ * These options control how the Manager interacts with Discord and Lavalink.
+ *
+ * @public
  */
 export interface ManagerOptions {
-    /**
-     * User id of the bot
-     */
-    user?: string;
-    /**
-     * The Player class that the manager uses to create Players, so users can modify this
-     */
-    player?: typeof Player;
-    /**
-     * The send function for end users to implement for their specific library
-     */
-    send?: (packet: DiscordPacket) => unknown;
+	/**
+	 * The user ID of the bot.
+	 *
+	 * @remarks
+	 * It's recommended to set this when the bot client is ready.
+	 */
+	userId?: string;
+	/**
+	 * The Player class to be used by the manager for creating new player instances.
+	 *
+	 * @remarks
+	 * Allows for extending the base Player functionality with custom implementations.
+	 */
+	player?: typeof Player;
+	/**
+	 * The function used to send gateway voice packets to Discord.
+	 *
+	 * @remarks
+	 * This needs to be implemented by the end-user based on their Discord library.
+	 *
+	 * @param packet - The Discord packet to send.
+	 * @returns A Promise or value representing the send operation result.
+	 */
+	send?: (packet: GatewayVoiceStateUpdate) => unknown;
 }
 
 /**
- * Manager Join Data
+ * Defines the data required to join a voice channel.
+ *
+ * @remarks
+ * Contains the essential identifiers for connecting to a specific voice channel.
+ *
+ * @public
  */
 export interface JoinData {
-    /**
-     * The guild id of the guild the voice channel is in, that you want to join
-     */
-    guild: string;
-    /**
-     * The voice channel you want to join
-     */
-    channel: string;
-    /**
-     * The LavalinkNode ID you want to use
-     */
-    node: string;
+	/**
+	 * The ID of the guild where the voice channel is located.
+	 *
+	 * @readonly
+	 */
+	guild: string;
+	/**
+	 * The ID of the voice channel to join.
+	 *
+	 * @readonly
+	 */
+	channel: string;
+	/**
+	 * The ID of the LavalinkNode to use for this connection.
+	 *
+	 * @remarks
+	 * This determines which Lavalink server will handle the audio for this connection.
+	 *
+	 * @readonly
+	 */
+	node: string;
 }
 
 /**
- * Manager Join Options
+ * Defines the options for joining a voice channel.
+ *
+ * @remarks
+ * Controls the initial state of the bot when connecting to a voice channel.
+ *
+ * @public
  */
 export interface JoinOptions {
-    /**
-     * Whether or not the bot will be self muted when it joins the voice channel
-     */
-    selfmute?: boolean;
-    /**
-     * Whether or not the bot will be self deafen when it joins the voice channel
-     */
-    selfdeaf?: boolean;
+	/**
+	 * Whether the bot should be self-muted upon joining the voice channel.
+	 *
+	 * @defaultValue false
+	 */
+	selfmute?: boolean;
+	/**
+	 * Whether the bot should be self-deafened upon joining the voice channel.
+	 *
+	 * @defaultValue false
+	 */
+	selfdeaf?: boolean;
 }
 
 /**
- * Voice Server Update
- */
-export interface VoiceServerUpdate {
-    /**
-     * The token for the session
-     */
-    token: string;
-    /**
-     * Guild if of the voice connection
-     */
-    guild_id: string;
-    /**
-     * The endpoint lavalink will connect to
-     */
-    endpoint: string;
-}
-
-/**
- * Voice State Update
- */
-export interface VoiceStateUpdate {
-    /**
-     * Guild id
-     */
-    guild_id: string;
-    /**
-     * channel id
-     */
-    channel_id?: string;
-    /**
-     * User id
-     */
-    user_id: string;
-    /**
-     * Session id
-     */
-    session_id: string;
-    /**
-     * Whether the user is deafened or not
-     */
-    deaf?: boolean;
-    /**
-     * Whether the user is muted or not
-     */
-    mute?: boolean;
-    /**
-     * Whether the user is self-deafened or not
-     */
-    self_deaf?: boolean;
-    /**
-     * Whether the user is self-muted or not
-     */
-    self_mute?: boolean;
-    /**
-     * Whether the user is suppressed
-     */
-    suppress?: boolean;
-}
-
-/**
- * Discord Packet
- */
-export interface DiscordPacket {
-    /**
-     * opcode for the payload
-     */
-    op: number;
-    /**
-     * event data
-     */
-    d: any;
-    /**
-     * sequence number, used for resuming sessions and heartbeats
-     */
-    s?: number;
-    /**
-     * the event name for this payload
-     */
-    t?: string;
-}
-
-/**
- * Lavalink Node Options
+ * Defines the options for configuring a LavalinkNode.
+ *
+ * @remarks
+ * These options specify how to connect to a Lavalink server and how the node should behave.
+ *
+ * @public
  */
 export interface LavalinkNodeOptions {
-    /**
-     * The id of the LavalinkNode so Nodes are better organized
-     */
-    id: string;
-    /**
-     * The host of the LavalinkNode, this could be a ip or domain.
-     */
-    host: string;
-    /**
-     * The port of the LavalinkNode
-     */
-    port?: number | string;
-    /**
-     * The password of the lavalink node
-     */
-    password?: string;
-    /**
-     * The interval that the node will try to reconnect to lavalink at in milliseconds
-     */
-    reconnectInterval?: number;
-    /**
-     * The previous sessionId to send to the LavalinkNode so you can resume properly
-     */
-    sessionId?: string;
-    /**
-     * If the node should attempt to resume if the sessionId is present on WS open/node ready
-     */
-    resuming?: boolean;
-    /**
-     * Resume timeout
-     */
-    resumeTimeout?: number;
-    /**
-     * Extra info attached to your node, not required and is not sent to lavalink, purely for you.
-     */
-    state?: any;
+	/**
+	 * A unique identifier for this LavalinkNode, used for organization.
+	 *
+	 * @remarks
+	 * This ID is used internally by Lavacord to reference and manage nodes.
+	 *
+	 * @readonly
+	 */
+	id: string;
+	/**
+	 * The hostname or IP address of the Lavalink server.
+	 *
+	 * @defaultValue "localhost"
+	 */
+	host: string;
+	/**
+	 * The port number of the Lavalink server.
+	 *
+	 * @defaultValue 2333
+	 */
+	port?: number | string;
+	/**
+	 * The password for authenticating with the Lavalink server.
+	 *
+	 * @defaultValue "youshallnotpass"
+	 */
+	password?: string;
+	/**
+	 * The interval (in milliseconds) at which the node will attempt to reconnect if the connection is lost.
+	 *
+	 * @defaultValue 10000 (10 seconds)
+	 */
+	reconnectInterval?: number;
+	/**
+	 * A previous session ID to attempt to resume a connection with the Lavalink server.
+	 *
+	 * @remarks
+	 * This is used when attempting to resume a previous session after reconnection.
+	 */
+	sessionId?: string;
+	/**
+	 * Whether the node should attempt to resume the session if a `sessionId` is present when the WebSocket connection opens or the node becomes ready.
+	 *
+	 * @defaultValue false
+	 */
+	resuming?: boolean;
+	/**
+	 * The timeout (in seconds) for resuming a session.
+	 *
+	 * @defaultValue 120 (2 minutes)
+	 */
+	resumeTimeout?: number;
+
+	/**
+	 * Whether to use secure connections (HTTPS/WSS) instead of HTTP/WS.
+	 *
+	 * @remarks
+	 * When true, WebSocket connections will use WSS and REST requests will use HTTPS.
+	 * This is required when connecting to Lavalink servers behind SSL/TLS.
+	 *
+	 * @defaultValue false
+	 */
+	secure?: boolean;
+
+	/**
+	 * Arbitrary state data that can be attached to the node for user-specific purposes.
+	 *
+	 * @remarks
+	 * This data is not sent to Lavalink and is only used internally.
+	 */
+	state?: unknown;
+}
+
+/**
+ * Type definition for Manager events.
+ */
+export interface ManagerEvents {
+	/**
+	 * Emitted when a node becomes ready.
+	 * @event
+	 */
+	ready: [LavalinkNode];
+	/**
+	 * Emitted for all raw messages from Lavalink.
+	 * @event
+	 */
+	raw: [WebsocketMessage, LavalinkNode];
+	/**
+	 * Emitted when a node encounters an error.
+	 * @event
+	 */
+	error: [unknown, LavalinkNode];
+	/**
+	 * Emitted when a node disconnects.
+	 * @event
+	 */
+	disconnect: [number, string, LavalinkNode];
+	/**
+	 * Emitted when a node is attempting to reconnect.
+	 * @event
+	 */
+	reconnecting: [LavalinkNode];
+	/**
+	 * Represents Lavalink's playerUpdate event.
+	 * emits every x time as defined by the lavalink server.
+	 * @see {@link https://lavalink.dev/api/websocket.html#player-update-op}
+	 * @event
+	 */
+	playerState: [Player, PlayerState];
+	/**
+	 * Emitted when a track starts playing.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackstartevent}
+	 * @event
+	 */
+	playerTrackStart: [Player, TrackStartEvent];
+	/**
+	 * Emitted when a track ends.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackendevent}
+	 * @event
+	 */
+	playerTrackEnd: [Player, TrackEndEvent];
+	/**
+	 * Emitted when a track encounters an exception.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackexceptionevent}
+	 * @event
+	 */
+	playerTrackException: [Player, TrackExceptionEvent];
+	/**
+	 * Emitted when a track gets stuck.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackstuckevent}
+	 * @event
+	 */
+	playerTrackStuck: [Player, TrackStuckEvent];
+	/**
+	 * Emitted when the voice WebSocket is closed.
+	 * @see {@link https://lavalink.dev/api/websocket.html#websocketclosedevent}
+	 * @event
+	 */
+	playerWebSocketClosed: [Player, WebSocketClosedEvent];
+	/**
+	 * Emitted for warnings.
+	 * @event
+	 */
+	warn: [string];
+	/**
+	 * Emitted when a player is paused or resumed.
+	 * @event
+	 */
+	playerPause: [Player, boolean];
+	/**
+	 * Emitted when a player's volume changes.
+	 * @event
+	 */
+	playerVolume: [Player, number];
+	/**
+	 * Emitted when a player seeks to a position.
+	 * @event
+	 */
+	playerSeek: [Player, number];
+	/**
+	 * Emitted when a player updates its filters.
+	 * @event
+	 */
+	playerFilters: [Player, Filters];
+}
+
+export interface PlayerEvents {
+	/**
+	 * Represents Lavalink's playerUpdate event.
+	 * emits every x time as defined by the lavalink server.
+	 * @see {@link https://lavalink.dev/api/websocket.html#player-update-op}
+	 * @event
+	 */
+	state: [PlayerState];
+	/**
+	 * Emitted when a track starts playing.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackstartevent}
+	 * @event
+	 */
+	trackStart: [TrackStartEvent];
+	/**
+	 * Emitted when a track ends.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackendevent}
+	 * @event
+	 */
+	trackEnd: [TrackEndEvent];
+	/**
+	 * Emitted when a track encounters an exception.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackexceptionevent}
+	 * @event
+	 */
+	trackException: [TrackExceptionEvent];
+	/**
+	 * Emitted when a track gets stuck.
+	 * @see {@link https://lavalink.dev/api/websocket.html#trackstuckevent}
+	 * @event
+	 */
+	trackStuck: [TrackStuckEvent];
+	/**
+	 * Emitted when the voice WebSocket is closed.
+	 * @see {@link https://lavalink.dev/api/websocket.html#websocketclosedevent}
+	 * @event
+	 */
+	webSocketClosed: [WebSocketClosedEvent];
+	/**
+	 * Emitted when the player is paused or resumed.
+	 * @event
+	 */
+	pause: [boolean];
+	/**
+	 * Emitted when the player seeks to a position.
+	 * @event
+	 */
+	seek: [number];
+	/**
+	 * Emitted when the player volume changes.
+	 * @event
+	 */
+	volume: [number];
+	/**
+	 * Emitted when the player updates its filters.
+	 * @event
+	 */
+	filters: [Filters];
 }
