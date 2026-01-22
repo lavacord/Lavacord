@@ -24,7 +24,7 @@ import {
  * @public
  */
 export class RestError extends Error {
-	constructor(public error: ErrorResponse) {
+	constructor(public error: ErrorResponse, public data: RequestInit) {
 		super(error.message);
 		this.name = "RestError";
 	}
@@ -53,18 +53,6 @@ export class Rest {
 	 * @throws {@link RestError} If Lavalink returns an error response.
 	 */
 	private static async baseRequest<T>(node: LavalinkNode, path: string, init?: BaseRequestInit, requiresSessionId?: boolean): Promise<T> {
-		if (requiresSessionId && !node.sessionId) {
-			throw new RestError({
-				timestamp: Date.now(),
-				status: 400,
-				error: "Bad Request",
-				message: `Node ${node.id} requires a session ID for this route. Did you forget to connect?`,
-				path
-			});
-		}
-
-		if (init?.query) path += `?${new URLSearchParams(init.query)}`;
-
 		const headers = new Headers(init?.headers);
 		headers.set("Authorization", node.password);
 		headers.set("User-Agent", `Lavacord/${VERSION}`);
@@ -74,6 +62,17 @@ export class Rest {
 			headers,
 			body: init?.body
 		};
+		if (init?.query) path += `?${new URLSearchParams(init.query)}`;
+
+		if (requiresSessionId && !node.sessionId) {
+			throw new RestError({
+				timestamp: Date.now(),
+				status: 400,
+				error: "Bad Request",
+				message: `Node ${node.id} requires a session ID for this route. Did you forget to connect?`,
+				path
+			}, fetchConfig);
+		}
 
 		const response = await fetch(node.restURL + path, fetchConfig).catch((error) => {
 			throw new RestError({
@@ -82,7 +81,7 @@ export class Rest {
 				error: "Network Error",
 				message: `Failed to connect to ${node.id}: ${error.message}`,
 				path
-			});
+			}, fetchConfig);
 		});
 
 		if (response.status === 204) return undefined as T;
@@ -90,7 +89,7 @@ export class Rest {
 		const contentType = response.headers.get("content-type");
 		const body = await (contentType?.includes("application/json") ? response.json() : response.text());
 
-		if (!response.ok || (body as ErrorResponse)?.error) throw new RestError(body as ErrorResponse);
+		if (!response.ok || (body as ErrorResponse)?.error) throw new RestError(body as ErrorResponse, fetchConfig);
 
 		return body as T;
 	}
