@@ -271,7 +271,9 @@ export class LavalinkNode {
 					}
 					this.onClose(code, reason);
 				})
-				.on("message", this.onMessage.bind(this));
+				.on("ws_receive", this.onMessage.bind(this));
+
+			this.ws.connect()
 		});
 	}
 
