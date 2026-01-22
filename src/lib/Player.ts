@@ -103,12 +103,12 @@ export class Player extends EventEmitter<PlayerEvents> {
 		const d = await Rest.updatePlayer(this.node, this.guildId, options, noReplace);
 
 		// Update local state with response data
-		if (d.track) this.track = d.track;
-		if (d.volume) this.volume = d.volume;
-		if (d.paused) this.paused = d.paused;
-		if (d.state) this.state = d.state;
-		if (d.filters) this.filters = d.filters;
-		if (d.voice) this.voice = d.voice;
+		if ("track" in d) this.track = d.track;
+		if ("volume" in d) this.volume = d.volume;
+		if ("paused" in d) this.paused = d.paused;
+		if ("state" in d) this.state = d.state;
+		if ("filters" in d) this.filters = d.filters;
+		if ("voice" in d) this.voice = d.voice;
 
 		return d;
 	}
