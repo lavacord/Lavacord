@@ -1,7 +1,6 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
-import type { BetterWs } from "cloudstorm";
 import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions, ManagerEvents } from "./Types";
 import { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatchData } from "discord-api-types/v10";
 
