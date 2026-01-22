@@ -1,7 +1,8 @@
 import { EventEmitter } from "events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
-import WebSocket from "ws";
+
+import type { BetterWs } from "cloudstorm";
 import type { JoinData, VoiceServerUpdate, VoiceStateUpdate, DiscordPacket, ManagerOptions, JoinOptions, LavalinkNodeOptions } from "./Types";
 
 /**
@@ -63,7 +64,7 @@ export class Manager extends EventEmitter {
     /**
      * Connects all the {@link LavalinkNode} to the respective Lavalink instance
      */
-    public connect(): Promise<Array<WebSocket>> {
+    public connect(): Promise<Array<BetterWs>> {
         if (!this.user) {
             console.warn("Lavacord Manager.connect was called without the client user ID being set.\
                 You should construct your Manager when your client becomes ready as that's where you/your Discord lib receives the current user info.\

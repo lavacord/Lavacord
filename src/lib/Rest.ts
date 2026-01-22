@@ -22,14 +22,14 @@ export class Rest {
      */
     private static async baseRequest<T>(node: LavalinkNode, path: string, init?: RequestInit, requires?: Array<"version" | "sessionId">): Promise<T> {
         if (requires && !requires.every(r => !!node[r])) throw new RestError({ timestamp: Date.now(), status: 400, error: "Bad Request", message: `Node ${requires.join(", ")} is required for this route. Did you forget to connect?`, path });
-        if (!init) init = {};
-        if (!init.headers) init.headers = {};
+        init ??= {};
+        init.headers ??= {};
         Object.assign(init.headers, { Authorization: node.password });
         const res = await fetch(`http://${node.host}:${node.port}${path}`, init);
         let body;
         if (res.status !== 204 && res.headers.get("content-type") === "application/json") body = await res.json();
-        else if (res.status !== 204) body = await res.text();
-        else body = undefined;
+        else if (res.status === 204) body = undefined;
+        else body = await res.text();
 
         if (body && (body as ErrorResponse).error) throw new RestError(body as ErrorResponse);
         return body as T;

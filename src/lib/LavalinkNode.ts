@@ -1,5 +1,6 @@
-import WebSocket from "ws";
 import { Rest } from "./Rest";
+
+import { BetterWs } from "cloudstorm";
 
 import type { Manager } from "./Manager";
 import type { LavalinkNodeOptions } from "./Types";
@@ -36,7 +37,7 @@ export class LavalinkNode {
     /**
      * The WebSocket instance for this LavalinkNode
      */
-    public ws: WebSocket | null = null;
+    public ws: BetterWs | null = null;
     /**
      * The statistics of the LavalinkNode
      */
@@ -113,16 +114,16 @@ export class LavalinkNode {
     /**
      * Connects the node to Lavalink
      */
-    public async connect(): Promise<WebSocket> {
-        return new Promise<WebSocket>((resolve, reject) => {
-            if (this.connected) this.ws!.close();
+    public async connect(): Promise<BetterWs> {
+        return new Promise<BetterWs>((resolve, reject) => {
+            if (this.connected) this.ws!.close(1000);
 
             return Rest.version(this)
                 .then(nodeVersion => {
                     // defaults to v4 which is reasonable. Actually supports snapshot versions now
-                    const major = typeof nodeVersion === "string" && nodeVersion.indexOf(".") !== -1 ? nodeVersion.split(".")[0] : "4";
-                    if (!major || isNaN(Number(major))) return reject(new Error("Node didn't respond to /version with a major.minor.patch version string"));
+                    const major = typeof nodeVersion === "string" && nodeVersion.includes(".") ? nodeVersion.split(".")[0] : "4";
                     const numMajor = Number(major);
+                    if (!major || Number.isNaN(numMajor)) return reject(new Error("Node didn't respond to /version with a major.minor.patch version string"));
                     this.version = numMajor;
 
                     const headers: OutboundHandshakeHeaders = {
@@ -133,25 +134,25 @@ export class LavalinkNode {
 
                     if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
 
-                    const ws = new WebSocket(`ws://${this.host}:${this.port}/v${numMajor}/websocket`, { headers });
+                    const ws = new BetterWs(`ws://${this.host}:${this.port}/v${numMajor}/websocket`, { headers, encoding: "json" });
 
-                    const onEvent = (event: unknown): void => {
+                    const onEvent = (event: string | number): void => {
                         ws.removeAllListeners();
-                        reject(event instanceof Error ? event : new Error("Premature close"));
+                        reject(typeof event === "string" ? new Error(event) : new Error(`Close code ${event} received`));
                     };
 
                     const onOpen = (): void => {
                         this.ws = ws;
                         this.onOpen();
-                        ws.removeListener("open", onOpen)
+                        ws.removeListener("ws_open", onOpen)
                             .removeListener("error", onEvent)
-                            .removeListener("close", onEvent)
-                            .on("error", error => this.onError(error))
-                            .on("close", (code, reason) => this.onClose(code, reason));
+                            .removeListener("ws_close", onEvent)
+                            .on("error", this.onError.bind(this))
+                            .on("ws_close", this.onClose.bind(this));
                         resolve(ws);
                     };
                     ws
-                        .on("message", data => this.onMessage(data))
+                        .on("ws_receive", this.onMessage.bind(this))
                         .once("open", onOpen)
                         .once("error", onEvent)
                         .once("close", onEvent);
@@ -173,7 +174,7 @@ export class LavalinkNode {
      */
     public get connected(): boolean {
         if (!this.ws) return false;
-        return this.ws!.readyState === WebSocket.OPEN;
+        return this.ws.sm.currentStateName === "connected";
     }
 
     /**
@@ -192,14 +193,7 @@ export class LavalinkNode {
      * Private function for handling the message event from WebSocket
      * @param data The data that came from lavalink
      */
-    private onMessage(data: WebSocket.Data): void {
-        let str = "";
-        if (Array.isArray(data)) str = Buffer.concat(data).toString();
-        else if (data instanceof ArrayBuffer) str = Buffer.from(data).toString();
-        else str = data.toString();
-
-        const msg: WebsocketMessage = JSON.parse(str);
-
+    private onMessage(msg: WebsocketMessage): void {
         switch (msg.op) {
             case "ready":
                 if (msg.sessionId) this.sessionId = msg.sessionId;
@@ -230,7 +224,7 @@ export class LavalinkNode {
      * Private function for handling the error event from WebSocket
      * @param error WebSocket error
      */
-    private onError(error: Error): void {
+    private onError(error: string): void {
         if (!error) return;
 
         this.manager.emit("error", error, this);
@@ -242,10 +236,10 @@ export class LavalinkNode {
      * @param code WebSocket close code
      * @param reason WebSocket close reason
      */
-    private onClose(code: number, reason: Buffer): void {
+    private onClose(code: number, reason: string): void {
         this._sessionUpdated = false;
-        this.manager.emit("disconnect", code, reason.toString(), this);
-        if (code !== 1000 || reason.toString() !== "destroy") return this.reconnect();
+        this.manager.emit("disconnect", code, reason, this);
+        if (code !== 1000 || reason !== "destroy") return this.reconnect();
     }
 
     /**
@@ -254,6 +248,7 @@ export class LavalinkNode {
     private reconnect(): void {
         this._reconnect = setTimeout(() => {
             this.ws!.removeAllListeners();
+            this.destroy();
             this.ws = null;
 
             this.manager.emit("reconnecting", this);
