@@ -105,7 +105,7 @@ export class Rest {
 	 * @public
 	 */
 	static load(node: LavalinkNode, identifer: string): Promise<TrackLoadingResult> {
-		return Rest.baseRequest(node, `/v4/loadtracks`, { query: { identifier: identifer } });
+		return Rest.baseRequest(node, `/v${node.version}/loadtracks`, { query: { identifier: identifer } });
 	}
 
 	/**
@@ -132,7 +132,7 @@ export class Rest {
 	static decode(node: LavalinkNode, tracks: string[]): Promise<DecodeTracksResult>;
 	static decode(node: LavalinkNode, tracks: string | string[]): Promise<DecodeTrackResult | DecodeTracksResult> {
 		if (!Array.isArray(tracks)) return Rest.baseRequest(node, `/v4/decodetrack`, { query: { track: tracks } });
-		return Rest.baseRequest(node, `/v4/decodetracks`, {
+		return Rest.baseRequest(node, `/v${node.version}/decodetracks`, {
 			method: "POST",
 			body: JSON.stringify(tracks),
 			headers: { "Content-Type": "application/json" }
@@ -162,7 +162,7 @@ export class Rest {
 	 * @public
 	 */
 	static info(node: LavalinkNode): Promise<GetLavalinkInfoResult> {
-		return Rest.baseRequest(node, `/v4/info`);
+		return Rest.baseRequest(node, `/v${node.version}/info`);
 	}
 
 	/**
@@ -175,7 +175,7 @@ export class Rest {
 	 * @public
 	 */
 	static stats(node: LavalinkNode): Promise<GetLavalinkStatsResult> {
-		return Rest.baseRequest(node, `/v4/stats`);
+		return Rest.baseRequest(node, `/v${node.version}/stats`);
 	}
 
 	/**
@@ -190,7 +190,7 @@ export class Rest {
 	static updateSession(node: LavalinkNode): Promise<UpdateSessionResult> {
 		return Rest.baseRequest(
 			node,
-			`/v4/sessions/${node.sessionId}`,
+			`/v${node.version}/sessions/${node.sessionId}`,
 			{
 				method: "PATCH",
 				body: JSON.stringify({
@@ -218,7 +218,7 @@ export class Rest {
 	static updatePlayer(node: LavalinkNode, guildId: string, data: UpdatePlayerData, noReplace = false): Promise<UpdatePlayerResult> {
 		return Rest.baseRequest(
 			node,
-			`/v4/sessions/${node.sessionId}/players/${guildId}`,
+			`/v${node.version}/sessions/${node.sessionId}/players/${guildId}`,
 			{
 				method: "PATCH",
 				body: JSON.stringify(data),
@@ -240,7 +240,7 @@ export class Rest {
 	 * @public
 	 */
 	static destroyPlayer(node: LavalinkNode, guildId: string): Promise<DestroyPlayerResult> {
-		return Rest.baseRequest(node, `/v4/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, true);
+		return Rest.baseRequest(node, `/v${node.version}/sessions/${node.sessionId}/players/${guildId}`, { method: "DELETE" }, true);
 	}
 }
 
