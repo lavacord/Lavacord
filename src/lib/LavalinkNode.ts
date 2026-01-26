@@ -340,6 +340,7 @@ export class LavalinkNode {
 		const protocol = this.secure ? "https" : "http";
 		return `${protocol}://${this.host}:${this.port}`;
 	}
+
 	/**
 	 * Handles the WebSocket 'open' event when a connection is established.
 	 */
@@ -347,10 +348,6 @@ export class LavalinkNode {
 		if (this._reconnect) clearTimeout(this._reconnect);
 		this._reconnectAttempts = 0;
 		this.manager.emit("ready", this);
-		if (!this._sessionUpdated && this.sessionId) {
-			this._sessionUpdated = true;
-			Rest.updateSession(this).catch((e) => this.manager.emit("error", e, this));
-		}
 	}
 
 	/**
