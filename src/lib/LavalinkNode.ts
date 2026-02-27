@@ -1,6 +1,6 @@
 import { Rest } from "./Rest";
 
-import { BetterWs } from "cloudstorm";
+import { BetterWs, eventSwitch } from "cloudstorm";
 
 import type { Manager } from "./Manager";
 import type { LavalinkNodeOptions } from "./Types";
@@ -233,48 +233,47 @@ export class LavalinkNode {
 	 * @throws {Error} If the connection fails due to network issues, authentication problems, or other errors
 	 */
 	public async connect(): Promise<BetterWs> {
-		if (this.connected) this.ws!.close(1000, "reconnecting");
-
 		this.version = await Rest.version(this)
 			.then((str) => str.split(".")[0])
 			.catch(() => "4");
 
-		return new Promise((resolve, reject) => {
-			let isResolved = false;
+		// Prepare headers for the WebSocket connection
+		const headers: OutboundHandshakeHeaders = {
+			Authorization: this.password,
+			"User-Id": this.manager.userId!,
+			"Client-Name": `Lavacord/${VERSION}`
+		};
 
-			// Prepare headers for the WebSocket connection
-			const headers: OutboundHandshakeHeaders = {
-				Authorization: this.password,
-				"User-Id": this.manager.userId!,
-				"Client-Name": `Lavacord/${VERSION}`
-			};
+		if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
+		if (!this.ws) {
+			this.ws = new BetterWs(this.socketURL, { headers, encoding: "json", connectThrottle: 0 });
+			this.ws
+				.on("ws_receive", data => this.onMessage(data))
+				.on("error", e => this.onError(e))
+				.on("ws_close", (code, reason) => this.onClose(code, reason));
+		}
 
-			if (this.sessionId && this.resuming) headers["Session-Id"] = this.sessionId;
+		if (["connecting", "upgrading"].includes(this.ws.sm.currentStateName)) {
+			await eventSwitch(this.ws, { ws_open: () => void 0 });
+			return this.ws;
+		}
+		if (["connected", "half_close"].includes(this.ws.sm.currentStateName)) await this.ws.close(1000, "reconnecting");
 
-			this.ws = new BetterWs(this.socketURL, { headers, encoding: "json" })
-				.on("ws_open", () => {
-					isResolved = true;
-					this.onOpen();
-					resolve(this.ws!);
-				})
-				.on("error", (error) => {
-					if (!isResolved) {
-						isResolved = true;
-						reject(new Error(error));
-					}
-					this.onError(new Error(error));
-				})
-				.on("ws_close", (code, reason) => {
-					if (!isResolved) {
-						isResolved = true;
-						reject(new Error(`WebSocket closed during connection: ${code} ${reason.toString()}`));
-					}
-					this.onClose(code, reason);
-				})
-				.on("ws_receive", this.onMessage.bind(this));
+		this.ws.connect();
 
-			this.ws.connect()
+		await eventSwitch(this.ws, {
+			ws_open: () => {
+				this.onOpen();
+			},
+			error: e => {
+				throw e;
+			},
+			ws_close: (code: number, reason: string) => {
+				throw new Error(`WebSocket closed during connection: ${code} ${reason.toString()}`);
+			}
 		});
+
+		return this.ws;
 	}
 
 	/**
@@ -399,7 +398,6 @@ export class LavalinkNode {
 
 		this.manager.emit("error", error, this);
 		this.destroy();
-		this.reconnect();
 	}
 
 	/**
@@ -411,9 +409,6 @@ export class LavalinkNode {
 	private onClose(code: number, reason: string): void {
 		this._sessionUpdated = false;
 		this.manager.emit("disconnect", code, reason, this);
-
-		this.ws?.removeAllListeners();
-		this.ws = null;
 
 		switch (code) {
 			case 1000:
@@ -443,7 +438,7 @@ export class LavalinkNode {
 
 		this._reconnect = setTimeout(async () => {
 			this.manager.emit("reconnecting", this);
-			await this.connect().catch((error) => this.manager.emit("error", error, this));
+			await this.connect().catch(() => void 0); // the error is already forwarded lol
 		}, delay);
 	}
 
