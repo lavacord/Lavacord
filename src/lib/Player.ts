@@ -236,7 +236,8 @@ export class Player extends EventEmitter<PlayerEvents> {
 			voice: {
 				token: data.event.token,
 				endpoint: data.event.endpoint,
-				sessionId: data.sessionId
+				sessionId: data.sessionId,
+				channelId: data.channelId
 			}
 		});
 	}

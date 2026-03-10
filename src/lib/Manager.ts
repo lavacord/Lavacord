@@ -273,7 +273,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 	public async switch(player: Player, node: LavalinkNode): Promise<Player> {
 		player.node = node;
 
-		if (!player.voice) return player;
+		if (!player.voice?.channelId) return player;
 		await player.destroy();
 		if (!player.track) return player;
 
@@ -281,6 +281,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 			position: player.state.position,
 			volume: player.volume,
 			filters: player.filters,
+			// @ts-expect-error The type narrow for if no channelId didn't work
 			voice: player.voice,
 			paused: player.paused,
 			userData: player.track.userData
@@ -407,7 +408,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 		const player = this.players.get(guildID);
 		if (!player) return false;
 
-		await player.connect({ sessionId: state.session_id, event: server });
+		await player.connect({ sessionId: state.session_id, event: server, channelId: state.channel_id! });
 		this.expecting.delete(guildID);
 
 		return true;

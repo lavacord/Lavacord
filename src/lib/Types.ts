@@ -33,6 +33,12 @@ export interface PlayerUpdateVoiceState {
 	 * @readonly
 	 */
 	event: GatewayVoiceServerUpdateDispatchData;
+	/**
+	 * The ID of the voice channel.
+	 *
+	 * @readonly
+	 */
+	channelId: string;
 }
 
 /**
