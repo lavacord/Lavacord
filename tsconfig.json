@@ -22,8 +22,7 @@
 		"skipLibCheck": true,
 		"outDir": "./dist",
 		"types": ["node", "ws"],
-		"baseUrl": "./src",
-		"rootDir": "src"
+		"rootDir": "./src"
 	},
 	"include": ["src"]
 }

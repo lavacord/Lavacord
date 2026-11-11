@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import { LavalinkNode } from "./LavalinkNode";
 import { Player } from "./Player";
 import type { JoinData, ManagerOptions, JoinOptions, LavalinkNodeOptions, ManagerEvents } from "./Types";
@@ -433,7 +433,7 @@ export class Manager extends EventEmitter<ManagerEvents> {
 
 	protected send(packet: GatewayVoiceStateUpdate): unknown {
 		if (typeof this._send !== "function") {
-			throw new Error(
+			throw new TypeError(
 				"Lavacord requires a send function to be defined in the Manager options.\
 				This function should send voice state updates to Discord."
 			);

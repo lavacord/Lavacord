@@ -17,11 +17,11 @@ export class Manager extends BaseManager {
 		client.on("event", (packet: IGatewayMessage) => {
 			switch (packet.t) {
 				case GatewayDispatchEvents.VoiceServerUpdate:
-					this.voiceServerUpdate(packet.d);
+					this.voiceServerUpdate(packet.d).catch(e => this.emit("warn", `Failed to process voice server update packet:\n${e.stack}`));
 					break;
 
 				case GatewayDispatchEvents.VoiceStateUpdate:
-					this.voiceStateUpdate(packet.d);
+					this.voiceStateUpdate(packet.d).catch(e => this.emit("warn", `Failed to process voice state update packet:\n${e.stack}`));
 					break;
 
 				case GatewayDispatchEvents.GuildCreate:
@@ -29,7 +29,7 @@ export class Manager extends BaseManager {
 						this.voiceStateUpdate({
 							...state,
 							guild_id: packet.d.id
-						});
+						}).catch(e => this.emit("warn", `Failed to process voice state update packet:\n${e.stack}`));
 					break;
 				case GatewayDispatchEvents.Ready: {
 					if (!this.userId) this.userId = packet.d.user.id;
@@ -47,6 +47,6 @@ export class Manager extends BaseManager {
 		const shardID = Number((BigInt(packet.d.guild_id) >> BigInt(22)) % BigInt(this.client.options.totalShards));
 		const s = Object.entries(this.client.shardManager.shards).find((e) => String(e[0]) === String(shardID))?.[1];
 
-		if (s) s.connector.sendMessage(packet);
+		if (s) s.connector.sendMessage(packet).catch(e => this.emit("warn", `Failed to send ws message packet:\n${e.stack}`));
 	}
 }

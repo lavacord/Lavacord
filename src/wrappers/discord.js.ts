@@ -1,8 +1,7 @@
 import { Manager as BaseManager } from "../lib/Manager";
 import type { ManagerOptions, LavalinkNodeOptions } from "../lib/Types";
-import type { GatewayVoiceServerUpdateDispatch, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatch } from "discord-api-types/v10";
+import type { GatewayVoiceServerUpdateDispatch, GatewayVoiceStateUpdate, GatewayVoiceStateUpdateDispatch, GatewayGuildCreateDispatchData } from "discord-api-types/v10";
 import { Client, GatewayDispatchEvents } from "discord.js";
-import type { GatewayGuildCreateDispatchData } from "discord-api-types/v10";
 
 export * from "../index";
 
@@ -22,7 +21,7 @@ export class Manager extends BaseManager {
 			.on(GatewayDispatchEvents.VoiceServerUpdate, (packet: GatewayVoiceServerUpdateDispatch) => this.voiceServerUpdate(packet.d))
 			.on(GatewayDispatchEvents.VoiceStateUpdate, (packet: GatewayVoiceStateUpdateDispatch) => this.voiceStateUpdate(packet.d))
 			.on(GatewayDispatchEvents.GuildCreate, (data: GatewayGuildCreateDispatchData) => {
-				for (const state of data.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: data.id });
+				for (const state of data.voice_states ?? []) this.voiceStateUpdate({ ...state, guild_id: data.id }).catch(e => this.emit("warn", `Failed to process voice state update packet:\n${e.stack}`));
 			});
 	}
 

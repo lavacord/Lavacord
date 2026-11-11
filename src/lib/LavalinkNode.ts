@@ -291,7 +291,7 @@ export class LavalinkNode {
 	 */
 	public destroy(): void {
 		if (!this.connected) return;
-		this.ws!.close(1000, "destroy");
+		this.ws!.close(1000, "destroy").catch((e) => this.manager.emit("error", e, this));
 	}
 
 	/**

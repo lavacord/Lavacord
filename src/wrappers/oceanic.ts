@@ -21,11 +21,11 @@ export class Manager extends BaseManager {
 			const data = d as unknown as GatewayReceivePayload;
 			switch (data.t) {
 				case GatewayDispatchEvents.VoiceServerUpdate:
-					this.voiceServerUpdate(data.d);
+					this.voiceServerUpdate(data.d).catch(e => this.emit("warn", `Failed to process voice server update packet:\n${e.stack}`));
 					break;
 
 				case GatewayDispatchEvents.VoiceStateUpdate:
-					this.voiceStateUpdate(data.d);
+					this.voiceStateUpdate(data.d).catch(e => this.emit("warn", `Failed to process voice state update packet:\n${e.stack}`));
 					break;
 
 				case GatewayDispatchEvents.GuildCreate:
@@ -33,7 +33,7 @@ export class Manager extends BaseManager {
 						this.voiceStateUpdate({
 							...state,
 							guild_id: data.d.id
-						});
+						}).catch(e => this.emit("warn", `Failed to process voice state update packet:\n${e.stack}`));
 					break;
 				default:
 					break;

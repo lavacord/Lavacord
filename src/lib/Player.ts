@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import { Rest } from "./Rest";
 import type { LavalinkNode } from "./LavalinkNode";
 import type { Manager } from "./Manager";
@@ -127,7 +127,7 @@ export class Player extends EventEmitter<PlayerEvents> {
 			userData?: Record<any, any>;
 		}
 	): Promise<UpdatePlayerResult> {
-		const { userData, noReplace, ...opts } = options || {};
+		const { userData, noReplace, ...opts } = options ?? {};
 
 		const d = await this.update({ track: { encoded: track, userData }, ...opts }, noReplace ?? false);
 		this.timestamp = Date.now();
